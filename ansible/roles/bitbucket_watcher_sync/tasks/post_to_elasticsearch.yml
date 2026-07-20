@@ -1,0 +1,34 @@
+---
+# ---------- 2) Post config to API endpoint ----------
+# Invoked once per parsed watcher_file (one Bitbucket YAML file may define
+# several keyword watchers for the same service).
+
+- name: PUT each keyword watcher to the Elasticsearch Watcher API
+  ansible.builtin.uri:
+    url: "{{ es_watcher_api_base }}/_watcher/watch/{{ item.name }}"
+    method: PUT
+    headers:
+      Authorization: "ApiKey {{ vault_es_api_key }}"
+    body_format: json
+    body: "{{ lookup('template', 'watcher_payload.json.j2') }}"
+    status_code: [200, 201]
+    timeout: "{{ es_request_timeout }}"
+  loop: "{{ watcher_file.watchers }}"
+  loop_control:
+    label: "{{ item.name }}"
+  vars:
+    watcher: "{{ item }}"
+    service: "{{ watcher_file.service }}"
+    watcher_metadata: "{{ watcher_file.metadata }}"
+  register: watcher_put_result
+  retries: "{{ es_request_retries }}"
+  delay: 5
+  until: watcher_put_result is succeeded
+  no_log: true
+
+- name: Report what was created
+  ansible.builtin.debug:
+    msg: "Watcher '{{ item.item.name }}' -> {{ item.json.created | default(false) and 'created' or 'updated' }}"
+  loop: "{{ watcher_put_result.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"

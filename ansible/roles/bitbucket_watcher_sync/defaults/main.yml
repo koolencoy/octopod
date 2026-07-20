@@ -1,0 +1,4 @@
+---
+bitbucket_request_timeout: 30
+es_request_timeout: 30
+es_request_retries: 3

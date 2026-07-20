@@ -1,0 +1,48 @@
+{
+  "trigger": {
+    "schedule": { "interval": "1m" }
+  },
+  "input": {
+    "search": {
+      "request": {
+        "indices": ["{{ watcher.index_pattern }}"],
+        "body": {
+          "query": {
+            "bool": {
+              "must": [
+                { "match_phrase": { "message": "{{ watcher.keyword }}" } },
+                { "range": { "@timestamp": { "gte": "now-1m" } } }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "condition": {
+    "compare": { "ctx.payload.hits.total": { "gt": 0 } }
+  },
+  "actions": {
+    "notify_moogsoft": {
+      "webhook": {
+        "method": "POST",
+        "host": "{{ moogsoft_webhook_host }}",
+        "port": {{ moogsoft_webhook_port }},
+        "path": "{{ moogsoft_webhook_path }}",
+        "headers": { "Content-Type": "application/json" },
+        "body": "{% raw %}{{#toJson}}ctx.payload{{/toJson}}{% endraw %}"
+      }
+    }
+  },
+  "metadata": {
+    "watcher_name": "{{ watcher.name }}",
+    "severity": "{{ watcher.severity }}",
+    "entity": "{{ service.entity }}",
+    "environment": "{{ service.environment }}",
+    "namespace": "{{ service.namespace | default('') }}",
+    "container": "{{ service.container | default('') }}",
+    "generated_by": "microservice-keyword-alert",
+    "requested_by": "{{ watcher_metadata.requestedBy | default('unknown') }}",
+    "approved_by": "{{ watcher_metadata.approvedBy | default('unknown') }}"
+  }
+}

@@ -1,0 +1,12 @@
+---
+# Run manually (polls the whole watchers/ dir):
+#   ansible-playbook playbooks/sync-elk-watchers.yml --ask-vault-pass
+#
+# Run from a Bitbucket webhook (only the changed file):
+#   ansible-playbook playbooks/sync-elk-watchers.yml --ask-vault-pass \
+#     -e changed_file_path=watchers/deposit-adapter-sg_ms-cbs-account-movement-adapter.yaml
+- name: Sync ELK keyword watchers from Bitbucket
+  hosts: local
+  gather_facts: false
+  roles:
+    - bitbucket_watcher_sync

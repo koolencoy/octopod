@@ -1,0 +1,12 @@
+# Copy this file to vault.yml, fill in real values, then encrypt it —
+# never commit secrets in plaintext:
+#
+#   cp vault.yml.example vault.yml
+#   ansible-vault encrypt vault.yml
+#
+# Bitbucket Server HTTP access token (Repository read scope is enough —
+# this job only reads, it never writes back to Bitbucket).
+vault_bitbucket_token: "REPLACE_WITH_BITBUCKET_HTTP_ACCESS_TOKEN"
+
+# Elasticsearch API key with manage_watcher / cluster:admin/xpack/watcher/* privileges.
+vault_es_api_key: "REPLACE_WITH_ELASTICSEARCH_API_KEY"
