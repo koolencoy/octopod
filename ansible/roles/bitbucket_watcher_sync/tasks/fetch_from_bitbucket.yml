@@ -16,7 +16,7 @@
   ansible.builtin.set_fact:
     watcher_file_paths: >-
       {{ [changed_file_path] if changed_file_path is defined
-         else (watcher_dir_listing.json.children.values
+         else (watcher_dir_listing.json.children['values']
                | selectattr('path.toString', 'match', '.*\.ya?ml$')
                | map(attribute='path.toString')
                | list) }}

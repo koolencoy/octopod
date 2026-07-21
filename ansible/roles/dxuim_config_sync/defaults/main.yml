@@ -1,0 +1,5 @@
+---
+bitbucket_request_timeout: 30
+dxuim_request_timeout: 30
+dxuim_request_retries: 3
+dxuim_domain: "DXUIM"

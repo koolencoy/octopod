@@ -1,0 +1,167 @@
+---
+# ---------- 1) Read DX UIM config from Bitbucket ----------
+# Same nested shape as the local dxuim-config/ folder:
+#   {dxuim_config_root}/{environment}/{robot}/{probe}.json
+#
+# Three ways to reach this, in priority order:
+#   1. bitbucket_from_hash + bitbucket_to_hash — resolves the actual set of
+#      changed files via Bitbucket's own compare API. This is what a repo
+#      webhook should drive: wire "Repository Push" straight to
+#      ansible-playbook, passing the push's fromHash/toHash through as-is:
+#        -e bitbucket_from_hash=<oldHash> -e bitbucket_to_hash=<newHash>
+#      Ansible does the diff itself — no external script has to resolve
+#      file paths first. Correctly covers a push containing several
+#      commits (e.g. more than one robot changed) in one run.
+#   2. changed_file_path — a single known file (simplest possible webhook
+#      wiring, or a manual re-run of one file).
+#   3. neither given — full poll of the whole dxuim_config_root tree.
+#
+# PUT-ing a robot's config is idempotent (it's a "set these keys" call,
+# not an event replay), so there's no commit-tracking state to maintain —
+# resolving "what changed since fromHash" and re-applying it is always
+# safe, even if it overlaps with a previous run.
+
+- name: Determine sync mode
+  ansible.builtin.set_fact:
+    sync_mode: "{{ 'range' if (bitbucket_from_hash is defined and bitbucket_to_hash is defined) else ('single' if changed_file_path is defined else 'poll') }}"
+
+# ---- mode: range (webhook, fromHash/toHash) ----
+
+- name: Resolve changed files from a Bitbucket commit range
+  ansible.builtin.uri:
+    url: "{{ bitbucket_base_url }}/rest/api/1.0/projects/{{ bitbucket_project_key }}/repos/{{ bitbucket_dxuim_repo_slug }}/compare/changes?from={{ bitbucket_from_hash }}&to={{ bitbucket_to_hash }}&limit=1000"
+    headers:
+      Authorization: "Bearer {{ vault_bitbucket_token }}"
+    return_content: true
+    timeout: "{{ bitbucket_request_timeout }}"
+  register: compare_result
+  when: sync_mode == 'range'
+  no_log: true
+
+- name: Build changed-file list from the commit-range diff
+  # Filters the raw/added/modified/removed diff down to probe config
+  # files under dxuim_config_root — a push can touch other paths too
+  # (README, guide.md, etc.) and those should be ignored here.
+  ansible.builtin.set_fact:
+    dxuim_file_paths: '{{ compare_result.json["values"] | selectattr("path.toString", "match", "^" ~ dxuim_config_root ~ "/.*\\.json$") | map(attribute="path.toString") | list }}'
+  when: sync_mode == 'range'
+
+- name: Note if the compare API result was paginated
+  ansible.builtin.debug:
+    msg: >-
+      WARNING: Bitbucket reports more results than the limit=1000 page
+      returned (isLastPage=false). Some changed files may have been
+      missed — increase the limit or add real pagination.
+  when: sync_mode == 'range' and not (compare_result.json.isLastPage | default(true))
+
+# ---- mode: single (one known file) ----
+
+- name: Use the single changed file instead
+  ansible.builtin.set_fact:
+    dxuim_file_paths: ["{{ changed_file_path }}"]
+  when: sync_mode == 'single'
+
+# ---- mode: poll (full tree walk) ----
+
+- name: List environment folders under {{ dxuim_config_root }} (full poll)
+  ansible.builtin.uri:
+    url: "{{ bitbucket_base_url }}/rest/api/1.0/projects/{{ bitbucket_project_key }}/repos/{{ bitbucket_dxuim_repo_slug }}/browse/{{ dxuim_config_root }}?at=refs/heads/{{ bitbucket_branch }}"
+    headers:
+      Authorization: "Bearer {{ vault_bitbucket_token }}"
+    return_content: true
+    timeout: "{{ bitbucket_request_timeout }}"
+  register: env_listing
+  when: sync_mode == 'poll'
+  no_log: true
+
+- name: Build list of environment paths
+  ansible.builtin.set_fact:
+    env_paths: '{{ env_listing.json.children["values"] | selectattr("type", "equalto", "DIRECTORY") | map(attribute="path.toString") | list }}'
+  when: sync_mode == 'poll'
+
+- name: List robot folders under each environment
+  ansible.builtin.uri:
+    url: "{{ bitbucket_base_url }}/rest/api/1.0/projects/{{ bitbucket_project_key }}/repos/{{ bitbucket_dxuim_repo_slug }}/browse/{{ item }}?at=refs/heads/{{ bitbucket_branch }}"
+    headers:
+      Authorization: "Bearer {{ vault_bitbucket_token }}"
+    return_content: true
+    timeout: "{{ bitbucket_request_timeout }}"
+  loop: "{{ env_paths | default([]) }}"
+  register: robot_listing_responses
+  when: sync_mode == 'poll'
+  no_log: true
+
+- name: Flatten robot folder paths
+  ansible.builtin.set_fact:
+    robot_paths: '{{ (robot_paths | default([])) + (item.json.children["values"] | selectattr("type", "equalto", "DIRECTORY") | map(attribute="path.toString") | list) }}'
+  loop: "{{ robot_listing_responses.results | default([]) }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when: sync_mode == 'poll'
+
+- name: List probe config files under each robot folder
+  ansible.builtin.uri:
+    url: "{{ bitbucket_base_url }}/rest/api/1.0/projects/{{ bitbucket_project_key }}/repos/{{ bitbucket_dxuim_repo_slug }}/browse/{{ item }}?at=refs/heads/{{ bitbucket_branch }}"
+    headers:
+      Authorization: "Bearer {{ vault_bitbucket_token }}"
+    return_content: true
+    timeout: "{{ bitbucket_request_timeout }}"
+  loop: "{{ robot_paths | default([]) }}"
+  register: probe_listing_responses
+  when: sync_mode == 'poll'
+  no_log: true
+
+- name: Flatten probe config file paths
+  # Assumes every file directly under a robot folder is a probe config
+  # (cdm.json / logmon.json / processes.json, per the local layout) —
+  # there's nothing else in there today.
+  ansible.builtin.set_fact:
+    dxuim_file_paths: '{{ (dxuim_file_paths | default([])) + (item.json.children["values"] | selectattr("type", "equalto", "FILE") | map(attribute="path.toString") | list) }}'
+  loop: "{{ probe_listing_responses.results | default([]) }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when: sync_mode == 'poll'
+
+# ---- common to all three modes ----
+
+- name: Fail fast if there is nothing to sync
+  ansible.builtin.assert:
+    that: dxuim_file_paths | length > 0
+    fail_msg: "No DX UIM config files to sync (mode: {{ sync_mode }}, root: {{ dxuim_config_root }}, branch: {{ bitbucket_branch }})."
+
+- name: Fetch raw content for each probe config file
+  ansible.builtin.uri:
+    url: "{{ bitbucket_base_url }}/rest/api/1.0/projects/{{ bitbucket_project_key }}/repos/{{ bitbucket_dxuim_repo_slug }}/raw/{{ item }}?at=refs/heads/{{ bitbucket_branch }}"
+    headers:
+      Authorization: "Bearer {{ vault_bitbucket_token }}"
+    return_content: true
+    timeout: "{{ bitbucket_request_timeout }}"
+  loop: "{{ dxuim_file_paths }}"
+  register: dxuim_file_responses
+  no_log: true
+
+- name: Parse path + content for each probe config file
+  # Path shape is {dxuim_config_root}/{environment}/{robot}/{probe}.json —
+  # environment/robot/probe all come from the path itself. The UIM hub is
+  # NOT part of this path, so it's looked up from dxuim_hub_by_environment.
+  #
+  # requested_by/approved_by read from an optional top-level "metadata"
+  # key — { "metadata": { "requestedBy": "user:default/jdoe", "approvedBy": ... } }
+  # — matching the elk-watchers skeleton convention. Files committed
+  # before this convention existed (e.g. the original processes.json)
+  # won't have it, hence the "unknown" default; notify_requester treats
+  # that as "no one to notify" rather than failing the sync over it.
+  ansible.builtin.set_fact:
+    dxuim_configs: >-
+      {{ (dxuim_configs | default([])) + [{
+        "path": item.item,
+        "environment": (item.item | replace(dxuim_config_root ~ "/", "")).split("/")[0],
+        "robot": (item.item | replace(dxuim_config_root ~ "/", "")).split("/")[1],
+        "probe": ((item.item | basename).rsplit(".", 1)[0]),
+        "probe_config_keys": ((item.content | from_json).probeConfigKeys | default([])),
+        "requested_by": (((item.content | from_json).metadata | default({})).requestedBy | default("unknown")),
+        "approved_by": (((item.content | from_json).metadata | default({})).approvedBy | default("unknown"))
+      }] }}
+  loop: "{{ dxuim_file_responses.results }}"
+  loop_control:
+    label: "{{ item.item }}"

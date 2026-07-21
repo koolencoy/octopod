@@ -1,0 +1,24 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ulaeiapos0a-dxuim-probes
+  title: ulaeiapos0a — DX UIM Probes
+  description: CMD / Log / Process monitoring probes for ulaeiapos0a (UAT)
+  tags:
+    - dxuim
+    - probe-config
+    - uat
+  annotations:
+    # Same Roadie Grafana plugin convention as the ELK skeleton — see
+    # ELK/backstage/scaffolder-template/skeleton/catalog-info.yaml for
+    # the same caveat about verifying these keys against your plugin
+    # version.
+    grafana/dashboard-selector: "tags @> 'dxuim' AND tags @> 'ulaeiapos0a'"
+    grafana/alert-label-selector: "robot=ulaeiapos0a, environment=UAT"
+spec:
+  type: alert-config
+  lifecycle: production
+  owner: group:ocbc/sre
+  system: open-systems
+  dependsOn:
+    - component:dxuim-monitoring

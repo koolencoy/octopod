@@ -1,0 +1,10 @@
+[
+{% for entry in probe_config_keys %}
+  {
+    "encrypt": {{ (entry.encrypt | default("false")) | tojson }},
+    "key": {{ entry.key | tojson }},
+    "value": {{ entry.value | tojson }}
+  }{% if not loop.last %},{% endif %}
+
+{% endfor %}
+]

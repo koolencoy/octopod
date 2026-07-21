@@ -1,0 +1,107 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_ELASTICSEARCH",
+      "label": "Elasticsearch (elk-stack)",
+      "description": "Existing ES datasource — this dashboard doesn't create one.",
+      "type": "datasource",
+      "pluginId": "elasticsearch"
+    }
+  ],
+  "title": "Alerting — Entity Detail",
+  "uid": "alerting-entity-detail",
+  "description": "Reusable per-entity view — one dashboard, filtered per Catalog entity via the grafana/alert-label-selector annotation. Do not fork per service; add tags instead.",
+  "tags": ["alerting", "elk", "keyword-alert"],
+  "schemaVersion": 39,
+  "editable": true,
+  "timezone": "",
+  "time": { "from": "now-24h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "environment",
+        "type": "custom",
+        "label": "Environment",
+        "query": "SIT,UAT,PROD,DR",
+        "current": { "text": "PROD", "value": "PROD" },
+        "includeAll": false,
+        "multi": false
+      },
+      {
+        "name": "entity_name",
+        "type": "textbox",
+        "label": "Container / Robot",
+        "description": "Set by the embed URL from grafana/alert-label-selector — not meant to be typed by hand.",
+        "current": { "text": "", "value": "" }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Active watchers",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
+      "datasource": { "type": "elasticsearch", "uid": "${DS_ELASTICSEARCH}" },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "container:\"$entity_name\" AND environment:\"$environment\"",
+          "metrics": [{ "id": "1", "type": "cardinality", "field": "watcher_name.keyword" }],
+          "bucketAggs": []
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] }
+    },
+    {
+      "id": 2,
+      "title": "Fires — last 24h",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
+      "datasource": { "type": "elasticsearch", "uid": "${DS_ELASTICSEARCH}" },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "container:\"$entity_name\" AND environment:\"$environment\"",
+          "metrics": [{ "id": "1", "type": "count" }],
+          "bucketAggs": []
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "thresholds" } }, "overrides": [] }
+    },
+    {
+      "id": 3,
+      "title": "Fires over time, by severity",
+      "type": "timeseries",
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 6 },
+      "datasource": { "type": "elasticsearch", "uid": "${DS_ELASTICSEARCH}" },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "container:\"$entity_name\" AND environment:\"$environment\"",
+          "alias": "{{term severity}}",
+          "metrics": [{ "id": "1", "type": "count" }],
+          "bucketAggs": [
+            { "id": "2", "type": "date_histogram", "field": "@timestamp", "settings": { "interval": "auto" } },
+            { "id": "3", "type": "terms", "field": "severity.keyword", "settings": { "size": "10", "order": "desc", "orderBy": "_count" } }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Recent fires",
+      "type": "table",
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 6 },
+      "datasource": { "type": "elasticsearch", "uid": "${DS_ELASTICSEARCH}" },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "container:\"$entity_name\" AND environment:\"$environment\"",
+          "metrics": [{ "id": "1", "type": "raw_document" }],
+          "bucketAggs": []
+        }
+      ]
+    }
+  ]
+}

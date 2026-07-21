@@ -1,0 +1,111 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_ELASTICSEARCH",
+      "label": "Elasticsearch (elk-stack)",
+      "description": "Existing ES datasource — this dashboard doesn't create one.",
+      "type": "datasource",
+      "pluginId": "elasticsearch"
+    },
+    {
+      "name": "DS_DXUIM",
+      "label": "DX UIM",
+      "description": "PLACEHOLDER — fill in with whatever datasource plugin your DX UIM -> Grafana integration actually uses (Broadcom doesn't have one universally-standard Grafana plugin; this could be a JSON-API bridge, an intermediary TSDB, or a vendor connector). Panels using this are marked TODO below and will need their queries rewritten to match, not just the datasource swapped.",
+      "type": "datasource",
+      "pluginId": "unknown"
+    }
+  ],
+  "title": "Alerting — Overview",
+  "uid": "alerting-overview",
+  "description": "Aggregate view across both backends. Embedded on the Backstage homepage (see HomePage.tsx) and linked from there to the full Grafana view.",
+  "tags": ["alerting", "overview"],
+  "schemaVersion": 39,
+  "editable": true,
+  "timezone": "",
+  "time": { "from": "now-24h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "environment",
+        "type": "custom",
+        "label": "Environment",
+        "query": "SIT,UAT,PROD,DR",
+        "current": { "text": "All", "value": "$__all" },
+        "includeAll": true,
+        "multi": true
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "ELK watchers configured",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
+      "datasource": { "type": "elasticsearch", "uid": "${DS_ELASTICSEARCH}" },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "environment:($environment)",
+          "metrics": [{ "id": "1", "type": "cardinality", "field": "watcher_name.keyword" }],
+          "bucketAggs": []
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] }
+    },
+    {
+      "id": 2,
+      "title": "DX UIM probes configured — TODO",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
+      "datasource": { "type": "unknown", "uid": "${DS_DXUIM}" },
+      "description": "Placeholder panel — swap the datasource and rewrite this query once the real DX UIM -> Grafana integration is known. Nothing here should be trusted as working as-is.",
+      "targets": [
+        { "refId": "A", "query": "TODO: count of active watchers/probes per environment=$environment" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] }
+    },
+    {
+      "id": 3,
+      "title": "Fires by backend — last 24h",
+      "type": "timeseries",
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 6 },
+      "description": "Mixed-datasource panel — the ELK series is real, the DX UIM series is a placeholder target (see panel 2's note) until that integration is confirmed.",
+      "datasource": { "type": "datasource", "uid": "-- Mixed --" },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "elasticsearch", "uid": "${DS_ELASTICSEARCH}" },
+          "query": "environment:($environment)",
+          "alias": "ELK",
+          "metrics": [{ "id": "1", "type": "count" }],
+          "bucketAggs": [
+            { "id": "2", "type": "date_histogram", "field": "@timestamp", "settings": { "interval": "auto" } }
+          ]
+        },
+        {
+          "refId": "B",
+          "datasource": { "type": "unknown", "uid": "${DS_DXUIM}" },
+          "query": "TODO: fires over time, environment=$environment"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Top 10 noisiest ELK watchers",
+      "type": "table",
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 6 },
+      "datasource": { "type": "elasticsearch", "uid": "${DS_ELASTICSEARCH}" },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "environment:($environment)",
+          "metrics": [{ "id": "1", "type": "count" }],
+          "bucketAggs": [
+            { "id": "2", "type": "terms", "field": "watcher_name.keyword", "settings": { "size": "10", "order": "desc", "orderBy": "_count" } }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+---
+# Recommended: wire a Bitbucket repo webhook ("Repository Push") on
+# dxuim-configs straight to this, passing the push's fromHash/toHash
+# through unchanged — Ansible resolves the actual changed files itself
+# via Bitbucket's compare API, so one push covering several robots'
+# incremental commits is handled correctly in a single run:
+#   ansible-playbook playbooks/sync-dxuim-config.yml --vault-password-file .vault_pass \
+#     -e bitbucket_from_hash=<payload.changes[0].fromHash> \
+#     -e bitbucket_to_hash=<payload.changes[0].toHash>
+#
+# Simpler alternative — a single known file:
+#   ansible-playbook playbooks/sync-dxuim-config.yml --ask-vault-pass \
+#     -e changed_file_path=dxuim-config/UAT/ulaeiapos0a/processes.json
+#
+# Manual run (polls the whole dxuim-config/ tree, no extra-vars needed):
+#   ansible-playbook playbooks/sync-dxuim-config.yml --ask-vault-pass
+- name: Sync DX UIM probe config from Bitbucket
+  hosts: local
+  gather_facts: false
+  roles:
+    - dxuim_config_sync

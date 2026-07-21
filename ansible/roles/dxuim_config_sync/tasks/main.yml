@@ -1,0 +1,19 @@
+---
+- name: Validate required input
+  ansible.builtin.assert:
+    that:
+      - bitbucket_project_key is defined
+      - bitbucket_dxuim_repo_slug is defined
+      - dxuim_api_base is defined
+      - dxuim_hub_by_environment is defined
+    fail_msg: "bitbucket_project_key, bitbucket_dxuim_repo_slug, dxuim_api_base, and dxuim_hub_by_environment must be set (see group_vars/all/main.yml)."
+
+- name: 1) Read DX UIM config from Bitbucket
+  ansible.builtin.include_tasks: fetch_from_bitbucket.yml
+
+- name: 2) Post each probe config to the DX UIM API
+  ansible.builtin.include_tasks: post_to_dxuim.yml
+  loop: "{{ dxuim_configs }}"
+  loop_control:
+    loop_var: dxuim_file
+    label: "{{ dxuim_file.environment }}/{{ dxuim_file.robot }}/{{ dxuim_file.probe }}"

@@ -1,0 +1,223 @@
+<title>Branching Strategy — Config Repos (elk-watchers / dxuim-configs)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root {
+    --bg: #eef1f7;
+    --surface: #ffffff;
+    --ink: #12182a;
+    --ink-2: #4c5670;
+    --ink-3: #8a93a8;
+    --border: #dde2ec;
+    --border-2: #c7cede;
+    --primary: #0270c9;
+    --violet: #6938f2;
+    --primary-soft: rgba(2, 112, 201, 0.09);
+    --violet-soft: rgba(105, 56, 242, 0.09);
+    --ok: #17864f;
+    --ok-soft: rgba(23, 134, 79, 0.11);
+    --warn: #b8760a;
+    --warn-soft: rgba(184, 118, 10, 0.13);
+    --shadow: 0 1px 2px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.07);
+    --sans: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Consolas, monospace;
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #060a14;
+    --surface: #0d1424;
+    --ink: #eef1fa;
+    --ink-2: #aab3cc;
+    --ink-3: #6d7896;
+    --border: #202b47;
+    --border-2: #2c3a5c;
+    --primary: #4fa4f0;
+    --violet: #9d81f7;
+    --primary-soft: rgba(79, 164, 240, 0.14);
+    --violet-soft: rgba(157, 129, 247, 0.15);
+    --ok: #3fcf8e;
+    --ok-soft: rgba(63, 207, 142, 0.15);
+    --warn: #e3a53d;
+    --warn-soft: rgba(227, 165, 61, 0.15);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.45);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #060a14; --surface: #0d1424; --ink: #eef1fa; --ink-2: #aab3cc; --ink-3: #6d7896;
+      --border: #202b47; --border-2: #2c3a5c; --primary: #4fa4f0; --violet: #9d81f7;
+      --primary-soft: rgba(79, 164, 240, 0.14); --violet-soft: rgba(157, 129, 247, 0.15);
+      --ok: #3fcf8e; --ok-soft: rgba(63, 207, 142, 0.15); --warn: #e3a53d; --warn-soft: rgba(227, 165, 61, 0.15);
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.45);
+    }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .eyebrow {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--primary); margin-bottom: 8px;
+  }
+
+  h1 { font-size: clamp(22px, 3vw, 30px); font-weight: 700; letter-spacing: -0.01em; text-wrap: balance; }
+
+  .sub { margin-top: 8px; font-size: 14.5px; color: var(--ink-2); max-width: 720px; line-height: 1.55; }
+
+  .rule-row {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px;
+  }
+  .rule-chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 12px; font-weight: 600; color: var(--ink-2);
+    border: 1px solid var(--border-2); border-radius: 20px; padding: 5px 13px;
+    background: var(--surface);
+  }
+  .rule-chip b { color: var(--ink); font-family: var(--mono); font-weight: 700; }
+  .rule-chip .dot { width: 6px; height: 6px; border-radius: 50%; }
+
+  section.panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 22px 26px 26px;
+    margin-top: 28px;
+  }
+
+  .panel-title {
+    font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+  }
+  .panel-title .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--primary); }
+  .panel-desc { font-size: 12.5px; color: var(--ink-2); margin-bottom: 16px; line-height: 1.5; }
+
+  .diagram-scroll { overflow-x: auto; }
+  .diagram-scroll pre.mermaid { min-width: 640px; }
+
+  .legend {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .legend-item { display: flex; gap: 10px; }
+  .legend-swatch { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+  .legend-item p { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+  .legend-item b { color: var(--ink); }
+  .legend-item code { font-family: var(--mono); font-size: 11.5px; background: var(--primary-soft); color: var(--primary); padding: 1px 6px; border-radius: 4px; }
+
+  @media (max-width: 700px) {
+    .legend { grid-template-columns: 1fr; }
+  }
+
+  .theme-toggle {
+    position: fixed; left: 22px; bottom: 22px; z-index: 50;
+    border: 1px solid var(--border-2); background: var(--surface); color: var(--ink-2);
+    border-radius: 20px; padding: 7px 13px; font-size: 11.5px; font-family: var(--sans);
+    cursor: pointer; box-shadow: var(--shadow);
+  }
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">Architecture &middot; SRE Platform</div>
+  <h1>Branching strategy &amp; the git operations behind a config change</h1>
+  <p class="sub">Every "Raise an Alert" request lands on its own short-lived branch, gets reviewed as a Pull Request, and only becomes real once merged. Ansible never clones anything — it reads the result over Bitbucket's REST API.</p>
+
+  <div class="rule-row">
+    <span class="rule-chip"><span class="dot" style="background:var(--ok);"></span><b>main</b> = production truth, watched by Ansible</span>
+    <span class="rule-chip"><span class="dot" style="background:var(--violet);"></span><b>staging/&lt;name&gt;</b> = one branch per request, deleted after merge</span>
+    <span class="rule-chip"><span class="dot" style="background:var(--warn);"></span>PR into main = the approval gate</span>
+  </div>
+
+  <section class="panel">
+    <div class="panel-title"><span class="dot"></span>Branch topology</div>
+    <div class="panel-desc">One request (a keyword alert for <code style="font-family:var(--mono);">ms-cbs-account-movement-adapter</code>) shown end-to-end. The same shape applies to <code style="font-family:var(--mono);">dxuim-configs</code> — just <code style="font-family:var(--mono);">staging/&lt;environment&gt;-&lt;robot&gt;</code> instead.</div>
+    <div class="diagram-scroll">
+<pre class="mermaid">
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#eef2f8', 'primaryTextColor': '#12182a', 'primaryBorderColor': '#0270c9', 'lineColor': '#8a93a8', 'secondaryColor': '#f3eefe', 'tertiaryColor': '#ffffff', 'git0': '#17864f', 'git1': '#6938f2', 'gitBranchLabel0': '#17864f', 'gitBranchLabel1': '#6938f2', 'commitLabelColor': '#12182a', 'commitLabelBackground': '#eef2f8' }}}%%
+gitGraph
+   commit id: "prod truth (n)"
+   branch staging/deposit-adapter-sg-ms-cbs-account-movement-adapter
+   checkout staging/deposit-adapter-sg-ms-cbs-account-movement-adapter
+   commit id: "generated watcher config"
+   commit id: "generated user guide"
+   checkout main
+   merge staging/deposit-adapter-sg-ms-cbs-account-movement-adapter id: "PR reviewed + approved, merged"
+   commit id: "prod truth (n+1)"
+</pre>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-title"><span class="dot" style="background:var(--violet);"></span>Full sequence &mdash; every git operation and API call, in order</div>
+    <div class="panel-desc">Blue block = real git operations (branch, commit, push, PR, merge, delete) &mdash; all done by Backstage's <code style="font-family:var(--mono);">publish:bitbucketServer</code> action and the human approver. Violet block = read-only REST calls Ansible makes against Bitbucket &mdash; there is no <code style="font-family:var(--mono);">git clone</code> anywhere on that side.</div>
+    <div class="diagram-scroll">
+<pre class="mermaid">
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#eef2f8', 'primaryTextColor': '#12182a', 'primaryBorderColor': '#0270c9', 'lineColor': '#8a93a8', 'actorBkg': '#101c3a', 'actorTextColor': '#ffffff', 'actorBorderColor': '#0270c9', 'actorLineColor': '#8a93a8', 'signalColor': '#4c5670', 'signalTextColor': '#12182a', 'labelBoxBkgColor': '#eef2f8', 'labelBoxBorderColor': '#c7cede', 'labelTextColor': '#12182a', 'noteBkgColor': '#f3eefe', 'noteBorderColor': '#6938f2', 'noteTextColor': '#12182a' }}}%%
+sequenceDiagram
+    autonumber
+    actor Requester
+    participant BS as Backstage Scaffolder
+    participant Repo as Bitbucket repo
+    participant Mgr as Reporting Manager
+    participant Ans as Ansible
+    participant BE as ELK / DX UIM
+
+    Requester->>BS: Fill "Raise an Alert" wizard
+    BS->>BS: sre:approval:request, sre:infinity:validate-change
+
+    rect rgb(224, 236, 250)
+    note over BS,Repo: git operations
+    BS->>Repo: git checkout -b staging/&lt;name&gt; (from main)
+    BS->>Repo: git add + commit (config + generated docs)
+    BS->>Repo: git push origin staging/&lt;name&gt;
+    BS->>Repo: open Pull Request staging/&lt;name&gt; -&gt; main
+    Repo-->>Mgr: review request
+    Mgr->>Repo: approve PR
+    Mgr->>Repo: merge pull request (main gets staging/&lt;name&gt;)
+    Repo->>Repo: delete branch staging/&lt;name&gt;
+    end
+
+    Repo->>Ans: webhook repo:refs_changed (fromHash, toHash on main)
+
+    rect rgb(238, 231, 253)
+    note over Ans,Repo: REST API reads &mdash; no local clone
+    Ans->>Repo: GET /compare/changes?from&amp;to
+    Ans->>Repo: GET /raw/{path}?at=refs/heads/main
+    end
+
+    Ans->>BE: PUT config (Watcher API / uimapi probe config)
+    BE-->>Ans: 200 / 201
+</pre>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-swatch" style="background: rgb(224, 236, 250); border: 1px solid var(--primary);"></div>
+        <p><b>Git operations</b> &mdash; branch, commit, push, PR, merge, delete. All performed by Backstage's publish action and the human approver; this is the only place actual git plumbing happens.</p>
+      </div>
+      <div class="legend-item">
+        <div class="legend-swatch" style="background: rgb(238, 231, 253); border: 1px solid var(--violet);"></div>
+        <p><b>REST API reads</b> &mdash; <code>compare/changes</code> and <code>raw</code> against Bitbucket's HTTP API. Ansible has no working copy, no <code>.git</code> directory, nothing to keep in sync — it just asks Bitbucket for a diff and file contents on demand.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<button class="theme-toggle" id="themeToggle" type="button">Toggle theme</button>
+
+<script>
+  const root = document.documentElement;
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const cur = root.getAttribute('data-theme');
+    const next = cur === 'dark' ? 'light' : (cur === 'light' ? null : 'dark');
+    if (next) root.setAttribute('data-theme', next); else root.removeAttribute('data-theme');
+  });
+</script>

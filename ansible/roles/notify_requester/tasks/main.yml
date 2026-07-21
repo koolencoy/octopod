@@ -1,0 +1,59 @@
+---
+# Shared by both bitbucket_watcher_sync and dxuim_config_sync so there's
+# one place that knows how to reach Backstage Notifications, not two
+# copies of the same uri call.
+#
+# Required vars: notify_title, notify_description, notify_severity
+# Optional vars: notify_link, notify_entity_ref (e.g. "user:default/jdoe")
+#
+# If notify_entity_ref is undefined or "unknown" (legacy files committed
+# before the metadata convention existed — see dxuim-config/guide.md),
+# there's no one to address the notification to. Log it instead of
+# failing the whole sync over a missing recipient.
+
+- name: Skip notification — no requester identity available
+  ansible.builtin.debug:
+    msg: "No requestedBy metadata on this config — would have sent: [{{ notify_severity }}] {{ notify_title }} — {{ notify_description }}"
+  when: notify_entity_ref is not defined or notify_entity_ref == "unknown"
+
+- name: Notify requester via Backstage Notifications
+  ansible.builtin.uri:
+    url: "{{ backstage_notifications_api }}/notifications"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ vault_backstage_token }}"
+    body_format: json
+    # Shape matches @backstage/plugin-notifications-backend as of the
+    # 1.20-era API — verify against your installed version before relying
+    # on this; the notifications plugin's request schema isn't as stable
+    # yet as, say, the Catalog API.
+    body:
+      recipients:
+        type: entity
+        entityRef: ["{{ notify_entity_ref }}"]
+      payload:
+        title: "{{ notify_title }}"
+        description: "{{ notify_description }}"
+        severity: "{{ notify_severity }}"
+        # An empty string is a harmless no-link value for the notifications
+        # UI to render — simpler and more certain than relying on `omit`
+        # to strip a key nested inside this dict (unverified in this
+        # environment; `omit` is well-documented for top-level module
+        # args, less so for nested structures like this).
+        link: "{{ notify_link | default('') }}"
+        topic: "raise-an-alert"
+    status_code: [200, 201]
+    timeout: 15
+  when: notify_entity_ref is defined and notify_entity_ref != "unknown"
+  register: notify_result
+  failed_when: false
+  no_log: true
+
+- name: Warn if the notification call itself failed
+  # Deliberately not fatal — losing the notification shouldn't undo an
+  # otherwise-successful (or otherwise-already-failed) sync.
+  ansible.builtin.debug:
+    msg: "WARNING: could not notify {{ notify_entity_ref }} (HTTP {{ notify_result.status | default('n/a') }}) — {{ notify_title }}"
+  when:
+    - notify_entity_ref is defined and notify_entity_ref != "unknown"
+    - notify_result.status | default(0) not in [200, 201]

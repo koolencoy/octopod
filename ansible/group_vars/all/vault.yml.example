@@ -10,3 +10,11 @@ vault_bitbucket_token: "REPLACE_WITH_BITBUCKET_HTTP_ACCESS_TOKEN"
 
 # Elasticsearch API key with manage_watcher / cluster:admin/xpack/watcher/* privileges.
 vault_es_api_key: "REPLACE_WITH_ELASTICSEARCH_API_KEY"
+
+# DX UIM service account password (paired with dxuim_auth_user, "accountsvcid",
+# for HTTP basic auth against the uimapi probe config endpoint).
+vault_dxuim_password: "REPLACE_WITH_DXUIM_SERVICE_ACCOUNT_PASSWORD"
+
+# Backstage service-to-service token with permission to call the
+# Notifications API on behalf of the sync jobs.
+vault_backstage_token: "REPLACE_WITH_BACKSTAGE_SERVICE_TOKEN"

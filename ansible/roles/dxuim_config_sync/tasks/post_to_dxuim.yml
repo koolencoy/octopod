@@ -1,0 +1,71 @@
+---
+# ---------- 2) Post config to the DX UIM API ----------
+# Mirrors dxuim-config/guide.md exactly:
+#   curl -k -u accountsvcid -XPUT
+#     ".../uimapi/probes/{domain}/{hub}/{robot}/{probe}/config"
+#     -d '[{ "encrypt": "false", "key": "...", "value": "..." }]'
+#
+# Invoked once per parsed dxuim_file (one probe config file = one PUT,
+# whole probeConfigKeys array as the body — same as the sample command).
+#
+# Wrapped in block/rescue/always so the requester is told either way —
+# a merged PR that fails to activate must not fail silently.
+
+- block:
+    - name: "PUT probe config to DX UIM ({{ dxuim_file.environment }}/{{ dxuim_file.robot }}/{{ dxuim_file.probe }})"
+      ansible.builtin.uri:
+        url: "{{ dxuim_api_base }}/uimapi/probes/{{ dxuim_domain }}/{{ dxuim_hub_by_environment[dxuim_file.environment] }}/{{ dxuim_file.robot }}/{{ dxuim_file.probe }}/config"
+        method: PUT
+        url_username: "{{ dxuim_auth_user }}"
+        url_password: "{{ vault_dxuim_password }}"
+        force_basic_auth: true
+        # Matches the sample command's `-k` (skip TLS verification). Fine for
+        # the UAT endpoint in guide.md — revisit before pointing this at PROD.
+        validate_certs: false
+        headers:
+          Content-Type: application/json
+        body_format: json
+        body: "{{ lookup('template', 'dxuim_config_payload.json.j2') }}"
+        status_code: [200, 201, 204]
+        timeout: "{{ dxuim_request_timeout }}"
+      vars:
+        probe_config_keys: "{{ dxuim_file.probe_config_keys }}"
+      register: dxuim_put_result
+      retries: "{{ dxuim_request_retries }}"
+      delay: 5
+      until: dxuim_put_result is succeeded
+      no_log: true
+
+    - name: Report result
+      ansible.builtin.debug:
+        msg: "{{ dxuim_file.environment }}/{{ dxuim_file.robot }}/{{ dxuim_file.probe }} -> HTTP {{ dxuim_put_result.status }}"
+
+    - name: Notify requester — activation succeeded
+      ansible.builtin.include_role:
+        name: notify_requester
+      vars:
+        notify_entity_ref: "{{ dxuim_file.requested_by }}"
+        notify_severity: normal
+        notify_title: "Alert activated: {{ dxuim_file.robot }}/{{ dxuim_file.probe }}"
+        notify_description: >-
+          Your {{ dxuim_file.probe }} config for {{ dxuim_file.robot }}
+          ({{ dxuim_file.environment }}) is live on DX UIM. Approved by
+          {{ dxuim_file.approved_by }}.
+
+  rescue:
+    - name: Notify requester — activation FAILED
+      ansible.builtin.include_role:
+        name: notify_requester
+      vars:
+        notify_entity_ref: "{{ dxuim_file.requested_by }}"
+        notify_severity: critical
+        notify_title: "Alert activation FAILED: {{ dxuim_file.robot }}/{{ dxuim_file.probe }}"
+        notify_description: >-
+          Your merged change for {{ dxuim_file.robot }}/{{ dxuim_file.probe }}
+          ({{ dxuim_file.environment }}) could not be applied to DX UIM.
+          The repo now disagrees with what's actually running — this needs
+          SRE attention, not just a retry.
+
+    - name: Re-raise so the CI job itself is still reported as failed
+      ansible.builtin.fail:
+        msg: "DX UIM activation failed for {{ dxuim_file.path }} — see notification above for detail."
