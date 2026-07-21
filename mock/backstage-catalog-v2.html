@@ -1341,6 +1341,91 @@
             white-space: nowrap;
         }
 
+        .existing-config-card {
+            background: #f8f9fc;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px 16px;
+            margin-bottom: 16px;
+        }
+
+        .existing-config-title {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .existing-config-title .mono { font-family: var(--mono); color: var(--primary); font-weight: 700; }
+
+        .existing-config-empty { font-size: 12.5px; color: var(--ink-dim); }
+
+        .existing-config-row {
+            padding: 8px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .existing-config-row:first-of-type { border-top: none; padding-top: 0; }
+
+        .existing-config-row.current {
+            background: var(--primary-soft);
+            margin: 0 -8px;
+            padding: 8px;
+            border-radius: 8px;
+            border-top: none;
+        }
+
+        .existing-config-cat {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 6px;
+        }
+
+        .existing-config-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 220px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .existing-config-entry {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            font-size: 11.5px;
+            color: var(--ink-secondary);
+            line-height: 1.5;
+        }
+
+        .existing-config-entry b { color: var(--ink); font-family: var(--mono); font-weight: 700; }
+
+        .existing-config-load-sm {
+            flex-shrink: 0;
+            background: var(--card);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 10.5px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .existing-config-load-sm:hover { background: var(--primary); color: #fff; }
+
         .wiz-route-cta:hover { text-decoration: underline; }
 
         .chip-select { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -2411,6 +2496,8 @@
 
                 <!-- PANE 4: Category-specific details -->
                 <div class="wiz-pane" data-pane="4">
+                    <div id="existingConfigPanel"></div>
+
                     <div class="form-section" id="catFieldsLog">
                         <div class="form-section-header">
                             <span class="form-section-icon"><svg class="ic"><use href="#i-key"/></svg></span>
@@ -2632,7 +2719,144 @@
         const HOST_REGISTRY = {
             'sgapp0231': { otel: true },   // migrated — routes to ELK
             'sgapp0410': { otel: false },  // not yet migrated — still DX UIM
+            'ulaeiapos0a': { otel: false }, // real robot in dxuim-config/UAT — still DX UIM
         };
+
+        // Demo stand-in for a live Asset Registry / Bitbucket "existing
+        // configuration" read (see docs/planning/backlog.md — "Wizard +
+        // PR-description existing configuration summary"). Keyed the same
+        // way getPrefix() computes an asset's identity, so it works for
+        // both microservice and open-system assets without special-casing.
+        //
+        // 'ulaeiapos0a' is the one real robot in dxuim-config/UAT/ — its
+        // process entries mirror the real probeConfigKeys already committed
+        // there. Its cdm.json/logmon.json are still empty placeholders (see
+        // docs/planning/overview.md), so it deliberately has no cmd/log
+        // samples here — that would misrepresent real repo state. CMD/Log
+        // coverage instead comes from sgapp0410, an existing HOST_REGISTRY
+        // demo host that isn't tied to any real committed config.
+        const EXISTING_CONFIG = {
+            'deposit-adapter-sg_ms-cbs-account-movement-adapter': {
+                log: [
+                    { keyword: '400', severity: 'Major' },
+                    { keyword: '500', severity: 'Major' },
+                ],
+                cmd: [
+                    { metric: 'CPU', threshold: '90', duration: '5', severity: 'Critical' },
+                    { metric: 'Memory', threshold: '85', duration: '5', severity: 'Major' },
+                    { metric: 'Disk', threshold: '75', duration: '15', severity: 'Warning' },
+                ],
+            },
+            // Process entries mirror the real probeConfigKeys already committed
+            // to dxuim-config/UAT/ulaeiapos0a/processes.json — app-specific
+            // watchers first, infra-specific watchers after. Its cdm.json and
+            // logmon.json are still empty placeholders (see
+            // docs/planning/overview.md), so no cmd/log samples here — that
+            // would misrepresent real repo state.
+            'ulaeiapos0a': {
+                process: [
+                    // application-specific
+                    { name: '*java*', state: 'Running', interval: 5, severity: 'Critical' },
+                    { name: '*postgres*', state: 'Running', interval: 5, severity: 'Critical' },
+                    { name: 'batch_settlement.sh', state: 'Running', interval: 10, severity: 'Major' },
+                    { name: '*node*', state: 'Running', interval: 5, severity: 'Major' },
+                    { name: 'idp_sync_worker', state: 'Running', interval: 5, severity: 'Critical' },
+                    { name: 'reconciliation_job', state: 'Running', interval: 15, severity: 'Minor' },
+                    // infra-specific
+                    { name: 'sshd', state: 'Running', interval: 10, severity: 'Warning' },
+                    { name: 'cron', state: 'Running', interval: 10, severity: 'Warning' },
+                    { name: 'rsyslogd', state: 'Running', interval: 15, severity: 'Minor' },
+                    { name: 'ntpd', state: 'Running', interval: 15, severity: 'Minor' },
+                    { name: 'auditd', state: 'Running', interval: 10, severity: 'Warning' },
+                    { name: 'syslog-ng', state: 'Running', interval: 15, severity: 'Minor' },
+                ],
+            },
+            // A demo host that isn't tied to any real committed config —
+            // deliberately loaded up to show a fully-monitored asset: 18
+            // distinct log files (more than 15, spanning app logs and the
+            // usual /var/log infra logs), including "retry" recurring at
+            // different severities in different files, a realistic case for
+            // the open backlog question on duplicate keyword handling — plus
+            // all three CMD metrics and a process watcher set.
+            'sgapp0410': {
+                log: [
+                    { keyword: 'ERROR', severity: 'Critical', filepath: '/apps/log/batch_settlement' },
+                    { keyword: 'timeout', severity: 'Major', filepath: '/apps/log/batch_settlement' },
+                    { keyword: 'retry', severity: 'Warning', filepath: '/apps/log/batch_settlement' },
+                    { keyword: 'failed', severity: 'Major', filepath: '/apps/log/batch_settlement' },
+                    { keyword: 'exception', severity: 'Critical', filepath: '/apps/log/batch_settlement' },
+                    { keyword: 'connection refused', severity: 'Critical', filepath: '/apps/log/mq_listener' },
+                    { keyword: 'queue full', severity: 'Major', filepath: '/apps/log/mq_listener' },
+                    { keyword: 'stale consumer', severity: 'Minor', filepath: '/apps/log/mq_listener' },
+                    { keyword: 'reconnect', severity: 'Warning', filepath: '/apps/log/mq_listener' },
+                    { keyword: 'heartbeat missed', severity: 'Major', filepath: '/apps/log/mq_listener' },
+                    { keyword: '401', severity: 'Warning', filepath: '/apps/log/auth_service' },
+                    { keyword: '403', severity: 'Warning', filepath: '/apps/log/auth_service' },
+                    { keyword: 'invalid token', severity: 'Major', filepath: '/apps/log/auth_service' },
+                    { keyword: 'login failed', severity: 'Minor', filepath: '/apps/log/auth_service' },
+                    { keyword: 'retry', severity: 'Minor', filepath: '/apps/log/auth_service' },
+                    { keyword: '500', severity: 'Critical', filepath: '/apps/log/settlement_batch_v2' },
+                    { keyword: '502', severity: 'Critical', filepath: '/apps/log/settlement_batch_v2' },
+                    { keyword: '503', severity: 'Major', filepath: '/apps/log/settlement_batch_v2' },
+                    { keyword: 'deadlock', severity: 'Critical', filepath: '/apps/log/settlement_batch_v2' },
+                    { keyword: 'rollback', severity: 'Major', filepath: '/apps/log/settlement_batch_v2' },
+                    { keyword: 'mismatch', severity: 'Major', filepath: '/apps/log/reconciliation_worker' },
+                    { keyword: 'checksum failed', severity: 'Critical', filepath: '/apps/log/reconciliation_worker' },
+                    { keyword: 'retry', severity: 'Warning', filepath: '/apps/log/reconciliation_worker' },
+                    { keyword: 'declined', severity: 'Minor', filepath: '/apps/log/payment_gateway' },
+                    { keyword: 'gateway timeout', severity: 'Critical', filepath: '/apps/log/payment_gateway' },
+                    { keyword: 'fraud flag', severity: 'Major', filepath: '/apps/log/payment_gateway' },
+                    { keyword: 'send failed', severity: 'Major', filepath: '/apps/log/notification_service' },
+                    { keyword: 'queue backlog', severity: 'Warning', filepath: '/apps/log/notification_service' },
+                    { keyword: 'job failed', severity: 'Major', filepath: '/apps/log/scheduler' },
+                    { keyword: 'missed schedule', severity: 'Warning', filepath: '/apps/log/scheduler' },
+                    { keyword: 'sftp error', severity: 'Major', filepath: '/apps/log/file_transfer' },
+                    { keyword: 'checksum mismatch', severity: 'Critical', filepath: '/apps/log/file_transfer' },
+                    { keyword: 'connection reset', severity: 'Warning', filepath: '/apps/log/file_transfer' },
+                    { keyword: 'tamper detected', severity: 'Critical', filepath: '/apps/log/audit_trail' },
+                    { keyword: 'write failed', severity: 'Major', filepath: '/apps/log/audit_trail' },
+                    { keyword: 'eviction storm', severity: 'Warning', filepath: '/apps/log/cache_service' },
+                    { keyword: 'connection refused', severity: 'Major', filepath: '/apps/log/cache_service' },
+                    { keyword: 'generation failed', severity: 'Major', filepath: '/apps/log/report_generator' },
+                    { keyword: 'timeout', severity: 'Minor', filepath: '/apps/log/report_generator' },
+                    { keyword: 'session expired', severity: 'Minor', filepath: '/apps/log/session_manager' },
+                    { keyword: 'invalid session', severity: 'Warning', filepath: '/apps/log/session_manager' },
+                    { keyword: 'kernel panic', severity: 'Critical', filepath: '/var/log/messages' },
+                    { keyword: 'oom-killer', severity: 'Critical', filepath: '/var/log/messages' },
+                    { keyword: 'I/O error', severity: 'Major', filepath: '/var/log/messages' },
+                    { keyword: 'authentication failure', severity: 'Warning', filepath: '/var/log/secure' },
+                    { keyword: 'invalid user', severity: 'Warning', filepath: '/var/log/secure' },
+                    { keyword: 'root login', severity: 'Major', filepath: '/var/log/secure' },
+                    { keyword: 'job failed', severity: 'Minor', filepath: '/var/log/cron' },
+                    { keyword: '500', severity: 'Major', filepath: '/var/log/httpd/error_log' },
+                    { keyword: 'segfault', severity: 'Critical', filepath: '/var/log/httpd/error_log' },
+                    { keyword: 'avc denied', severity: 'Minor', filepath: '/var/log/audit/audit.log' },
+                ],
+                cmd: [
+                    { metric: 'CPU', threshold: '95', duration: '5', severity: 'Critical' },
+                    { metric: 'Memory', threshold: '88', duration: '10', severity: 'Major' },
+                    { metric: 'Disk', threshold: '80', duration: '10', severity: 'Warning' },
+                ],
+                // Names line up with the workloads already implied by the
+                // log filepaths above, plus the usual infra baseline.
+                process: [
+                    // application-specific
+                    { name: 'batch_settlement_svc', state: 'Running', interval: 10, severity: 'Major' },
+                    { name: 'mq_listener_daemon', state: 'Running', interval: 5, severity: 'Critical' },
+                    { name: 'auth_service', state: 'Running', interval: 5, severity: 'Critical' },
+                    { name: 'settlement_batch_v2', state: 'Running', interval: 10, severity: 'Major' },
+                    { name: 'reconciliation_worker', state: 'Running', interval: 15, severity: 'Minor' },
+                    // infra-specific
+                    { name: 'sshd', state: 'Running', interval: 10, severity: 'Warning' },
+                    { name: 'cron', state: 'Running', interval: 10, severity: 'Warning' },
+                    { name: 'rsyslogd', state: 'Running', interval: 15, severity: 'Minor' },
+                    { name: 'ntpd', state: 'Running', interval: 15, severity: 'Minor' },
+                    { name: 'auditd', state: 'Running', interval: 10, severity: 'Warning' },
+                ],
+            },
+        };
+
+        const CATEGORY_ICON = { log: 'key', cmd: 'gauge', process: 'server' };
 
         function resolveOpenSystemRouting(hostnameRaw) {
             const hostname = (hostnameRaw || '').trim();
@@ -2772,6 +2996,118 @@
                 && wizState.routing && wizState.routing.tool === 'DX UIM';
             document.getElementById('logFilepathGroup').style.display = needsFilepath ? '' : 'none';
             document.getElementById('stepLabel4').textContent = STEP4_LABEL[wizState.category] || 'Alert Details';
+            renderExistingConfigPanel();
+        }
+
+        // Groups log entries by filepath, preserving first-seen order. Log
+        // is the one category where a single wizard submission covers
+        // several keywords at once (they all share one filepath), so a
+        // "Load" action operates on a whole group, not a single entry —
+        // unlike CMD/process, where each submission is one metric or one
+        // process.
+        function groupLogEntriesByFilepath(entries) {
+            const groups = [];
+            const byPath = new Map();
+            entries.forEach(e => {
+                const fp = e.filepath || '';
+                if (!byPath.has(fp)) {
+                    const group = { filepath: e.filepath || null, entries: [] };
+                    byPath.set(fp, group);
+                    groups.push(group);
+                }
+                byPath.get(fp).entries.push(e);
+            });
+            return groups;
+        }
+
+        function renderExistingConfigEntries(cat, entries, isCurrent) {
+            if (cat === 'log') {
+                return groupLogEntriesByFilepath(entries).map((g, i) => {
+                    const kw = g.entries.map(e => `${e.keyword} (${e.severity})`).join(', ');
+                    const label = g.filepath ? `<b>${g.filepath}</b> — ${kw}` : kw;
+                    const btn = isCurrent ? `<button type="button" class="existing-config-load-sm" onclick="loadExistingLogGroup(${i})">Load</button>` : '';
+                    return `<div class="existing-config-entry"><div>${label}</div>${btn}</div>`;
+                }).join('');
+            }
+            if (cat === 'cmd') {
+                return entries.map((e, i) => {
+                    const btn = isCurrent ? `<button type="button" class="existing-config-load-sm" onclick="loadExistingCmdEntry(${i})">Load</button>` : '';
+                    return `<div class="existing-config-entry"><div><b>${e.metric}</b> &gt; ${e.threshold}% for ${e.duration}m (${e.severity})</div>${btn}</div>`;
+                }).join('');
+            }
+            if (cat === 'process') {
+                return entries.map((e, i) => {
+                    const btn = isCurrent ? `<button type="button" class="existing-config-load-sm" onclick="loadExistingProcessEntry(${i})">Load</button>` : '';
+                    return `<div class="existing-config-entry"><div><b>${e.name}</b> — expected ${e.state} (${e.severity})</div>${btn}</div>`;
+                }).join('');
+            }
+            return '';
+        }
+
+        function renderExistingConfigPanel() {
+            const panel = document.getElementById('existingConfigPanel');
+            const key = getPrefix();
+            const existing = EXISTING_CONFIG[key.toLowerCase()] || EXISTING_CONFIG[key];
+
+            if (!existing || Object.keys(existing).length === 0) {
+                panel.innerHTML = `
+                    <div class="existing-config-card">
+                        <div class="existing-config-title"><svg class="ic"><use href="#i-clipboard"/></svg> Existing configuration for <span class="mono">${key}</span></div>
+                        <div class="existing-config-empty">Nothing configured yet — this will be the first alert for this asset.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const rows = Object.entries(existing).map(([cat, entries]) => {
+                const isCurrent = cat === wizState.category;
+                return `
+                    <div class="existing-config-row ${isCurrent ? 'current' : ''}">
+                        <div class="existing-config-cat"><svg class="ic"><use href="#i-${CATEGORY_ICON[cat]}"/></svg> ${CATEGORY_LABEL[cat]} <span class="pick-tag">${entries.length}</span></div>
+                        <div class="existing-config-list">${renderExistingConfigEntries(cat, entries, isCurrent)}</div>
+                    </div>
+                `;
+            }).join('');
+
+            panel.innerHTML = `
+                <div class="existing-config-card">
+                    <div class="existing-config-title"><svg class="ic"><use href="#i-clipboard"/></svg> Existing configuration for <span class="mono">${key}</span></div>
+                    ${rows}
+                </div>
+            `;
+        }
+
+        function loadExistingLogGroup(groupIndex) {
+            const key = getPrefix();
+            const existing = EXISTING_CONFIG[key.toLowerCase()] || EXISTING_CONFIG[key];
+            const group = existing && groupLogEntriesByFilepath(existing.log || [])[groupIndex];
+            if (!group) return;
+            document.getElementById('keywordRows').innerHTML = '';
+            group.entries.forEach(e => addKeywordRow(e.keyword, e.severity));
+            if (group.filepath) document.getElementById('wLogFilepath').value = group.filepath;
+        }
+
+        function loadExistingCmdEntry(index) {
+            const key = getPrefix();
+            const existing = EXISTING_CONFIG[key.toLowerCase()] || EXISTING_CONFIG[key];
+            const e = existing && existing.cmd && existing.cmd[index];
+            if (!e) return;
+            const chipEl = document.querySelector(`#cmdMetricSelect .chip-option[data-value="${e.metric}"]`);
+            if (chipEl) selectChip('cmdMetricSelect', e.metric, chipEl);
+            document.getElementById('wCmdThreshold').value = e.threshold;
+            document.getElementById('wCmdDuration').value = e.duration;
+            document.getElementById('wCmdSeverity').value = e.severity;
+        }
+
+        function loadExistingProcessEntry(index) {
+            const key = getPrefix();
+            const existing = EXISTING_CONFIG[key.toLowerCase()] || EXISTING_CONFIG[key];
+            const e = existing && existing.process && existing.process[index];
+            if (!e) return;
+            document.getElementById('wProcessName').value = e.name;
+            document.getElementById('wProcessState').value = e.state;
+            document.getElementById('wProcessInterval').value = e.interval;
+            document.getElementById('wProcessSeverity').value = e.severity;
         }
 
         function addKeywordRow(keyword = '', severity = '') {
