@@ -67,6 +67,13 @@ with which repo it belongs to.
 
 ## Domain model completeness
 
+Schema now drafted — `docs/spec/raise-an-alert-domain-model.md`. The items
+below are the fields that spec adds; what's still open is *implementing*
+the transform (Ansible currently reads/passes through DX UIM's native
+`probeConfigKeys` almost as-is, not this domain model) and, for the ELK
+side, that CMD/Process have no defined target-system mapping at all yet
+(spec §8.2).
+
 - `matchType` (phrase / wildcard / regex) — log watchers hardcode
   phrase-match today.
 - `comparisonOperator` (gt/gte/lt/lte) and `aggregation`
