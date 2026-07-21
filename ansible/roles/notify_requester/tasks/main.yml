@@ -1,7 +1,7 @@
 ---
-# Shared by both bitbucket_watcher_sync and dxuim_config_sync so there's
-# one place that knows how to reach Backstage Notifications, not two
-# copies of the same uri call.
+# Kept as its own role (rather than folded into dxuim_config_sync) so
+# any future sync role can reuse it — one place that knows how to reach
+# Backstage Notifications, not a copy per role.
 #
 # Required vars: notify_title, notify_description, notify_severity
 # Optional vars: notify_link, notify_entity_ref (e.g. "user:default/jdoe")

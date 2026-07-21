@@ -1,0 +1,56 @@
+---
+# Local dev-loop test — reads real files straight off disk (no Bitbucket
+# involved, so this doesn't exercise fetch_from_bitbucket.yml) and runs
+# them through the real post_to_dxuim tasks against the stub server in
+# ../../dxuim-stub/. Verifies the payload template + PUT logic for real.
+#
+# Usage:
+#   python3 ../../dxuim-stub/dxuim_stub_server.py &
+#   ansible-playbook playbooks/test-dxuim-stub.yml \
+#     -e dxuim_api_base=http://127.0.0.1:8443 \
+#     -e vault_dxuim_password=devpass \
+#     -e vault_backstage_token=dummy \
+#     -e backstage_notifications_api=http://127.0.0.1:9/api
+- name: Test dxuim_config_sync's posting logic against the local stub
+  hosts: local
+  gather_facts: false
+  vars:
+    dxuim_config_local_dir: "{{ playbook_dir }}/../../dxuim-config/UAT/ulaeiapos0a"
+  tasks:
+    - name: Read real local probe config files
+      ansible.builtin.set_fact:
+        dxuim_configs: >-
+          {{ (dxuim_configs | default([])) + [{
+            "path": item,
+            "environment": "UAT",
+            "robot": "ulaeiapos0a",
+            "probe": ((item | basename).rsplit(".", 1)[0]),
+            "probe_config_keys": ((lookup('file', item) | default('{}', true) | from_json).probeConfigKeys | default([])),
+            "requested_by": (((lookup('file', item) | default('{}', true) | from_json).metadata | default({})).requestedBy | default("unknown")),
+            "approved_by": (((lookup('file', item) | default('{}', true) | from_json).metadata | default({})).approvedBy | default("unknown"))
+          }] }}
+      loop: "{{ lookup('fileglob', dxuim_config_local_dir + '/*.json', wantlist=True) }}"
+      loop_control:
+        label: "{{ item | basename }}"
+
+    - name: Skip empty probe files (cdm.json / logmon.json are still placeholders)
+      ansible.builtin.set_fact:
+        dxuim_configs: "{{ dxuim_configs | selectattr('probe_config_keys', '!=', []) | list }}"
+
+    - name: Show what will be posted
+      ansible.builtin.debug:
+        msg: "{{ item.robot }}/{{ item.probe }}: {{ item.probe_config_keys | length }} key(s), requestedBy={{ item.requested_by }}"
+      loop: "{{ dxuim_configs }}"
+      loop_control:
+        label: "{{ item.probe }}"
+
+    - name: Run the real post_to_dxuim tasks against each local file
+      ansible.builtin.include_role:
+        name: dxuim_config_sync
+        tasks_from: post_to_dxuim
+      vars:
+        dxuim_file: "{{ item }}"
+      loop: "{{ dxuim_configs }}"
+      loop_control:
+        loop_var: item
+        label: "{{ item.probe }}"

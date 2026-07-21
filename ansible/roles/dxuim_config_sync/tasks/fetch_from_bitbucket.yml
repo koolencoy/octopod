@@ -147,7 +147,7 @@
   #
   # requested_by/approved_by read from an optional top-level "metadata"
   # key — { "metadata": { "requestedBy": "user:default/jdoe", "approvedBy": ... } }
-  # — matching the elk-watchers skeleton convention. Files committed
+  # — see dxuim-config/guide.md for the full convention. Files committed
   # before this convention existed (e.g. the original processes.json)
   # won't have it, hence the "unknown" default; notify_requester treats
   # that as "no one to notify" rather than failing the sync over it.
@@ -158,10 +158,25 @@
         "environment": (item.item | replace(dxuim_config_root ~ "/", "")).split("/")[0],
         "robot": (item.item | replace(dxuim_config_root ~ "/", "")).split("/")[1],
         "probe": ((item.item | basename).rsplit(".", 1)[0]),
-        "probe_config_keys": ((item.content | from_json).probeConfigKeys | default([])),
-        "requested_by": (((item.content | from_json).metadata | default({})).requestedBy | default("unknown")),
-        "approved_by": (((item.content | from_json).metadata | default({})).approvedBy | default("unknown"))
+        "probe_config_keys": ((item.content | default('{}', true) | from_json).probeConfigKeys | default([])),
+        "requested_by": (((item.content | default('{}', true) | from_json).metadata | default({})).requestedBy | default("unknown")),
+        "approved_by": (((item.content | default('{}', true) | from_json).metadata | default({})).approvedBy | default("unknown"))
       }] }}
   loop: "{{ dxuim_file_responses.results }}"
   loop_control:
     label: "{{ item.item }}"
+
+- name: Note any placeholder (empty) probe files being skipped
+  ansible.builtin.debug:
+    msg: "{{ item.path }} has no probeConfigKeys yet — skipping, nothing to activate"
+  loop: "{{ dxuim_configs | selectattr('probe_config_keys', 'equalto', []) | list }}"
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: Drop placeholder (empty) probe files before posting
+  # cdm.json / logmon.json can legitimately be empty — that means "not
+  # configured yet", not "clear whatever DX UIM currently has". PUT-ing
+  # an empty array is untested against the real API and risky to assume
+  # is a safe no-op, so don't send it at all.
+  ansible.builtin.set_fact:
+    dxuim_configs: "{{ dxuim_configs | selectattr('probe_config_keys', 'ne', []) | list }}"

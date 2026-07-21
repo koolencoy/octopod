@@ -6,7 +6,7 @@
       - bitbucket_dxuim_repo_slug is defined
       - dxuim_api_base is defined
       - dxuim_hub_by_environment is defined
-    fail_msg: "bitbucket_project_key, bitbucket_dxuim_repo_slug, dxuim_api_base, and dxuim_hub_by_environment must be set (see group_vars/all/main.yml)."
+    fail_msg: "bitbucket_project_key, bitbucket_dxuim_repo_slug, dxuim_api_base, and dxuim_hub_by_environment must be set (see inventory/group_vars/all/main.yml)."
 
 - name: 1) Read DX UIM config from Bitbucket
   ansible.builtin.include_tasks: fetch_from_bitbucket.yml

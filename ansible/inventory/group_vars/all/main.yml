@@ -1,0 +1,42 @@
+---
+# Non-secret config. Auto-loaded for the `all` group by Ansible's
+# group_vars convention — no vars_files needed in the playbook.
+
+# Bitbucket Server (Data Center) — shared connection settings, used by
+# dxuim_config_sync to read dxuim-configs.
+#
+# Branching strategy: the Scaffolder (or whoever authors the config)
+# commits each request to its own per-request branch
+# (staging/<environment>-<robot>) off `main`, then opens a PR back into
+# `main` — that PR is the approval gate. `main` is production truth:
+# it's what Ansible reads, both for a full poll and as the branch a
+# webhook's fromHash/toHash refer to. Ansible never sees the staging/*
+# branches — only the merge into main.
+bitbucket_base_url: "https://bitbucket.acbc.internal"
+bitbucket_project_key: "SRE"
+bitbucket_branch: "main"
+
+# ---------- DX UIM (Open Systems) ----------
+# Mirrors the local dxuim-config/ folder shape exactly:
+#   {dxuim_config_root}/{environment}/{robot}/{probe}.json
+bitbucket_dxuim_repo_slug: "dxuim-configs"
+dxuim_config_root: "dxuim-config"
+
+# UIM primary hub per environment. The folder structure only encodes
+# {environment}/{robot} — it doesn't say which hub that robot reports
+# into — so it's looked up here instead. Add a line whenever a new
+# environment goes live; an environment folder with no entry here will
+# fail the sync loudly rather than guess.
+dxuim_hub_by_environment:
+  UAT: "ulnstapor0a"
+
+# See dxuim-config/guide.md for the sample command this is built from.
+dxuim_api_base: "https://1.1.1.1:8443"
+dxuim_auth_user: "accountsvcid"
+
+# ---------- Requester notifications ----------
+# dxuim_config_sync reports success/failure back through here (see the
+# notify_requester role) so a merged PR that fails to activate doesn't
+# fail silently — see mock/branching-strategy.html for where this sits
+# in the overall flow.
+backstage_notifications_api: "https://backstage.acbc.internal/api"
