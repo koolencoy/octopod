@@ -1,59 +1,52 @@
 # Milestones
 
-Sequenced by dependency, not by calendar date — add target dates once
-these are prioritized against everything else in flight. Each
-milestone links back to `backlog.md` items rather than repeating them.
+## Next milestone: DX UIM base hardening — by 30 September 2026
 
-## M1 — Verify what's already claimed to work
+This is scoped tightly to what **octopod itself** can actually deliver
+by end of September. It deliberately excludes work that belongs to
+other repos/workstreams — see "Explicitly not in this milestone"
+below. Confusing those with octopod's own scope is the single easiest
+way for this date to slip on work this repo was never going to
+finish anyway.
 
-Nothing here is new build; it's closing the "unverified" flags before
-trusting this in a real environment.
-- Confirm Grafana annotation keys against the actual installed plugin
-- Confirm the Backstage Notifications API request shape
-- Confirm `InfoCard`/`SidebarItem` assumptions in the app-shell code
-- Fill in real `cdm.json` / `logmon.json` for `ulaeiapos0a`, so there's
-  a second and third real example beyond `processes.json`
+### In scope
 
-**Why first:** everything downstream assumes these primitives behave
-as documented. Building more on top of an unverified assumption just
-means more places to fix when it turns out wrong.
+1. **Verify what's already claimed to work** (`backlog.md` → Hardening)
+   - Confirm Grafana annotation keys against the actual installed plugin
+   - Confirm the Backstage Notifications API request shape
+   - Confirm the `InfoCard`/`SidebarItem` assumptions in the app-shell code
+   - Fill in real `cdm.json` / `logmon.json` for `ulaeiapos0a`
+2. **Provenance & audit** (octopod's half)
+   - Add `changeRecordId` to the DX UIM metadata convention
+   - Consume `sourceTaskId` once the Scaffolder side starts sending it
+     (blocked on the ELK/backstage item below — track, don't own)
+3. **Resolve the `ELK/ansible/` mirror decision** — promote to a real
+   repo or explicitly retire it. Either answer is fine; leaving it
+   silently stale is not.
+4. **Grafana DX UIM data source** — get a confirmed answer on what
+   actually bridges DX UIM into Grafana, so the two `TODO` panels can
+   become real.
 
-## M2 — Provenance & audit
+### Explicitly not in this milestone
 
-- Add `changeRecordId` to the metadata convention (both backends)
-- Thread `sourceTaskId` through Scaffolder → commit → notification
-- Fix the branch-naming collision using the same `sourceTaskId`
+- **Asset Registry at full scope** (ServiceNow CMDB entity provider,
+  Tech Insights scoring across ~20k hosts) — a separate, larger
+  workstream with its own drafted spec. Don't report this milestone's
+  completion as if it includes Asset Registry progress.
+- **ELK Elasticsearch watcher sync** — no longer part of octopod.
+  Depends on the scope decision above; if promoted to its own repo,
+  it gets its own milestone tracking there, not here.
+- **The DX UIM Scaffolder template, the Configuration tab, the wizard
+  "existing config" summary** — all `[ELK/backstage]`-tagged items.
+  octopod depends on some of these eventually but doesn't own them.
 
-**Why second:** this is a real production system creating real alert
-configs with no durable link back to what approved them. That's a
-compliance gap, not a nice-to-have, and it's cheap to fix now while
-there's still only one real robot's worth of history to reconcile.
+## After this milestone
 
-## M3 — DX UIM Scaffolder template
-
-Mirror `microservice-keyword-alert` for the DX UIM side — generates
-the probe config *and* `catalog-info.yaml` together, same as ELK
-already does.
-
-**Why third:** everything in M1/M2 is easier to retrofit once there's
-only one path (the template) generating DX UIM configs, instead of
-the current hand-authored one-off plus whatever comes next.
-
-## M4 — Domain model completeness
-
-`matchType`, `comparisonOperator`, `aggregation`, `lookbackWindow`,
-`indexPattern` — promote each from "hardcoded assumption" to an actual
-field.
-
-**Why fourth:** these are additive and backward-compatible (existing
-configs keep working with the current hardcoded defaults), so there's
-no urgency forcing this ahead of the provenance/template work above.
-
-## M5 — Visibility surfaces
-
-- Backstage Configuration tab + backend Bitbucket-read proxy
-- Wizard + PR-description "existing configuration" summary
-- Real DX UIM datasource wired into the Grafana overview dashboard
-
-**Why last:** these are UX quality-of-life, not correctness or audit
-gaps. Worth doing, but nothing downstream depends on them.
+- **DX UIM Scaffolder template** (ELK/backstage) — once built, retire
+  the hand-authored `catalog-info.yaml` convention in favor of
+  generating it alongside every probe config, same as ELK does today.
+- **Domain model completeness** — `matchType`, `comparisonOperator`,
+  `aggregation`, `lookbackWindow`, `indexPattern`. Additive and
+  backward-compatible, no urgency forcing this earlier.
+- **Visibility surfaces** — Configuration tab, wizard/PR existing-config
+  summary. UX quality-of-life; nothing else depends on these.
