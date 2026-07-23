@@ -16,15 +16,15 @@ backend slice; ELK, Grafana, and SolarWinds follow the same pattern —
 
 ## 2. Design
 
-- `design/branching-strategy.md` — the git/branching model the whole
+- `ui-ux-design/branching-strategy.md` — the git/branching model the whole
   pipeline assumes (`main` = truth, `staging/<name>` = per-request
   branch, PR = approval gate, Ansible never writes git). Load-bearing:
   code comments and specs reference it.
-- `design/mockups/backstage-catalog-v2.html` — current "Raise an
+- `ui-ux-design/mockups/backstage-catalog-v2.html` — current "Raise an
   Alert" wizard + catalog mockup (v2 is the live iteration;
   `backstage-catalog.html` / `-dark.html` are earlier versions kept
   for reference).
-- `design/assets/` — logo/branding assets.
+- `ui-ux-design/assets/` — logo/branding assets.
 
 ## 3. Specification
 

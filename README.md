@@ -38,7 +38,7 @@ habits:
    wizard (Backstage Scaffolder).
 2. The config is committed to a per-request `staging/<env>-<robot>`
    branch; a PR into `main` is the approval gate. `main` is production
-   truth. (Full model: `docs/design/branching-strategy.md`.)
+   truth. (Full model: `docs/ui-ux-design/branching-strategy.md`.)
 3. On merge, a Bitbucket webhook triggers Ansible
    (`ansible/playbooks/sync-dxuim-config.yml`), which reads the changed
    config and PUTs it to
@@ -60,7 +60,7 @@ notification) is the template for every other backend in the estate.
 | `grafana/` | Entity + overview alerting dashboards (JSON models) |
 | `docs/planning/` | Vision, scope, milestones, backlog — start at `overview.md` |
 | `docs/spec/` | "Raise an Alert" domain data model (Draft v0.1) |
-| `docs/design/` | Branching-strategy design doc, Backstage UI mockups, logo assets |
+| `docs/ui-ux-design/` | Branching-strategy design doc, Backstage UI mockups, logo assets |
 
 ## Local dev loop
 

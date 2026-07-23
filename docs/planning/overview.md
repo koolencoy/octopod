@@ -51,7 +51,7 @@ end; the rest of this document describes it concretely.
    `staging/<environment>-<robot>` off `main` in project `SRE`, repo
    `dxuim-configs` on `bitbucket.acbc.internal`. A PR into `main` is
    the approval gate; `main` is production truth. Full model:
-   `docs/design/branching-strategy.md`.
+   `docs/ui-ux-design/branching-strategy.md`.
 3. **Trigger** — on merge, Bitbucket's `repo:refs_changed` webhook
    fires `ansible/playbooks/sync-dxuim-config.yml` with the merge's
    `fromHash`/`toHash`. Two fallback modes exist: single-file
@@ -101,22 +101,6 @@ end; the rest of this document describes it concretely.
 
 Secrets (DX UIM password, Backstage token) come from Ansible Vault —
 `vault.yml.example` documents the two variables.
-
-## Assets currently outside this repo
-
-octopod is the Portal, but not everything Portal-related has been
-consolidated here yet:
-
-- **The Backstage app code** — Scaffolder templates, the wizard, the
-  catalog UI, app theme. Currently in the ELK project; backlog items
-  needing changes there are tagged `[ELK/backstage]`.
-- **ELK watcher-sync automation** — a stale mirror at `ELK/ansible/`
-  (OneDrive, not a git repo). Open decision: fold into octopod,
-  promote to its own repo, or retire (see backlog).
-- **Asset Registry** — the ServiceNow CMDB → Backstage → Tech Insights
-  scoring workstream (~20k hosts) has its own drafted spec in the ELK
-  project. It is the Portal's long-term "yellow pages at full scale,"
-  tracked as its own workstream.
 
 ## Where the plan lives
 

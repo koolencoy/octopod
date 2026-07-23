@@ -299,5 +299,5 @@ configs, and resolve the ELK-home decision. Details in
 | `docs/planning/milestones.md` | Current milestone and its contents |
 | `docs/planning/backlog.md` | Every known gap, itemized and tagged by owning repo |
 | `docs/spec/raise-an-alert-domain-model.md` | The tool-neutral config format (draft) |
-| `docs/design/branching-strategy.html` | The branching/approval model, illustrated |
+| `docs/ui-ux-design/branching-strategy.md` | The branching/approval model, illustrated |
 | `dxuim-config/guide.md` | DX UIM API usage and file conventions |
