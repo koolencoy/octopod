@@ -55,6 +55,9 @@ backend slice; ELK, Grafana, and SolarWinds follow the same pattern —
 
 ## 7. Project management
 
+- `planning/scope.md` — what is in scope now, in scope later, and
+  out of scope (with where out-of-scope work actually lives). Scope
+  changes by PR to that file.
 - `planning/milestones.md` — current milestone: **DX UIM base
   hardening, due 30 September 2026**, with the current-state baseline
   and explicit in/out-of-scope lists.
