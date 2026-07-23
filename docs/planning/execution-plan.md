@@ -15,8 +15,8 @@ slips silently.
 | Wk | Dates | Phase | Focus | Key tasks | Exit criterion | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | 20–24 Jul | Discovery | DX UIM discovery | Discovery of DX UIM for **process and log monitoring** (probes, config keys, API behavior) | Enough understanding of `processes`/`logmon` to author real configs | ✅ Done |
-| 2 | 27–31 Jul | Baseline | Savings baseline + access | Export monitoring-request tickets (HPSM/ServiceNow), run `tools/compute_savings.py`, put measured figures in `overview.md`; start one-week chat/call sample; confirm DX UIM UAT credentials, Bitbucket webhook admin, Backstage & Grafana access + versions | Measured savings sentence in `overview.md`; access confirmed or escalated | ⬜ |
-| 3 | 3–7 Aug | Decisions | Open decisions + design review | Decide ELK watcher-sync home (fold in / own repo / retire) — stale OneDrive mirror deleted or superseded; confirm Grafana ⇄ DX UIM data source or formally descope the `TODO` panels; review `architecture/domain-model-transform-design.md` and decide its §10 questions (file layout Option A/B, schema ownership, legacy coexistence); record all in `backlog.md` + `architecture.md` | No `[decision needed]` items in the backlog; transform design status moves Proposed → Decided | ⬜ |
+| 2 | 27–31 Jul | Data model | Finalize data model + establish savings | **Finalize the data model**: close the spec's §9 open questions, decide the transform design's §10 data-model questions (file layout Option A/B, schema file as source of truth, legacy coexistence), bump `spec/raise-an-alert-domain-model.md` Draft v0.1 → v1.0; align `data/data-model.md` and `dxuim-config/guide.md` with the decided format. **Establish savings**: export monitoring-request tickets (HPSM/ServiceNow), run `tools/compute_savings.py`, put measured figures in `overview.md`; start one-week chat/call sample | Data model at v1.0 with layout/schema decisions recorded; measured savings sentence in `overview.md` | ⬜ |
+| 3 | 3–7 Aug | Decisions | Remaining decisions + access | Decide ELK watcher-sync home (fold in / own repo / retire) — stale OneDrive mirror deleted or superseded; confirm Grafana ⇄ DX UIM data source or formally descope the `TODO` panels; record both in `backlog.md` + `architecture.md`; confirm DX UIM UAT credentials, Bitbucket webhook admin, Backstage & Grafana access + versions | No `[decision needed]` items in the backlog; access confirmed or escalated | ⬜ |
 | 4 | 10–14 Aug | Verify | Real Bitbucket fetch path | Push config tree to real `dxuim-configs` repo (project `SRE`); run all three trigger modes (poll / single-file / commit-range) against real Bitbucket with PUT still at the stub; test `limit=1000` pagination behavior on a bulk commit | All three trigger modes proven against real Bitbucket | ⬜ |
 | 5 | 17–21 Aug | Verify | Real DX UIM UAT + webhook | Point sync at real UAT DX UIM; re-apply `processes.json` (idempotent), confirm probe reflects it; wire real `repo:refs_changed` webhook, fire end-to-end from a merged PR; fix TLS verify or accept as UAT-only debt with PROD gate | Merged PR → live config on real UAT DX UIM, hands-off | ⬜ |
 | 6 | 24–28 Aug | Verify | Backstage & Grafana assumptions | Verify Notifications API request shape on installed Backstage, fix `notify_requester` if needed, send real success + failure; verify Grafana annotation keys and `InfoCard`/`SidebarItem` assumptions; register `catalog-info.yaml`, confirm robot's portal page renders | Every Hardening "unverified assumption" verified or fix in flight | ⬜ |
@@ -30,7 +30,7 @@ slips silently.
 
 | Dependency | Owner | Needed by | Fallback |
 | --- | --- | --- | --- |
-| DX UIM UAT API credentials & network path | Platform team | W5 | Slip to buffer; escalate in W2 |
+| DX UIM UAT API credentials & network path | Platform team | W5 | Slip to buffer; escalate in W3 |
 | Bitbucket webhook to Ansible host (firewall) | Platform/network | W5 | Poll mode is production-viable interim |
 | Installed Backstage + Grafana access | Portal team | W6 | Verify against same versions in a sandbox |
 | App-team input on CDM thresholds & log keywords | App owners | W7–W8 | Start with platform-recommended defaults, tune later |
@@ -38,8 +38,9 @@ slips silently.
 
 ## Principles
 
-- **Decisions first** — open decisions are scheduled early (W3);
-  they're cheap to make and expensive to leave open.
+- **Decisions first** — open decisions are scheduled early (W2–W3:
+  data model, then the rest); they're cheap to make and expensive to
+  leave open.
 - **Verify before build** — W4–W6 test today's claimed-working pieces
   against the real installed systems before new content (W7–W8) goes
   on top.

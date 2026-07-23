@@ -183,7 +183,7 @@ sequenceDiagram
     Requester->>BS: Fill "Raise an Alert" wizard
     BS->>BS: sre:approval:request, sre:infinity:validate-change
 
-    rect rgb(224, 236, 250)
+    rect rgba(59, 130, 246, 0.15)
     note over BS,Repo: git operations
     BS->>Repo: git checkout -b staging/<name> (from main)
     BS->>Repo: git add + commit (config + generated docs)
@@ -195,12 +195,12 @@ sequenceDiagram
     Repo->>Repo: delete branch staging/<name>
     end
 
-    rect rgb(250, 240, 222)
+    rect rgba(245, 158, 11, 0.15)
     note over Repo,Ans: webhook trigger
     Repo->>Ans: webhook repo:refs_changed (fromHash, toHash on main)
     end
 
-    rect rgb(238, 231, 253)
+    rect rgba(139, 92, 246, 0.15)
     note over Ans,Repo: REST API reads - no local clone
     Ans->>Repo: GET /compare/changes?from&to
     Ans->>Repo: GET /raw/{path}?at=refs/heads/main

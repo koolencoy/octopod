@@ -1502,6 +1502,196 @@
         .host-badge.legacy { background: var(--status-warn-soft); color: #8a5800; }
         .host-badge.unknown { background: #f2f4f8; color: var(--ink-dim); }
 
+        /* Per-host CMDB resolution line — read-only, verified not typed */
+        .host-item { display: flex; flex-direction: column; gap: 5px; }
+
+        .host-cmdb {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            padding-left: 12px;
+            font-size: 11.5px;
+            color: var(--ink-dim);
+        }
+
+        .host-cmdb.resolved, .host-cmdb.missing { display: flex; flex-wrap: wrap; }
+
+        .host-cmdb.missing { color: #8a5800; }
+
+        .host-cmdb .ic { width: 13px; height: 13px; }
+
+        .cmdb-chip {
+            background: #f2f4f8;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 2px 9px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--ink-secondary);
+        }
+
+        .cmdb-chip.app { background: var(--primary-soft); border-color: transparent; color: var(--primary); }
+
+        .cmdb-src {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+        }
+
+        /* Fleet-level callouts under the host list */
+        .fleet-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 9px 13px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            line-height: 1.45;
+            margin-top: 8px;
+        }
+
+        .fleet-note .ic { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; }
+
+        .fleet-note.info { background: var(--primary-soft); color: #0a5a9e; }
+        .fleet-note.warn { background: var(--status-warn-soft); color: #8a5800; }
+        .fleet-note.error { background: var(--status-error-soft); color: #a51e2a; }
+
+        .cmdb-chip.warn { background: var(--status-warn-soft); border-color: transparent; color: #8a5800; }
+
+        .form-textarea {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1.5px solid var(--border-strong);
+            border-radius: var(--radius-sm);
+            font-family: var(--mono);
+            font-size: 11.5px;
+            line-height: 1.6;
+            color: var(--ink);
+            background: var(--card);
+            resize: vertical;
+        }
+
+        .form-textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+
+        /* ============ Log Onboarding — stage preview + progress track ============ */
+        .lo-preview-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 12.5px;
+        }
+
+        .lo-preview-row:last-child { border-bottom: none; }
+
+        .lo-preview-num {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #f2f4f8;
+            color: var(--ink-dim);
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .lo-preview-title { font-weight: 600; }
+
+        .lo-owner {
+            border-radius: 999px;
+            padding: 2px 9px;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        .lo-owner.you { background: var(--primary-soft); color: var(--primary); }
+        .lo-owner.auto { background: var(--violet-soft); color: var(--violet); }
+        .lo-owner.engineer { background: var(--status-warn-soft); color: #8a5800; }
+
+        .lo-artifact { font-family: var(--mono); font-size: 11.5px; color: var(--primary); margin-left: auto; }
+
+        .lo-track { display: flex; flex-direction: column; }
+
+        .lo-stage {
+            display: flex;
+            gap: 14px;
+            position: relative;
+            padding-bottom: 22px;
+        }
+
+        .lo-stage:last-child { padding-bottom: 0; }
+
+        .lo-stage:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            left: 13px;
+            top: 30px;
+            bottom: 2px;
+            width: 2px;
+            background: var(--border-strong);
+        }
+
+        .lo-stage.done:not(:last-child)::before { background: var(--status-ok); }
+        .lo-stage.skipped:not(:last-child)::before { background: var(--border-strong); }
+
+        .lo-dot {
+            width: 27px;
+            height: 27px;
+            border-radius: 50%;
+            background: var(--card);
+            border: 2px solid var(--border-strong);
+            color: var(--ink-dim);
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .lo-stage.done .lo-dot { background: var(--status-ok); border-color: var(--status-ok); color: #fff; }
+        .lo-stage.active .lo-dot { border-color: var(--primary); color: var(--primary); box-shadow: 0 0 0 4px var(--primary-soft); animation: loPulse 1.2s ease infinite; }
+        .lo-stage.waiting .lo-dot { border-color: var(--status-warn); color: #8a5800; box-shadow: 0 0 0 4px var(--status-warn-soft); }
+
+        @keyframes loPulse {
+            0%, 100% { box-shadow: 0 0 0 3px var(--primary-soft); }
+            50% { box-shadow: 0 0 0 7px rgba(2, 120, 213, 0.14); }
+        }
+
+        .lo-stage-body { flex: 1; min-width: 0; padding-top: 3px; }
+
+        .lo-stage-head { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+
+        .lo-stage-title { font-size: 13.5px; font-weight: 700; }
+
+        .lo-stage.pending .lo-stage-title, .lo-stage.skipped .lo-stage-title { color: var(--ink-dim); font-weight: 600; }
+
+        .lo-status {
+            margin-left: auto;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .lo-status.done { color: var(--status-ok); }
+        .lo-status.active { color: var(--primary); }
+        .lo-status.waiting { color: var(--status-warn); }
+        .lo-status.pending, .lo-status.skipped { color: var(--ink-dim); }
+
+        .lo-stage .lo-artifact { margin-left: 0; margin-top: 4px; }
+
+        .lo-stage-detail { font-size: 12px; color: var(--ink-secondary); margin-top: 3px; line-height: 1.5; }
+
         .existing-config-card {
             background: #f8f9fc;
             border: 1px solid var(--border);
@@ -1586,6 +1776,27 @@
         }
 
         .existing-config-load-sm:hover { background: var(--primary); color: #fff; }
+
+        .existing-config-more {
+            background: none;
+            border: none;
+            font: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 6px 0 0;
+        }
+
+        .existing-config-more:hover { text-decoration: underline; }
+
+        .existing-config-others {
+            margin-top: 10px;
+            padding-top: 9px;
+            border-top: 1px solid var(--border);
+            font-size: 11.5px;
+            color: var(--ink-dim);
+        }
 
         .wiz-route-cta:hover { text-decoration: underline; }
 
@@ -1956,8 +2167,8 @@
         }
 
         /* ============ Login screen (mock sign-in page) ============
-           Stands in for Backstage's SignInPage: corporate SSO as the
-           primary provider, LAN ID as fallback, guest for exploring. */
+           Stands in for Backstage's SignInPage: LAN ID sign-in,
+           guest for exploring. */
         .login-screen {
             position: fixed;
             inset: 0;
@@ -2148,7 +2359,7 @@
                     <div class="logo-mark"><svg class="ic ic-lg" style="stroke-width:2.1"><use href="#i-halo"/></svg></div>
                     <div class="logo-text">Observability<span>ACBC · Portal</span></div>
                 </div>
-                <div class="login-tagline">One front door for alerts, logs, access, and application health.</div>
+                <div class="login-tagline">Your front door to alerts, logs, and app health.</div>
                 <div class="login-points">
                     <div class="login-point"><svg class="ic"><use href="#i-bell"/></svg> Raise CMD, Log, and Process alerts — routed to ELK or DX UIM automatically</div>
                     <div class="login-point"><svg class="ic"><use href="#i-grid"/></svg> Every service, host, and dashboard in one catalog</div>
@@ -2210,7 +2421,7 @@
                 <div class="side-item" onclick="openAlertWizard()">
                     <svg class="ic"><use href="#i-bell"/></svg> Alerts
                 </div>
-                <div class="side-item" onclick="comingSoon('Log Onboarding')">
+                <div class="side-item" onclick="openLogOnboarding()">
                     <svg class="ic"><use href="#i-download"/></svg> Log Onboarding
                 </div>
                 <div class="side-item" onclick="comingSoon('Access Granting')">
@@ -2286,10 +2497,10 @@
                                     <div class="qc-desc">Guided CMD, Log, and Process alerts across Microservices (ELK) and Open Systems (DX UIM).</div>
                                     <div class="qc-cta">Launch template <svg class="ic"><use href="#i-arrow-r"/></svg></div>
                                 </div>
-                                <div class="quick-card" style="--qc-accent:#0278d5;" onclick="comingSoon('Log Onboarding')">
+                                <div class="quick-card" style="--qc-accent:#0278d5;" onclick="openLogOnboarding()">
                                     <div class="qc-icon"><svg class="ic"><use href="#i-download"/></svg></div>
                                     <div class="qc-title">Log Onboarding</div>
-                                    <div class="qc-desc">Ship app logs to the platform via Kafka or OTel collector.</div>
+                                    <div class="qc-desc">One guided request — agents, Kafka topic, parsers, and indices, with live progress.</div>
                                     <div class="qc-cta">Start onboarding <svg class="ic"><use href="#i-arrow-r"/></svg></div>
                                 </div>
                                 <div class="quick-card" style="--qc-accent:#6938f2; --qc-soft:rgba(105,56,242,0.07);" onclick="comingSoon('Access Granting')">
@@ -2692,8 +2903,8 @@
                             <div class="tpl-step" data-step="3" onclick="tplStepClick(3)">
                                 <div class="step-circle">3</div>
                                 <div class="tpl-step-text">
-                                    <div class="step-label">Approver</div>
-                                    <div class="tpl-step-desc">Who signs this off</div>
+                                    <div class="step-label">Routing &amp; Approval</div>
+                                    <div class="tpl-step-desc">HPSM queue and sign-off</div>
                                 </div>
                             </div>
                             <div class="tpl-step" data-step="4" onclick="tplStepClick(4)">
@@ -2751,14 +2962,6 @@
                                         <label class="form-label required">K8s Container Name</label>
                                         <input type="text" class="form-input" id="wContainer" placeholder="e.g. ms-cbs-account-movement-adapter">
                                     </div>
-                                    <div class="form-group compact">
-                                        <label class="form-label required">Service ID (HPSM)</label>
-                                        <input type="text" class="form-input" id="wServiceId" placeholder="e.g. 572">
-                                    </div>
-                                    <div class="form-group compact">
-                                        <label class="form-label required">Search Code (HPSM)</label>
-                                        <input type="text" class="form-input" id="wSearchCode" placeholder="e.g. MIDDLEWARE">
-                                    </div>
                                 </div>
                             </div>
 
@@ -2766,48 +2969,16 @@
                                 <div class="form-section-header">
                                     <span class="form-section-icon"><svg class="ic"><use href="#i-server"/></svg></span>
                                     <span class="form-section-title">Open System Details</span>
-                                    <span class="form-section-desc">Fill in once — applies to every host below</span>
+                                    <span class="form-section-desc">Hostnames only — OS, environment, and application resolve from CMDB</span>
                                 </div>
-                                <div class="form-group compact full-width" style="margin-bottom: 14px;">
+                                <div class="form-group compact full-width">
                                     <label class="form-label required">Hosts</label>
                                     <div class="host-rows" id="hostRows"></div>
                                     <button type="button" class="btn-add-keyword" onclick="addHostRow()">
                                         <svg class="ic"><use href="#i-plus"/></svg> Add Another Host
                                     </button>
                                 </div>
-                                <div class="form-grid">
-                                    <div class="form-group compact">
-                                        <label class="form-label required">OS Type</label>
-                                        <select class="form-select" id="wOsType">
-                                            <option value="">Select OS</option>
-                                            <option value="Linux">Linux</option>
-                                            <option value="Windows">Windows</option>
-                                            <option value="AIX">AIX</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group compact">
-                                        <label class="form-label required">Environment</label>
-                                        <select class="form-select" id="wOpenEnv">
-                                            <option value="">Select environment</option>
-                                            <option value="SIT">SIT</option>
-                                            <option value="UAT">UAT</option>
-                                            <option value="PROD">Production</option>
-                                            <option value="DR">DR</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group compact">
-                                        <label class="form-label required">Application Name</label>
-                                        <input type="text" class="form-input" id="wOpenAppName" placeholder="e.g. MIDDLEWARE">
-                                    </div>
-                                    <div class="form-group compact">
-                                        <label class="form-label required">Service ID (HPSM)</label>
-                                        <input type="text" class="form-input" id="wOpenServiceId" placeholder="e.g. 572">
-                                    </div>
-                                    <div class="form-group compact">
-                                        <label class="form-label required">Search Code (HPSM)</label>
-                                        <input type="text" class="form-input" id="wOpenSearchCode" placeholder="e.g. MIDDLEWARE">
-                                    </div>
-                                </div>
+                                <div id="hostFleetNote"></div>
                             </div>
                         </div>
 
@@ -2910,10 +3081,25 @@
                                     </div>
                                 </div>
                             </div>
+
                         </div>
 
-                        <!-- TEMPLATE PANE 3: Approver -->
+                        <!-- TEMPLATE PANE 3: Routing & Approval -->
                         <div class="wiz-pane" data-pane="3">
+                            <!-- HPSM belongs to the alert, not the asset: infra and
+                                 app alerts on the same host route to different queues. -->
+                            <div class="form-section">
+                                <div class="form-section-header">
+                                    <span class="form-section-icon"><svg class="ic"><use href="#i-clipboard"/></svg></span>
+                                    <span class="form-section-title">Incident Routing</span>
+                                    <span class="form-section-desc">Set per alert — infra and app alerts route to different HPSM queues</span>
+                                </div>
+                                <div class="form-group compact full-width">
+                                    <label class="form-label required">HPSM Code (Service ID / Search Code)</label>
+                                    <input type="text" class="form-input" id="wHpsm" placeholder="e.g. 572 / MIDDLEWARE">
+                                </div>
+                            </div>
+
                             <div class="form-section">
                                 <div class="form-section-header">
                                     <span class="form-section-icon"><svg class="ic"><use href="#i-users"/></svg></span>
@@ -2951,6 +3137,187 @@
                                 <button class="btn btn-secondary" id="tplBackBtn" onclick="tplBack()">Back</button>
                                 <button class="btn btn-primary" id="tplNextBtn" onclick="tplNext()">Next</button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= Log Onboarding template (full Scaffolder template) =================
+                 Replaces the manual flow: Confluence requirements page, a separate
+                 agent-install request, then engineer-created Kafka topic, Logstash
+                 pipeline, and indices. The form captures everything up front; the
+                 only human step left is the engineer's review (see progress page). -->
+            <section class="view" id="view-logonboard">
+                <header class="page-header">
+                    <div class="ph-top">
+                        <div>
+                            <div class="ph-eyebrow">Create &middot; Software Template</div>
+                            <h1 class="ph-title">Onboard Application Logs</h1>
+                            <p class="ph-sub">Ship host logs to the platform — Kafka topic, Logstash parsers, and indices are generated from this request. One engineer review, no Confluence page.</p>
+                            <div class="ph-meta">
+                                <span class="ph-chip mono-chip">template:default/log-onboarding</span>
+                                <span class="ph-chip"><svg class="ic"><use href="#i-users"/></svg> acbc/observability</span>
+                            </div>
+                        </div>
+                        <div class="ph-actions">
+                            <button class="btn btn-ghost" onclick="switchView('home')"><svg class="ic ic-sm"><use href="#i-x"/></svg> Cancel</button>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="page-body">
+                    <div class="tpl-layout">
+                        <aside class="tpl-stepper" id="loStepper">
+                            <div class="tpl-step active" data-step="1" onclick="loStepClick(1)">
+                                <div class="step-circle">1</div>
+                                <div class="tpl-step-text">
+                                    <div class="step-label">Log Source</div>
+                                    <div class="tpl-step-desc">Hosts — agents included if missing</div>
+                                </div>
+                            </div>
+                            <div class="tpl-step" data-step="2" onclick="loStepClick(2)">
+                                <div class="step-circle">2</div>
+                                <div class="tpl-step-text">
+                                    <div class="step-label">Files &amp; Parsing</div>
+                                    <div class="tpl-step-desc">Paths, sample lines, fields</div>
+                                </div>
+                            </div>
+                            <div class="tpl-step" data-step="3" onclick="loStepClick(3)">
+                                <div class="step-circle">3</div>
+                                <div class="tpl-step-text">
+                                    <div class="step-label">Review</div>
+                                    <div class="tpl-step-desc">Confirm and submit</div>
+                                </div>
+                            </div>
+                        </aside>
+
+                        <div class="tpl-panes">
+                            <!-- LO PANE 1: Log source -->
+                            <div class="wiz-pane active" data-pane="1">
+                                <div class="prefill-hint">
+                                    <svg class="ic"><use href="#i-bulb"/></svg>
+                                    <span>New to this? Load a sample request to see how it works.</span>
+                                    <button type="button" onclick="loLoadSample()">Load Sample</button>
+                                </div>
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-server"/></svg></span>
+                                        <span class="form-section-title">Log Source</span>
+                                        <span class="form-section-desc">Hostnames only — OS, environment, application, and agent status resolve from CMDB</span>
+                                    </div>
+                                    <div class="form-group compact full-width">
+                                        <label class="form-label required">Hosts</label>
+                                        <div class="host-rows" id="loHostRows"></div>
+                                        <button type="button" class="btn-add-keyword" onclick="loAddHost()">
+                                            <svg class="ic"><use href="#i-plus"/></svg> Add Another Host
+                                        </button>
+                                    </div>
+                                    <div id="loFleetNote"></div>
+                                </div>
+                            </div>
+
+                            <!-- LO PANE 2: Files & parsing -->
+                            <div class="wiz-pane" data-pane="2">
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-file"/></svg></span>
+                                        <span class="form-section-title">Log Files</span>
+                                        <span class="form-section-desc">Every path on every selected host</span>
+                                    </div>
+                                    <table class="keyword-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 62%;">Filepath</th>
+                                                <th style="width: 28%;">Format</th>
+                                                <th style="width: 10%;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="loPathRows"></tbody>
+                                    </table>
+                                    <button type="button" class="btn-add-keyword" onclick="loAddPath()">
+                                        <svg class="ic"><use href="#i-plus"/></svg> Add Log File
+                                    </button>
+                                </div>
+
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-key"/></svg></span>
+                                        <span class="form-section-title">Sample &amp; Parsing</span>
+                                        <span class="form-section-desc">The parser is generated from this — paste real lines</span>
+                                    </div>
+                                    <div class="form-group compact full-width" style="margin-bottom: 14px;">
+                                        <label class="form-label required">Sample log lines (3&ndash;5 lines)</label>
+                                        <textarea class="form-textarea" id="loSample" rows="4" placeholder="2026-07-24 09:14:02 INFO  [settlement] txn=8812 amount=1520.00 status=OK"></textarea>
+                                    </div>
+                                    <label class="form-label required">Fields to extract</label>
+                                    <table class="keyword-table" style="margin-top: 8px;">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 34%;">Field name</th>
+                                                <th style="width: 34%;">Source pattern / key</th>
+                                                <th style="width: 22%;">Type</th>
+                                                <th style="width: 10%;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="loFieldRows"></tbody>
+                                    </table>
+                                    <button type="button" class="btn-add-keyword" onclick="loAddField()">
+                                        <svg class="ic"><use href="#i-plus"/></svg> Add Field
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- LO PANE 3: Review -->
+                            <div class="wiz-pane" data-pane="3">
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-check-circle"/></svg></span>
+                                        <span class="form-section-title">Review</span>
+                                        <span class="form-section-desc">Confirm before submitting</span>
+                                    </div>
+                                    <div class="review-grid" id="loReviewGrid"></div>
+                                </div>
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-activity"/></svg></span>
+                                        <span class="form-section-title">What happens when you submit</span>
+                                        <span class="form-section-desc">One review — everything else is automated</span>
+                                    </div>
+                                    <div id="loStagePreview"></div>
+                                </div>
+                            </div>
+
+                            <div class="tpl-footer">
+                                <button class="btn btn-secondary" id="loBackBtn" onclick="loBack()">Cancel</button>
+                                <button class="btn btn-primary" id="loNextBtn" onclick="loNext()">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= Log Onboarding progress tracker ================= -->
+            <section class="view" id="view-logprogress">
+                <header class="page-header">
+                    <div class="ph-top">
+                        <div>
+                            <div class="ph-eyebrow">Self-service &middot; Request</div>
+                            <h1 class="ph-title" id="loReqTitle">Log Onboarding</h1>
+                            <p class="ph-sub" id="loReqSub"></p>
+                            <div class="ph-meta">
+                                <span class="ph-chip" id="loReqStatus"><span class="dot-ok"></span> In progress</span>
+                            </div>
+                        </div>
+                        <div class="ph-actions">
+                            <button class="btn btn-ghost" onclick="switchView('home')"><svg class="ic ic-sm"><use href="#i-home"/></svg> Back to Home</button>
+                        </div>
+                    </div>
+                </header>
+                <div class="page-body">
+                    <div class="board">
+                        <div class="card" style="padding: 22px 24px;">
+                            <div class="section-title" style="margin-bottom: 16px;">Onboarding progress</div>
+                            <div class="lo-track" id="loTimeline"></div>
                         </div>
                     </div>
                 </div>
@@ -3144,13 +3511,15 @@
             },
         };
 
-        // Demo registry standing in for the real Asset Registry lookup.
-        // Extend by adding hosts here — routing, the banner, and the
-        // Log Filepath field all follow from a host's `otel` flag alone.
+        // Demo registry standing in for the real Asset Registry / CMDB
+        // lookup. `otel` drives ELK-vs-DX-UIM routing; os/env/app are the
+        // CMDB attributes each host resolves to — they're never typed by
+        // the requester, only verified. HPSM is deliberately NOT here:
+        // it's an attribute of the alert (infra vs app), not of the host.
         const HOST_REGISTRY = {
-            'sgapp0231': { otel: true },   // migrated — routes to ELK
-            'sgapp0410': { otel: false },  // not yet migrated — still DX UIM
-            'ulaeiapos0a': { otel: false }, // real robot in dxuim-config/UAT — still DX UIM
+            'sgapp0231': { otel: true, agent: true, os: 'Linux', env: 'PROD', app: 'PAYMENTS' },       // migrated — routes to ELK
+            'sgapp0410': { otel: false, agent: false, os: 'Linux', env: 'PROD', app: 'MIDDLEWARE' },   // not yet migrated — still DX UIM
+            'ulaeiapos0a': { otel: false, agent: false, os: 'Linux', env: 'UAT', app: 'MIDDLEWARE' },  // real robot in dxuim-config/UAT — still DX UIM
         };
 
         // Demo stand-in for a live Asset Registry / Bitbucket "existing
@@ -3306,6 +3675,7 @@
         function openAlertWizard(event) {
             if (event) event.preventDefault();
             wizState = { systemType: null, category: null, step: 1, tplStep: 1, hosts: [''] };
+            existingConfigExpanded = {};
             document.querySelectorAll('#alertWizardModal .pick-card').forEach(c => c.classList.remove('selected'));
             document.getElementById('keywordRows').innerHTML = '';
             addKeywordRow();
@@ -3378,13 +3748,75 @@
             if (!wizState.hosts || wizState.hosts.length === 0) wizState.hosts = [''];
             const container = document.getElementById('hostRows');
             container.innerHTML = wizState.hosts.map((host, i) => `
-                <div class="host-row">
-                    <input type="text" class="form-input" value="${host}" placeholder="e.g. sgapp0231" oninput="updateHostValue(${i}, this.value)">
-                    <span class="host-badge" id="hostBadge${i}"></span>
-                    <button type="button" class="keyword-remove" onclick="removeHostRow(${i})" title="Remove host" ${wizState.hosts.length <= 1 ? 'style="visibility:hidden;"' : ''}>&times;</button>
+                <div class="host-item">
+                    <div class="host-row">
+                        <input type="text" class="form-input" value="${host}" placeholder="e.g. sgapp0231" oninput="updateHostValue(${i}, this.value)">
+                        <span class="host-badge" id="hostBadge${i}"></span>
+                        <button type="button" class="keyword-remove" onclick="removeHostRow(${i})" title="Remove host" ${wizState.hosts.length <= 1 ? 'style="visibility:hidden;"' : ''}>&times;</button>
+                    </div>
+                    <div class="host-cmdb" id="hostCmdb${i}"></div>
                 </div>
             `).join('');
-            wizState.hosts.forEach((_, i) => updateHostBadge(i));
+            wizState.hosts.forEach((_, i) => { updateHostBadge(i); updateHostCmdb(i); });
+            renderFleetNote();
+        }
+
+        // Per-host CMDB resolution — OS, environment, and application are
+        // shown, never typed. An unresolved host points at Asset Registry.
+        function updateHostCmdb(i) {
+            const line = document.getElementById('hostCmdb' + i);
+            if (!line) return;
+            const hostname = (wizState.hosts[i] || '').trim();
+            if (!hostname) {
+                line.className = 'host-cmdb';
+                line.innerHTML = '';
+                return;
+            }
+            const entry = HOST_REGISTRY[hostname.toLowerCase()];
+            if (!entry) {
+                line.className = 'host-cmdb missing';
+                line.innerHTML = `<svg class="ic"><use href="#i-package"/></svg> Not in CMDB — <a class="wiz-route-cta" style="margin-left:4px;" onclick="comingSoon('Asset Registry')">register this asset &rarr;</a>`;
+                return;
+            }
+            line.className = 'host-cmdb resolved';
+            line.innerHTML =
+                `<span class="cmdb-chip">${entry.os}</span>` +
+                `<span class="cmdb-chip">${entry.env}</span>` +
+                `<span class="cmdb-chip app">${entry.app}</span>` +
+                `<span class="cmdb-src">from CMDB</span>`;
+        }
+
+        function fleetSummary() {
+            const hosts = (wizState.hosts || []).map(h => h.trim()).filter(Boolean);
+            const entries = hosts.map(h => HOST_REGISTRY[h.toLowerCase()]).filter(Boolean);
+            return {
+                hosts,
+                apps: [...new Set(entries.map(e => e.app))],
+                envs: [...new Set(entries.map(e => e.env))],
+                unregistered: hosts.filter(h => !HOST_REGISTRY[h.toLowerCase()]),
+            };
+        }
+
+        // Fleet-level callouts. Several applications in one request is fine —
+        // each host becomes its own domain document and HPSM is set per
+        // alert — but it's called out. Mixed environments block Next:
+        // different environments mean different config folders and
+        // different change weight, so that's almost always a mistake.
+        function renderFleetNote() {
+            const note = document.getElementById('hostFleetNote');
+            if (!note) return;
+            const { apps, envs, unregistered } = fleetSummary();
+            const parts = [];
+            if (envs.length > 1) {
+                parts.push(`<div class="fleet-note error"><svg class="ic"><use href="#i-x"/></svg> Hosts span <b>${envs.join(' and ')}</b> — one environment per request. Split this into separate requests.</div>`);
+            }
+            if (apps.length > 1) {
+                parts.push(`<div class="fleet-note info"><svg class="ic"><use href="#i-layers"/></svg> <b>${apps.length} applications</b> in this request (${apps.join(', ')}) — each host is recorded under its own application.</div>`);
+            }
+            if (unregistered.length) {
+                parts.push(`<div class="fleet-note warn"><svg class="ic"><use href="#i-package"/></svg> ${unregistered.length} host${unregistered.length > 1 ? 's' : ''} not in CMDB — register before submitting.</div>`);
+            }
+            note.innerHTML = parts.join('');
         }
 
         function addHostRow() {
@@ -3406,6 +3838,8 @@
         function updateHostValue(i, value) {
             wizState.hosts[i] = value;
             updateHostBadge(i);
+            updateHostCmdb(i);
+            renderFleetNote();
             renderRouteBanner();
             renderCategoryDetailsPane();
         }
@@ -3466,7 +3900,7 @@
                     banner.innerHTML =
                         `<svg class="ic"><use href="#i-activity"/></svg> ${hostLabel} ${plural ? "aren't" : "isn't"} on OTel yet — routing to ` +
                         `<b>DX UIM</b> <span class="mono">dxuim-monitoring</span> as a <b>${catLabel}</b> alert` +
-                        (plural ? '' : `<a class="wiz-route-cta" onclick="comingSoon('Log Onboarding')">Enable OTel for this host &rarr;</a>`);
+                        (plural ? '' : `<a class="wiz-route-cta" onclick="openLogOnboarding()">Enable OTel for this host &rarr;</a>`);
                 } else {
                     banner.className = 'wiz-route unknown';
                     banner.innerHTML =
@@ -3528,57 +3962,82 @@
             return groups;
         }
 
-        function renderExistingConfigEntries(key, cat, entries, isCurrent) {
+        function renderExistingConfigEntries(key, cat, entries, limit) {
             const k = key.replace(/'/g, "\\'");
             if (cat === 'log') {
-                return groupLogEntriesByFilepath(entries).map((g, i) => {
+                return groupLogEntriesByFilepath(entries).slice(0, limit).map((g, i) => {
                     const kw = g.entries.map(e => `${e.keyword} (${e.severity})`).join(', ');
                     const label = g.filepath ? `<b>${g.filepath}</b> — ${kw}` : kw;
-                    const btn = isCurrent ? `<button type="button" class="existing-config-load-sm" onclick="loadExistingLogGroup('${k}', ${i})">Load</button>` : '';
-                    return `<div class="existing-config-entry"><div>${label}</div>${btn}</div>`;
+                    return `<div class="existing-config-entry"><div>${label}</div><button type="button" class="existing-config-load-sm" onclick="loadExistingLogGroup('${k}', ${i})">Load</button></div>`;
                 }).join('');
             }
             if (cat === 'cmd') {
-                return entries.map((e, i) => {
-                    const btn = isCurrent ? `<button type="button" class="existing-config-load-sm" onclick="loadExistingCmdEntry('${k}', ${i})">Load</button>` : '';
-                    return `<div class="existing-config-entry"><div><b>${e.metric}</b> &gt; ${e.threshold}% for ${e.duration}m (${e.severity})</div>${btn}</div>`;
-                }).join('');
+                return entries.slice(0, limit).map((e, i) =>
+                    `<div class="existing-config-entry"><div><b>${e.metric}</b> &gt; ${e.threshold}% for ${e.duration}m (${e.severity})</div><button type="button" class="existing-config-load-sm" onclick="loadExistingCmdEntry('${k}', ${i})">Load</button></div>`
+                ).join('');
             }
             if (cat === 'process') {
-                return entries.map((e, i) => {
-                    const btn = isCurrent ? `<button type="button" class="existing-config-load-sm" onclick="loadExistingProcessEntry('${k}', ${i})">Load</button>` : '';
-                    return `<div class="existing-config-entry"><div><b>${e.name}</b> — expected ${e.state} (${e.severity})</div>${btn}</div>`;
-                }).join('');
+                return entries.slice(0, limit).map((e, i) =>
+                    `<div class="existing-config-entry"><div><b>${e.name}</b> — expected ${e.state} (${e.severity})</div><button type="button" class="existing-config-load-sm" onclick="loadExistingProcessEntry('${k}', ${i})">Load</button></div>`
+                ).join('');
             }
             return '';
         }
 
+        // Only the current category is listed — the step is about one kind
+        // of alert, so the other categories collapse to a one-line count.
+        // Long lists preview the first few entries with a Show-all toggle.
+        const EXISTING_CONFIG_PREVIEW = 3;
+        let existingConfigExpanded = {};
+
+        function toggleExistingConfig(key) {
+            existingConfigExpanded[key] = !existingConfigExpanded[key];
+            renderExistingConfigPanel();
+        }
+
         function renderExistingConfigCard(key) {
             const existing = EXISTING_CONFIG[key.toLowerCase()] || EXISTING_CONFIG[key];
+            const cat = wizState.category;
+            const title = `<div class="existing-config-title"><svg class="ic"><use href="#i-clipboard"/></svg> Existing ${CATEGORY_LABEL[cat]} — <span class="mono">${key}</span></div>`;
 
             if (!existing || Object.keys(existing).length === 0) {
                 return `
                     <div class="existing-config-card">
-                        <div class="existing-config-title"><svg class="ic"><use href="#i-clipboard"/></svg> Existing configuration for <span class="mono">${key}</span></div>
+                        ${title}
                         <div class="existing-config-empty">Nothing configured yet — this will be the first alert for this asset.</div>
                     </div>
                 `;
             }
 
-            const rows = Object.entries(existing).map(([cat, entries]) => {
-                const isCurrent = cat === wizState.category;
-                return `
-                    <div class="existing-config-row ${isCurrent ? 'current' : ''}">
-                        <div class="existing-config-cat"><svg class="ic"><use href="#i-${CATEGORY_ICON[cat]}"/></svg> ${CATEGORY_LABEL[cat]} <span class="pick-tag">${entries.length}</span></div>
-                        <div class="existing-config-list">${renderExistingConfigEntries(key, cat, entries, isCurrent)}</div>
-                    </div>
+            const entries = existing[cat] || [];
+            const total = cat === 'log' ? groupLogEntriesByFilepath(entries).length : entries.length;
+            const expanded = !!existingConfigExpanded[key];
+            const others = Object.entries(existing)
+                .filter(([c, list]) => c !== cat && list.length)
+                .map(([c, list]) => `${list.length} ${CATEGORY_LABEL[c].replace(' Monitoring', '').toLowerCase()}`);
+            const othersLine = others.length
+                ? `<div class="existing-config-others">Also configured: ${others.join(' · ')}</div>`
+                : '';
+
+            let body;
+            if (!entries.length) {
+                body = `<div class="existing-config-empty">No ${CATEGORY_LABEL[cat].toLowerCase()} yet for this asset.</div>`;
+            } else {
+                const k = key.replace(/'/g, "\\'");
+                const moreBtn = total > EXISTING_CONFIG_PREVIEW
+                    ? `<button type="button" class="existing-config-more" onclick="toggleExistingConfig('${k}')">${expanded ? 'Show fewer' : `Show all ${total}`}</button>`
+                    : '';
+                body = `
+                    <div class="existing-config-list">${renderExistingConfigEntries(key, cat, entries, expanded ? Infinity : EXISTING_CONFIG_PREVIEW)}</div>
+                    ${moreBtn}
                 `;
-            }).join('');
+            }
 
             return `
                 <div class="existing-config-card">
-                    <div class="existing-config-title"><svg class="ic"><use href="#i-clipboard"/></svg> Existing configuration for <span class="mono">${key}</span></div>
-                    ${rows}
+                    ${title}
+                    ${body}
+                    ${othersLine}
                 </div>
             `;
         }
@@ -3661,22 +4120,16 @@
 
         function loadWizardSample() {
             if (wizState.systemType === 'opensystem') {
-                wizState.hosts = ['xxx'];
+                wizState.hosts = ['sgapp0410'];
                 renderHostRows();
-                document.getElementById('wOsType').value = 'Linux';
-                document.getElementById('wOpenEnv').value = 'PROD';
-                document.getElementById('wOpenAppName').value = 'MIDDLEWARE';
-                document.getElementById('wOpenServiceId').value = '572';
-                document.getElementById('wOpenSearchCode').value = 'MIDDLEWARE';
                 renderRouteBanner();
             } else {
                 document.getElementById('wEntity').value = 'CBS';
                 document.getElementById('wEnv').value = 'PROD';
                 document.getElementById('wNamespace').value = 'deposit-adapter-sg';
                 document.getElementById('wContainer').value = 'ms-cbs-account-movement-adapter';
-                document.getElementById('wServiceId').value = '572';
-                document.getElementById('wSearchCode').value = 'MIDDLEWARE';
             }
+            document.getElementById('wHpsm').value = '572 / MIDDLEWARE';
         }
 
         function sanitizeForName(str) {
@@ -3746,6 +4199,7 @@
         function renderReview() {
             const isMicro = wizState.systemType === 'microservice';
             const prefixes = getPrefixes();
+            const fleet = isMicro ? null : fleetSummary();
             const rows = [
                 ['System Type', isMicro ? 'Microservice' : 'Open System'],
                 ['Category', CATEGORY_LABEL[wizState.category]],
@@ -3753,6 +4207,11 @@
                     ? ['Routes To', `${ALERT_MATRIX.microservice.tool} (${ALERT_MATRIX.microservice.toolSlug})`]
                     : ['Routes To', summarizeHostRouting(prefixes)],
                 isMicro ? ['Namespace / Container', prefixes[0]] : ['Hosts', prefixes.join(', ')],
+                ...(isMicro ? [] : [
+                    ['Environment (CMDB)', fleet.envs.join(', ') || '—'],
+                    ['Application(s) (CMDB)', fleet.apps.join(', ') || '—'],
+                ]),
+                ['HPSM Code', document.getElementById('wHpsm').value.trim() || '—'],
                 ['Approver', document.getElementById('wApprover').value.trim() || '—'],
             ];
             document.getElementById('reviewGrid').innerHTML = rows.map(([l, v]) =>
@@ -3850,6 +4309,13 @@
         }
 
         function tplNext() {
+            if (wizState.tplStep === 1 && wizState.systemType === 'opensystem') {
+                const { envs } = fleetSummary();
+                if (envs.length > 1) {
+                    alert(`Hosts span multiple environments (${envs.join(', ')}). One environment per request — split it into separate requests.`);
+                    return;
+                }
+            }
             if (wizState.tplStep === 4) {
                 const names = generateWatcherNames();
                 alert(`Sent for approval.\n${names.length} watcher(s) will be created once approved and validated in Infinity.`);
@@ -3887,6 +4353,361 @@
             if (typeCard) typeCard.classList.add('selected');
             const catCard = document.querySelector(`#categoryGrid .pick-card[data-value="${savedCat}"]`);
             if (catCard && !catCard.classList.contains('disabled')) catCard.classList.add('selected');
+        }
+
+        // ---------- Log Onboarding (template + progress tracker) ----------
+        // Replaces six manual touchpoints (Confluence page, agent-install
+        // request, engineer-created topic/pipeline/indices) with one form,
+        // one engineer review, and automation for everything derivable.
+        let loState = { step: 1, hosts: [''], paths: [], fields: [], sample: '' };
+        let loRun = { request: null, stages: [], timer: null };
+
+        function openLogOnboarding() {
+            loState = { step: 1, hosts: [''], paths: [], fields: [], sample: '' };
+            document.getElementById('loSample').value = '';
+            document.getElementById('loPathRows').innerHTML = '';
+            document.getElementById('loFieldRows').innerHTML = '';
+            loAddPath();
+            loAddField();
+            loRenderHosts();
+            loGoStep(1);
+            switchView('logonboard');
+        }
+
+        function loGoStep(step) {
+            loState.step = step;
+            document.querySelectorAll('#view-logonboard .wiz-pane').forEach(p => p.classList.toggle('active', Number(p.dataset.pane) === step));
+            document.querySelectorAll('#loStepper .tpl-step').forEach(s => {
+                const n = Number(s.dataset.step);
+                s.classList.toggle('active', n === step);
+                s.classList.toggle('done', n < step);
+            });
+            if (step === 3) loRenderReview();
+            document.getElementById('loBackBtn').textContent = step === 1 ? 'Cancel' : 'Back';
+            document.getElementById('loNextBtn').textContent = step === 3 ? 'Submit Request' : 'Next';
+            document.querySelector('#view-logonboard .page-body').scrollTop = 0;
+        }
+
+        function loStepClick(step) {
+            if (step < loState.step) loGoStep(step);
+        }
+
+        function loBack() {
+            if (loState.step === 1) { switchView('home'); return; }
+            loGoStep(loState.step - 1);
+        }
+
+        function loNext() {
+            if (loState.step === 1) {
+                const { hosts, envs } = loFleetSummary();
+                if (!hosts.length) { alert('Add at least one host.'); return; }
+                if (envs.length > 1) {
+                    alert(`Hosts span multiple environments (${envs.join(', ')}). One environment per request — split it into separate requests.`);
+                    return;
+                }
+                loGoStep(2);
+                return;
+            }
+            if (loState.step === 2) {
+                const paths = loCollectPaths();
+                if (!paths.length) { alert('Add at least one log filepath.'); return; }
+                if (!document.getElementById('loSample').value.trim()) { alert('Paste a few sample log lines — the parser is generated from them.'); return; }
+                loGoStep(3);
+                return;
+            }
+            loSubmit();
+        }
+
+        // -- hosts (same CMDB-resolved pattern as Raise an Alert, plus agent status) --
+        function loRenderHosts() {
+            if (!loState.hosts.length) loState.hosts = [''];
+            document.getElementById('loHostRows').innerHTML = loState.hosts.map((host, i) => `
+                <div class="host-item">
+                    <div class="host-row">
+                        <input type="text" class="form-input" value="${host}" placeholder="e.g. sgapp0410" oninput="loUpdateHost(${i}, this.value)">
+                        <button type="button" class="keyword-remove" onclick="loRemoveHost(${i})" title="Remove host" ${loState.hosts.length <= 1 ? 'style="visibility:hidden;"' : ''}>&times;</button>
+                    </div>
+                    <div class="host-cmdb" id="loHostCmdb${i}"></div>
+                </div>
+            `).join('');
+            loState.hosts.forEach((_, i) => loUpdateHostCmdb(i));
+            loRenderFleetNote();
+        }
+
+        function loAddHost() { loState.hosts.push(''); loRenderHosts(); }
+
+        function loRemoveHost(i) {
+            if (loState.hosts.length <= 1) return;
+            loState.hosts.splice(i, 1);
+            loRenderHosts();
+        }
+
+        function loUpdateHost(i, value) {
+            loState.hosts[i] = value;
+            loUpdateHostCmdb(i);
+            loRenderFleetNote();
+        }
+
+        function loUpdateHostCmdb(i) {
+            const line = document.getElementById('loHostCmdb' + i);
+            if (!line) return;
+            const hostname = (loState.hosts[i] || '').trim();
+            if (!hostname) { line.className = 'host-cmdb'; line.innerHTML = ''; return; }
+            const entry = HOST_REGISTRY[hostname.toLowerCase()];
+            if (!entry) {
+                line.className = 'host-cmdb missing';
+                line.innerHTML = `<svg class="ic"><use href="#i-package"/></svg> Not in CMDB — <a class="wiz-route-cta" style="margin-left:4px;" onclick="comingSoon('Asset Registry')">register this asset &rarr;</a>`;
+                return;
+            }
+            line.className = 'host-cmdb resolved';
+            line.innerHTML =
+                `<span class="cmdb-chip">${entry.os}</span>` +
+                `<span class="cmdb-chip">${entry.env}</span>` +
+                `<span class="cmdb-chip app">${entry.app}</span>` +
+                `<span class="cmdb-chip ${entry.agent ? '' : 'warn'}">${entry.agent ? 'ELK agent ✓' : 'no ELK agent'}</span>` +
+                `<span class="cmdb-src">from CMDB</span>`;
+        }
+
+        function loFleetSummary() {
+            const hosts = loState.hosts.map(h => h.trim()).filter(Boolean);
+            const entries = hosts.map(h => HOST_REGISTRY[h.toLowerCase()]).filter(Boolean);
+            return {
+                hosts,
+                apps: [...new Set(entries.map(e => e.app))],
+                envs: [...new Set(entries.map(e => e.env))],
+                unregistered: hosts.filter(h => !HOST_REGISTRY[h.toLowerCase()]),
+                needAgents: hosts.filter(h => { const e = HOST_REGISTRY[h.toLowerCase()]; return e && !e.agent; }),
+            };
+        }
+
+        function loRenderFleetNote() {
+            const note = document.getElementById('loFleetNote');
+            if (!note) return;
+            const { apps, envs, unregistered, needAgents } = loFleetSummary();
+            const parts = [];
+            if (envs.length > 1) {
+                parts.push(`<div class="fleet-note error"><svg class="ic"><use href="#i-x"/></svg> Hosts span <b>${envs.join(' and ')}</b> — one environment per request. Split this into separate requests.</div>`);
+            }
+            if (needAgents.length) {
+                parts.push(`<div class="fleet-note info"><svg class="ic"><use href="#i-download"/></svg> <b>${needAgents.length} host${needAgents.length > 1 ? 's' : ''}</b> (${needAgents.join(', ')}) ${needAgents.length > 1 ? 'have' : 'has'} no ELK agent — install is included in this request, no separate ticket.</div>`);
+            }
+            if (apps.length > 1) {
+                parts.push(`<div class="fleet-note info"><svg class="ic"><use href="#i-layers"/></svg> <b>${apps.length} applications</b> in this request (${apps.join(', ')}) — each is recorded under its own application.</div>`);
+            }
+            if (unregistered.length) {
+                parts.push(`<div class="fleet-note warn"><svg class="ic"><use href="#i-package"/></svg> ${unregistered.length} host${unregistered.length > 1 ? 's' : ''} not in CMDB — register before submitting.</div>`);
+            }
+            note.innerHTML = parts.join('');
+        }
+
+        // -- log files + parse fields --
+        function loAddPath(path = '', format = 'Plain text') {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" class="kw-keyword" placeholder="e.g. /apps/log/batch_settlement" value="${path}"></td>
+                <td>
+                    <select class="kw-severity">
+                        ${['Plain text', 'JSON', 'Multiline (stack traces)'].map(f => `<option ${f === format ? 'selected' : ''}>${f}</option>`).join('')}
+                    </select>
+                </td>
+                <td style="text-align:center;"><button type="button" class="keyword-remove" onclick="loRemoveRow(this, 'loPathRows')" title="Remove">&times;</button></td>
+            `;
+            document.getElementById('loPathRows').appendChild(tr);
+        }
+
+        function loAddField(name = '', source = '', type = 'keyword') {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" class="kw-keyword" placeholder="e.g. txn_id" value="${name}"></td>
+                <td><input type="text" class="kw-keyword" placeholder="e.g. txn=(\\d+) or $.txnId" value="${source}"></td>
+                <td>
+                    <select class="kw-severity">
+                        ${['keyword', 'text', 'number', 'date', 'ip'].map(t => `<option ${t === type ? 'selected' : ''}>${t}</option>`).join('')}
+                    </select>
+                </td>
+                <td style="text-align:center;"><button type="button" class="keyword-remove" onclick="loRemoveRow(this, 'loFieldRows')" title="Remove">&times;</button></td>
+            `;
+            document.getElementById('loFieldRows').appendChild(tr);
+        }
+
+        function loRemoveRow(btn, tbodyId) {
+            const tbody = document.getElementById(tbodyId);
+            if (tbody.children.length > 1) btn.closest('tr').remove();
+            else btn.closest('tr').querySelectorAll('input').forEach(inp => inp.value = '');
+        }
+
+        function loCollectPaths() {
+            return [...document.querySelectorAll('#loPathRows tr')].map(tr => ({
+                path: tr.querySelector('.kw-keyword').value.trim(),
+                format: tr.querySelector('.kw-severity').value,
+            })).filter(p => p.path);
+        }
+
+        function loCollectFields() {
+            return [...document.querySelectorAll('#loFieldRows tr')].map(tr => {
+                const inputs = tr.querySelectorAll('.kw-keyword');
+                return { name: inputs[0].value.trim(), source: inputs[1].value.trim(), type: tr.querySelector('.kw-severity').value };
+            }).filter(f => f.name);
+        }
+
+        function loLoadSample() {
+            loState.hosts = ['sgapp0231', 'sgapp0410'];
+            loRenderHosts();
+            document.getElementById('loPathRows').innerHTML = '';
+            loAddPath('/apps/log/batch_settlement', 'Plain text');
+            loAddPath('/apps/log/mq_listener', 'Plain text');
+            document.getElementById('loFieldRows').innerHTML = '';
+            loAddField('txn_id', 'txn=(\\d+)', 'keyword');
+            loAddField('amount', 'amount=([\\d.]+)', 'number');
+            loAddField('status', 'status=(\\w+)', 'keyword');
+            document.getElementById('loSample').value =
+                '2026-07-24 09:14:02 INFO  [settlement] txn=8812 amount=1520.00 status=OK\n' +
+                '2026-07-24 09:14:05 WARN  [settlement] txn=8813 amount=250.10 status=RETRY\n' +
+                '2026-07-24 09:14:09 ERROR [settlement] txn=8813 amount=250.10 status=FAILED';
+        }
+
+        // -- stage model: what used to be six touchpoints --
+        function loBuildStages(req) {
+            const agentDetail = req.needAgents.length
+                ? `Installing on ${req.needAgents.join(', ')} — no separate request needed`
+                : 'All hosts already have the agent';
+            return [
+                { title: 'Requirements captured', owner: 'you', detail: `${req.paths.length} log file${req.paths.length > 1 ? 's' : ''} · ${req.fields.length} parse field${req.fields.length !== 1 ? 's' : ''} · sample lines attached — this replaces the Confluence page` },
+                { title: 'ELK agent install', owner: 'auto', detail: agentDetail, skip: !req.needAgents.length },
+                { title: 'Log review', owner: 'engineer', gate: true, detail: 'ELK Engineering reviews your sample lines and parse spec — the one human step. You will be notified.' },
+                { title: 'Kafka topic', owner: 'auto', artifact: req.topic },
+                { title: 'Logstash pipeline', owner: 'auto', artifact: req.pipeline, detail: 'Parser generated from your fields — deployed to Kubernetes' },
+                { title: 'Indices & ILM', owner: 'auto', artifact: req.index, detail: '30-day hot · 90-day delete' },
+                { title: 'Logs flowing', owner: 'auto', detail: 'End-to-end check — then explore your logs in Kibana' },
+            ];
+        }
+
+        const LO_OWNER_LABEL = { you: 'You', auto: 'Automated', engineer: 'ELK Engineer' };
+
+        function loRenderStagePreview() {
+            const req = loBuildRequest();
+            document.getElementById('loStagePreview').innerHTML = loBuildStages(req).map((s, i) => `
+                <div class="lo-preview-row">
+                    <span class="lo-preview-num">${i + 1}</span>
+                    <span class="lo-preview-title">${s.title}</span>
+                    <span class="lo-owner ${s.owner}">${LO_OWNER_LABEL[s.owner]}</span>
+                    ${s.artifact ? `<span class="lo-artifact">${s.artifact}</span>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function loBuildRequest() {
+            const fleet = loFleetSummary();
+            const app = (fleet.apps[0] || 'app').toLowerCase();
+            const env = (fleet.envs[0] || 'prod').toLowerCase();
+            return {
+                id: 'LO-' + (1000 + Math.floor(Math.random() * 9000)),
+                ...fleet,
+                paths: loCollectPaths(),
+                fields: loCollectFields(),
+                topic: `logs.${app}.${env}`,
+                pipeline: `ls-${app}-${env}`,
+                index: `logs-${app}-${env}-*`,
+            };
+        }
+
+        function loRenderReview() {
+            const fleet = loFleetSummary();
+            const paths = loCollectPaths();
+            const fields = loCollectFields();
+            const rows = [
+                ['Hosts', fleet.hosts.join(', ') || '—'],
+                ['Environment (CMDB)', fleet.envs.join(', ') || '—'],
+                ['Application(s) (CMDB)', fleet.apps.join(', ') || '—'],
+                ['Agent install needed', fleet.needAgents.length ? fleet.needAgents.join(', ') : 'No — all hosts covered'],
+                ['Log files', paths.map(p => p.path).join(', ') || '—'],
+                ['Parse fields', fields.map(f => f.name).join(', ') || '—'],
+            ];
+            document.getElementById('loReviewGrid').innerHTML = rows.map(([l, v]) =>
+                `<div class="review-item"><div class="l">${l}</div><div class="v">${v}</div></div>`
+            ).join('');
+            loRenderStagePreview();
+        }
+
+        // -- submission + simulated progress (the mock's stand-in for the
+        //    real workflow engine driving Ansible / Scaffolder actions) --
+        function loSubmit() {
+            const req = loBuildRequest();
+            loRun.request = req;
+            loRun.stages = loBuildStages(req).map(s => ({ ...s, status: 'pending' }));
+            if (loRun.timer) clearTimeout(loRun.timer);
+
+            document.getElementById('loReqTitle').textContent = `Log Onboarding — ${req.id}`;
+            document.getElementById('loReqSub').textContent =
+                `${req.hosts.length} host${req.hosts.length > 1 ? 's' : ''} · ${req.apps.join(', ') || '—'} · ${req.envs[0] || '—'} · submitted just now`;
+            switchView('logprogress');
+
+            loRun.stages[0].status = 'active';
+            loRenderTimeline();
+            loRun.timer = setTimeout(loAdvance, 1400);
+        }
+
+        function loAdvance() {
+            const stages = loRun.stages;
+            const i = stages.findIndex(s => s.status === 'active');
+            if (i === -1) return;
+            stages[i].status = 'done';
+
+            let next = i + 1;
+            while (next < stages.length && stages[next].skip) {
+                stages[next].status = 'skipped';
+                next++;
+            }
+            if (next >= stages.length) { loComplete(); return; }
+
+            if (stages[next].gate && !stages[next].approved) {
+                stages[next].status = 'waiting';
+                loRenderTimeline();
+                return; // resumes via loApproveGate()
+            }
+            stages[next].status = 'active';
+            loRenderTimeline();
+            loRun.timer = setTimeout(loAdvance, 1400);
+        }
+
+        function loApproveGate() {
+            const gate = loRun.stages.find(s => s.gate);
+            if (!gate || gate.status !== 'waiting') return;
+            gate.approved = true;
+            gate.status = 'active';
+            loRenderTimeline();
+            loRun.timer = setTimeout(loAdvance, 1000);
+        }
+
+        function loComplete() {
+            document.getElementById('loReqStatus').innerHTML = '<span class="dot-ok"></span> Complete — logs are flowing';
+            loRenderTimeline();
+        }
+
+        const LO_STATUS_LABEL = { done: 'Done', active: 'Running', waiting: 'Waiting for review', pending: 'Queued', skipped: 'Skipped' };
+
+        function loRenderTimeline() {
+            const inProgress = loRun.stages.some(s => s.status === 'active' || s.status === 'waiting');
+            if (inProgress) {
+                const doneCount = loRun.stages.filter(s => s.status === 'done' || s.status === 'skipped').length;
+                document.getElementById('loReqStatus').innerHTML = `<span class="dot-ok"></span> In progress — stage ${Math.min(doneCount + 1, loRun.stages.length)} of ${loRun.stages.length}`;
+            }
+            document.getElementById('loTimeline').innerHTML = loRun.stages.map((s, i) => `
+                <div class="lo-stage ${s.status}">
+                    <div class="lo-dot">${s.status === 'done' ? '✓' : s.status === 'skipped' ? '–' : i + 1}</div>
+                    <div class="lo-stage-body">
+                        <div class="lo-stage-head">
+                            <span class="lo-stage-title">${s.title}</span>
+                            <span class="lo-owner ${s.owner}">${LO_OWNER_LABEL[s.owner]}</span>
+                            <span class="lo-status ${s.status}">${LO_STATUS_LABEL[s.status]}</span>
+                        </div>
+                        ${s.artifact ? `<div class="lo-artifact">${s.artifact}</div>` : ''}
+                        ${s.detail ? `<div class="lo-stage-detail">${s.detail}</div>` : ''}
+                        ${s.gate && s.status === 'waiting' ? `<button type="button" class="btn btn-primary" style="margin-top:10px;" onclick="loApproveGate()">Simulate engineer approval (demo)</button>` : ''}
+                        ${i === loRun.stages.length - 1 && s.status === 'done' ? `<button type="button" class="btn btn-primary" style="margin-top:10px;" onclick="comingSoon('Kibana')">Open in Kibana</button>` : ''}
+                    </div>
+                </div>
+            `).join('');
         }
 
         document.getElementById('alertWizardModal').addEventListener('click', function(e) {
@@ -3977,7 +4798,7 @@
                 aikaBotSay(
                     "Log onboarding ships your app logs into the platform via <b>Kafka</b> or the <b>OTel collector</b>. You'll register your index pattern, pick a retention tier (hot local / cold S3), and validate the pipeline. The self-service flow is coming to this portal — for now the SRE runbook covers it.",
                     "View onboarding guide",
-                    "comingSoon('Log Onboarding');",
+                    "openLogOnboarding();",
                     "download"
                 );
             } else if (/(degraded|down|slow|unhealthy|why|incident|error)/.test(q)) {
