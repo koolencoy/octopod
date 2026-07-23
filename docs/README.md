@@ -8,13 +8,21 @@ backend slice; ELK, Grafana, and SolarWinds follow the same pattern —
 
 ## 1. Orientation
 
-- `planning/overview.md` — the Portal vision (self-service instead of
-  20 years of ping-the-engineer, a living catalog instead of doc
-  drift), the on-prem tool estate, and what's live today. **Read
-  first.**
+- `planning/overview.md` — the executive overview: the problem
+  (20 years of ping-the-engineer operations, documentation drift),
+  how the Portal resolves it, and the benefits and savings case.
+  **Read first.**
 - `../README.md` — repo map and the end-to-end flow in brief.
 
-## 2. Design
+## 2. Architecture
+
+- `architecture/architecture.md` — how the platform works end to end:
+  the Backstage → Bitbucket → Ansible flow, the one-way GitOps rules,
+  per-target status (DX UIM built, ELK pending a home, SolarWinds not
+  started), and the build-stage status matrix. Includes a terminology
+  table for the DX UIM/Backstage jargon.
+
+## 3. Design
 
 - `ui-ux-design/branching-strategy.md` — the git/branching model the whole
   pipeline assumes (`main` = truth, `staging/<name>` = per-request
@@ -26,20 +34,20 @@ backend slice; ELK, Grafana, and SolarWinds follow the same pattern —
   for reference).
 - `ui-ux-design/assets/` — logo/branding assets.
 
-## 3. Specification
+## 4. Specification
 
 - `spec/raise-an-alert-domain-model.md` — Draft v0.1 domain data model
   for alert requests: the human-reviewable middle layer between the
   wizard's form input and DX UIM's native `probeConfigKeys` wire
   format. Spec'd but not yet enforced by Ansible.
 
-## 4. Operations
+## 5. Operations
 
 - `../dxuim-config/guide.md` — the DX UIM API call the sync is built
   on, plus the `metadata` and `catalog-info.yaml` file conventions.
   Kept next to the config tree it describes.
 
-## 5. Project management
+## 6. Project management
 
 - `planning/milestones.md` — current milestone: **DX UIM base
   hardening, due 30 September 2026**, with explicit in/out-of-scope

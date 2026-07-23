@@ -37,6 +37,6 @@ dxuim_auth_user: "accountsvcid"
 # ---------- Requester notifications ----------
 # dxuim_config_sync reports success/failure back through here (see the
 # notify_requester role) so a merged PR that fails to activate doesn't
-# fail silently — see docs/ui-ux-design/branching-strategy.md for where this sits
+# fail silently — see docs/architecture/architecture.md §4.1 for where this sits
 # in the overall flow.
 backstage_notifications_api: "https://backstage.acbc.internal/api"

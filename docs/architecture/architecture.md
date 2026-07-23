@@ -119,6 +119,83 @@ Points worth understanding:
   re-runs), or with no arguments at all (full re-sync of everything —
   safe because of idempotency, useful for drift repair).
 
+### 4.1 The branching model in detail
+
+This applies to every config repo (`elk-watchers`, `dxuim-configs`).
+Three rules:
+
+- **`main` = production truth**, watched by Ansible.
+- **`staging/<name>` = one branch per request**, deleted after merge.
+  For DX UIM the name is `staging/<environment>-<robot>`; for ELK it is
+  derived from namespace + container.
+- **PR into `main` = the approval gate.**
+
+One request (a keyword alert for `ms-cbs-account-movement-adapter`)
+shown end-to-end as branch topology:
+
+```mermaid
+gitGraph
+   commit id: "prod truth (n)"
+   branch staging/deposit-adapter-sg-ms-cbs-account-movement-adapter
+   checkout staging/deposit-adapter-sg-ms-cbs-account-movement-adapter
+   commit id: "generated watcher config"
+   commit id: "generated user guide"
+   checkout main
+   merge staging/deposit-adapter-sg-ms-cbs-account-movement-adapter id: "PR reviewed + approved, merged"
+   commit id: "prod truth (n+1)"
+```
+
+And the same request as every git operation and API call, in order. The
+**git operations** block (blue) is the only place actual git plumbing
+happens — all performed by Backstage's `publish:bitbucketServer` action
+and the human approver. The **webhook** (amber) — Bitbucket's
+`repo:refs_changed` event, fired when the merge lands on `main` — is the
+one step bridging the two phases; everything Ansible does afterward is
+driven by the `fromHash`/`toHash` it carries. The **REST API reads**
+block (violet) is Ansible's entire involvement with the repo: no
+`git clone`, no working copy, no `.git` directory — it asks Bitbucket's
+HTTP API for a diff and file contents on demand.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Requester
+    participant BS as Backstage Scaffolder
+    participant Repo as Bitbucket repo
+    participant Mgr as Reporting Manager
+    participant Ans as Ansible
+    participant BE as ELK / DX UIM
+
+    Requester->>BS: Fill "Raise an Alert" wizard
+    BS->>BS: sre:approval:request, sre:infinity:validate-change
+
+    rect rgb(224, 236, 250)
+    note over BS,Repo: git operations
+    BS->>Repo: git checkout -b staging/<name> (from main)
+    BS->>Repo: git add + commit (config + generated docs)
+    BS->>Repo: git push origin staging/<name>
+    BS->>Repo: open Pull Request staging/<name> -> main
+    Repo-->>Mgr: review request
+    Mgr->>Repo: approve PR
+    Mgr->>Repo: merge pull request (main gets staging/<name>)
+    Repo->>Repo: delete branch staging/<name>
+    end
+
+    rect rgb(250, 240, 222)
+    note over Repo,Ans: webhook trigger
+    Repo->>Ans: webhook repo:refs_changed (fromHash, toHash on main)
+    end
+
+    rect rgb(238, 231, 253)
+    note over Ans,Repo: REST API reads - no local clone
+    Ans->>Repo: GET /compare/changes?from&to
+    Ans->>Repo: GET /raw/{path}?at=refs/heads/main
+    end
+
+    Ans->>BE: PUT config (Watcher API / uimapi probe config)
+    BE-->>Ans: 200 / 201
+```
+
 ## 5. What's stored in git
 
 One config repository per monitoring tool, all following the same
@@ -295,9 +372,8 @@ configs, and resolve the ELK-home decision. Details in
 
 | Document | What it covers |
 |---|---|
-| `docs/planning/overview.md` | Scope boundary: what octopod owns vs. the wider program |
+| `docs/planning/overview.md` | Executive overview: the problem, the resolution, benefits and savings |
 | `docs/planning/milestones.md` | Current milestone and its contents |
 | `docs/planning/backlog.md` | Every known gap, itemized and tagged by owning repo |
 | `docs/spec/raise-an-alert-domain-model.md` | The tool-neutral config format (draft) |
-| `docs/ui-ux-design/branching-strategy.md` | The branching/approval model, illustrated |
 | `dxuim-config/guide.md` | DX UIM API usage and file conventions |

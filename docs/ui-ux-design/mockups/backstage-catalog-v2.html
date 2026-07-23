@@ -1954,6 +1954,149 @@
         @media (max-width: 480px) {
             .aika-panel { right: 8px; bottom: 88px; }
         }
+
+        /* ============ Login screen (mock sign-in page) ============
+           Stands in for Backstage's SignInPage: corporate SSO as the
+           primary provider, LAN ID as fallback, guest for exploring. */
+        .login-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: linear-gradient(115deg, var(--header-from) 0%, var(--header-mid) 55%, var(--header-to) 100%);
+            overflow: hidden;
+            transition: opacity 0.45s ease;
+        }
+
+        .login-screen::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 640px 300px at 80% -10%, rgba(105, 56, 242, 0.35), transparent 65%),
+                radial-gradient(ellipse 560px 260px at 8% 110%, rgba(2, 120, 213, 0.4), transparent 68%),
+                radial-gradient(ellipse 340px 180px at 55% 120%, rgba(207, 46, 141, 0.16), transparent 70%);
+            pointer-events: none;
+        }
+
+        .login-screen.dismissed { opacity: 0; pointer-events: none; }
+
+        .login-card {
+            position: relative;
+            width: 100%;
+            max-width: 880px;
+            display: grid;
+            grid-template-columns: 1.05fr 1fr;
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--card);
+            box-shadow: var(--shadow-pop);
+            animation: modalIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .login-brand {
+            position: relative;
+            background: linear-gradient(160deg, var(--sidebar-bg) 0%, var(--header-mid) 100%);
+            color: #fff;
+            padding: 38px 36px 30px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .login-brand::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 320px 200px at 110% 0%, rgba(105, 56, 242, 0.35), transparent 70%),
+                radial-gradient(ellipse 300px 180px at -10% 110%, rgba(2, 120, 213, 0.3), transparent 70%);
+            pointer-events: none;
+        }
+
+        .login-brand > * { position: relative; z-index: 1; }
+
+        .login-brand-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 30px; }
+
+        .login-tagline {
+            font-size: 21px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.25;
+            max-width: 300px;
+        }
+
+        .login-points { margin-top: 22px; display: flex; flex-direction: column; gap: 13px; }
+
+        .login-point {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 12.5px;
+            color: #b9c6dc;
+            line-height: 1.45;
+        }
+
+        .login-point .ic { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; color: var(--sidebar-selected); }
+
+        .login-brand-foot {
+            margin-top: auto;
+            padding-top: 26px;
+            font-size: 10.5px;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: var(--sidebar-item);
+            font-weight: 600;
+        }
+
+        .login-form { padding: 38px 36px 30px; display: flex; flex-direction: column; }
+
+        .login-title { font-size: 19px; font-weight: 800; letter-spacing: -0.015em; }
+
+        .login-sub { font-size: 12.5px; color: var(--ink-dim); margin-top: 5px; margin-bottom: 22px; }
+
+        .btn-signin {
+            width: 100%;
+            justify-content: center;
+            padding: 11px 16px;
+            font-size: 13.5px;
+            background: var(--grad-cta);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(2, 120, 213, 0.3);
+        }
+
+        .btn-signin:hover { filter: brightness(1.08); }
+
+        .login-form .form-group { margin-bottom: 13px; }
+
+        .login-foot {
+            margin-top: auto;
+            padding-top: 22px;
+            font-size: 11.5px;
+            color: var(--ink-dim);
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .login-guest {
+            background: none;
+            border: none;
+            font: inherit;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--primary);
+            cursor: pointer;
+        }
+
+        .login-guest:hover { text-decoration: underline; }
+
+        @media (max-width: 760px) {
+            .login-card { grid-template-columns: 1fr; max-width: 440px; }
+            .login-brand { display: none; }
+        }
     </style>
 </head>
 <body>
@@ -1996,6 +2139,49 @@
             <symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6"/><path d="M9 16h6"/></symbol>
         </defs>
     </svg>
+
+    <!-- ================= Login (mock Backstage SignInPage) ================= -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <div class="login-brand">
+                <div class="login-brand-logo">
+                    <div class="logo-mark"><svg class="ic ic-lg" style="stroke-width:2.1"><use href="#i-halo"/></svg></div>
+                    <div class="logo-text">Observability<span>ACBC · Portal</span></div>
+                </div>
+                <div class="login-tagline">One front door for alerts, logs, access, and application health.</div>
+                <div class="login-points">
+                    <div class="login-point"><svg class="ic"><use href="#i-bell"/></svg> Raise CMD, Log, and Process alerts — routed to ELK or DX UIM automatically</div>
+                    <div class="login-point"><svg class="ic"><use href="#i-grid"/></svg> Every service, host, and dashboard in one catalog</div>
+                    <div class="login-point"><svg class="ic"><use href="#i-sparkle"/></svg> OKA, the observability assistant that knows your estate</div>
+                </div>
+                <div class="login-brand-foot">Powered by Backstage · ACBC SG</div>
+            </div>
+
+            <div class="login-form">
+                <h2 class="login-title">Sign in</h2>
+                <p class="login-sub">Sign in with your LAN ID to continue to the Observability Portal.</p>
+
+                <form onsubmit="portalSignIn('lan'); return false;">
+                    <div class="form-group compact">
+                        <label class="form-label" for="loginLan">LAN ID</label>
+                        <input type="text" class="form-input" id="loginLan" placeholder="e.g. coy.canunayon" autocomplete="username">
+                    </div>
+                    <div class="form-group compact">
+                        <label class="form-label" for="loginPassword">Password</label>
+                        <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+                    </div>
+                    <button type="submit" class="btn btn-signin" style="margin-top:4px;">
+                        <svg class="ic ic-sm"><use href="#i-shield"/></svg> Sign in
+                    </button>
+                </form>
+
+                <div class="login-foot">
+                    <button type="button" class="login-guest" onclick="portalSignIn('guest')">Explore as guest <svg class="ic ic-sm" style="vertical-align:-2px;"><use href="#i-arrow-r"/></svg></button><br>
+                    Authorized ACBC personnel only. Sessions are logged and monitored.
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="shell">
         <!-- ================= Sidebar ================= -->
@@ -2070,7 +2256,7 @@
                     <div class="ph-top">
                         <div>
                             <div class="ph-eyebrow">Observability Portal</div>
-                            <h1 class="ph-title">Good morning, Coy</h1>
+                            <h1 class="ph-title" id="phGreeting">Good morning, Coy</h1>
                             <p class="ph-sub">Your one-stop shop for alerts, log onboarding, access, asset registry, and application health across ACBC SG.</p>
                             <div class="ph-meta">
                                 <span class="ph-chip"><span class="dot-ok"></span> All ingest pipelines nominal</span>
@@ -2896,6 +3082,43 @@
     </div>
 
     <script>
+        // ---------- Login (mock Backstage SignInPage) ----------
+        // Any provider "succeeds" — this mocks the flow, not the auth.
+        // SSO keeps the default persona; LAN ID personalizes the greeting.
+        function timeGreeting() {
+            const h = new Date().getHours();
+            return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+        }
+
+        function dismissLogin() {
+            const scr = document.getElementById('loginScreen');
+            scr.classList.add('dismissed');
+            setTimeout(() => { scr.style.display = 'none'; }, 500);
+        }
+
+        function portalSignIn(mode, btn) {
+            let name = 'Coy';
+            if (mode === 'lan') {
+                const lan = document.getElementById('loginLan').value.trim();
+                if (!lan) {
+                    alert('Enter your LAN ID to sign in — or continue with ACBC SSO.');
+                    return;
+                }
+                const first = lan.split(/[._\s]/)[0];
+                name = first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
+            }
+            if (mode === 'guest') name = 'guest';
+            document.getElementById('phGreeting').textContent = `${timeGreeting()}, ${name}`;
+
+            if (mode === 'sso' && btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<svg class="ic ic-sm"><use href="#i-refresh"/></svg> Redirecting to identity provider…';
+                setTimeout(dismissLogin, 700);
+                return;
+            }
+            dismissLogin();
+        }
+
         // ---------- View switching ----------
         function switchView(view, el) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));

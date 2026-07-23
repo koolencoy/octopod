@@ -38,7 +38,7 @@ habits:
    wizard (Backstage Scaffolder).
 2. The config is committed to a per-request `staging/<env>-<robot>`
    branch; a PR into `main` is the approval gate. `main` is production
-   truth. (Full model: `docs/ui-ux-design/branching-strategy.md`.)
+   truth. (Full model: `docs/architecture/architecture.md` §4.1.)
 3. On merge, a Bitbucket webhook triggers Ansible
    (`ansible/playbooks/sync-dxuim-config.yml`), which reads the changed
    config and PUTs it to

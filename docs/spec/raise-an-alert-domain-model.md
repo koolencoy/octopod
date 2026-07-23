@@ -34,7 +34,7 @@ way around:
   day); a fully-transformed `probeConfigKeys` array is opaque to a PR
   reviewer and couples git history to DX UIM's schema. The domain model is
   the human-reviewable middle layer.
-- **Ansible never writes git** (`docs/ui-ux-design/branching-strategy.md`). It only
+- **Ansible never writes git** (`docs/architecture/architecture.md` §4.1). It only
   reads via the Bitbucket REST API and PUTs to the target system. So this
   document is the *only* artifact Ansible has to work with — anything not
   captured here is lost.
