@@ -18,16 +18,14 @@ backend slice; ELK, Grafana, and SolarWinds follow the same pattern —
 
 - `architecture/architecture.md` — how the platform works end to end:
   the Backstage → Bitbucket → Ansible flow, the one-way GitOps rules,
-  per-target status (DX UIM built, ELK pending a home, SolarWinds not
-  started), and the build-stage status matrix. Includes a terminology
-  table for the DX UIM/Backstage jargon.
+  the git/branching model the whole pipeline assumes (§4.1: `main` =
+  truth, `staging/<name>` = per-request branch, PR = approval gate,
+  Ansible never writes git), per-target status (DX UIM built, ELK
+  pending a home, SolarWinds not started), and the build-stage status
+  matrix. Includes a terminology table for the DX UIM/Backstage jargon.
 
 ## 3. Design
 
-- `ui-ux-design/branching-strategy.md` — the git/branching model the whole
-  pipeline assumes (`main` = truth, `staging/<name>` = per-request
-  branch, PR = approval gate, Ansible never writes git). Load-bearing:
-  code comments and specs reference it.
 - `ui-ux-design/mockups/backstage-catalog-v2.html` — current "Raise an
   Alert" wizard + catalog mockup (v2 is the live iteration;
   `backstage-catalog.html` / `-dark.html` are earlier versions kept
@@ -41,13 +39,21 @@ backend slice; ELK, Grafana, and SolarWinds follow the same pattern —
   wizard's form input and DX UIM's native `probeConfigKeys` wire
   format. Spec'd but not yet enforced by Ansible.
 
-## 5. Operations
+## 5. Data
+
+- `data/data-model.md` — the key contracts the automation runs on
+  (Bitbucket coordinates, config layout, hub lookup, DX UIM API,
+  file shape, notifications endpoint) and the committed file format,
+  today (`probeConfigKeys` wire format) and tomorrow (the
+  tool-neutral domain model).
+
+## 6. Operations
 
 - `../dxuim-config/guide.md` — the DX UIM API call the sync is built
   on, plus the `metadata` and `catalog-info.yaml` file conventions.
   Kept next to the config tree it describes.
 
-## 6. Project management
+## 7. Project management
 
 - `planning/milestones.md` — current milestone: **DX UIM base
   hardening, due 30 September 2026**, with explicit in/out-of-scope

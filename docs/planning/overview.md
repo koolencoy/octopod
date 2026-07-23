@@ -92,7 +92,10 @@ Two further savings are real but harder to price:
 **Recommended before scaling out:** measure the baseline (requests
 per month and average handling time from tickets/chat) for one
 quarter, so savings are reported as measured fact rather than
-estimate.
+estimate. The method and calculator are ready:
+`docs/planning/savings-baseline.md` + `tools/compute_savings.py` —
+export the tickets, run one command, paste the measured sentence in
+here.
 
 ## Where we are
 

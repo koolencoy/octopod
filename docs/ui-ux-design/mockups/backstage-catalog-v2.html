@@ -3083,40 +3083,28 @@
 
     <script>
         // ---------- Login (mock Backstage SignInPage) ----------
-        // Any provider "succeeds" — this mocks the flow, not the auth.
-        // SSO keeps the default persona; LAN ID personalizes the greeting.
+        // LAN ID only — any credentials "succeed", this mocks the flow,
+        // not the auth. The LAN ID personalizes the home greeting.
         function timeGreeting() {
             const h = new Date().getHours();
             return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
         }
 
-        function dismissLogin() {
-            const scr = document.getElementById('loginScreen');
-            scr.classList.add('dismissed');
-            setTimeout(() => { scr.style.display = 'none'; }, 500);
-        }
-
-        function portalSignIn(mode, btn) {
-            let name = 'Coy';
+        function portalSignIn(mode) {
+            let name = 'guest';
             if (mode === 'lan') {
                 const lan = document.getElementById('loginLan').value.trim();
                 if (!lan) {
-                    alert('Enter your LAN ID to sign in — or continue with ACBC SSO.');
+                    alert('Enter your LAN ID to sign in.');
                     return;
                 }
                 const first = lan.split(/[._\s]/)[0];
                 name = first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
             }
-            if (mode === 'guest') name = 'guest';
             document.getElementById('phGreeting').textContent = `${timeGreeting()}, ${name}`;
-
-            if (mode === 'sso' && btn) {
-                btn.disabled = true;
-                btn.innerHTML = '<svg class="ic ic-sm"><use href="#i-refresh"/></svg> Redirecting to identity provider…';
-                setTimeout(dismissLogin, 700);
-                return;
-            }
-            dismissLogin();
+            const scr = document.getElementById('loginScreen');
+            scr.classList.add('dismissed');
+            setTimeout(() => { scr.style.display = 'none'; }, 500);
         }
 
         // ---------- View switching ----------

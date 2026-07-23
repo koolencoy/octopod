@@ -1,5 +1,28 @@
 # Milestones
 
+## Current state — the baseline this milestone starts from
+
+What's live today, exactly:
+
+- **`ansible/roles/dxuim_config_sync`** — all three trigger modes
+  implemented (webhook commit-range, single-file, full-tree poll).
+  Verified end-to-end against `dxuim-stub/` under real ansible-core on
+  WSL (via `playbooks/test-dxuim-stub.yml`) — the payload template and
+  PUT logic are exercised for real, the Bitbucket fetch path is not
+  (no local Bitbucket to test against).
+- **`ansible/roles/notify_requester`** — built, but the Notifications
+  API request shape is unverified against a real Backstage install.
+- **One registered robot**: `dxuim-config/UAT/ulaeiapos0a/`. Only
+  `processes.json` has real content (3 process watchers); `cdm.json`
+  and `logmon.json` are empty placeholders — CMD and Log monitoring
+  for this robot do not exist yet.
+- **`catalog-info.yaml` per robot** — hand-authored (once, for
+  `ulaeiapos0a`) so the robot appears in the Portal's catalog with an
+  owner, lifecycle, and Grafana tab — the "yellow pages" entry.
+- **`grafana/`** — entity + overview dashboards exist as JSON models;
+  the DX UIM panels in them are `TODO` pending a confirmed
+  DX UIM → Grafana data source.
+
 ## Next milestone: DX UIM base hardening — by 30 September 2026
 
 This is scoped tightly to what **octopod itself** can actually deliver
