@@ -1,354 +1,303 @@
 # Alert Automation Platform — Architecture
 
-| | |
-|---|---|
-| **Status** | Build stage — living document, updated as components land |
-| **Author role** | Architect |
-| **Last updated** | 2026-07-24 |
-| **Stack** | Backstage (developer portal), Bitbucket (Server/DC, system of record), Ansible (activation engine) |
-| **Target systems** | DX UIM (Broadcom), ELK Stack (Elasticsearch Watcher), SolarWinds |
+**Status:** Build stage. This is a living document; the status tables in
+section 8 change as components land.
 
-This document describes the architecture of the alert-automation platform
-that octopod is part of. octopod itself owns only the **DX UIM automation
-backend** (see `docs/planning/overview.md` for the scope boundary); this
-document deliberately zooms out one level so the per-backend pieces are
-understood as instances of one pattern, not three unrelated builds.
+**Stack:** Backstage · Bitbucket · Ansible
+**Target systems:** DX UIM · ELK Stack · SolarWinds
 
 ---
 
-## 1. Purpose
+## 1. What this system does
 
-Teams raise monitoring/alerting requests (log keyword alerts, resource
-thresholds, process watchdogs) through a self-service wizard instead of
-tickets. Every request becomes a reviewable pull request; every approved
-request is activated on the correct monitoring backend automatically;
-every requester is told whether activation actually succeeded. Git is the
-single source of truth for "what alerting should exist."
+Today, getting a monitoring alert set up (for example: "page us if this
+log shows `OutOfMemoryError`", or "alert if CPU stays above 90% for 5
+minutes") means raising a ticket and waiting for someone to configure a
+monitoring tool by hand.
 
-## 2. Architecture principles
+This platform replaces that with self-service:
 
-These are load-bearing decisions, established early and enforced by the
-build. Everything else in this document follows from them.
+1. A user fills in a **wizard** in Backstage describing the alert they want.
+2. The wizard turns that into a **pull request** in Bitbucket. A reviewer
+   approves it by merging — the merge *is* the approval.
+3. **Ansible** picks up the merged change and pushes the configuration to
+   the right monitoring tool (DX UIM, ELK, or in future SolarWinds).
+4. The requester gets a **notification** telling them whether the alert
+   is now live — or that activation failed and needs attention.
 
-1. **GitOps, one-way.** Ansible only ever *reads* from Bitbucket and
-   *writes* to target systems. It never commits, tags, or pushes. All git
-   writes happen in Backstage's Scaffolder (request time) or by humans
-   (review time). Consequence: the committed document is the *only*
-   artifact the activation layer has — anything not captured in it is lost
-   (`docs/spec/raise-an-alert-domain-model.md` §2).
-2. **PR as the approval gate.** `main` = truth (what should be live),
-   `staging/<name>` = one branch per request, PR merge = the approval
-   event. There is no separate approval database
-   (`docs/design/branching-strategy.html`).
-3. **Idempotent activation.** Every config file is a complete,
-   current-state description, applied with an idempotent PUT. There is no
-   delta/event replay and therefore no commit-tracking state to maintain —
-   re-applying is always safe.
-4. **One repo / one role per backend.** Each target system gets its own
-   config repo and its own Ansible role. octopod is the DX UIM instance
-   of this pattern; the ELK watcher-sync role was deliberately removed
-   from this repo to enforce the boundary. SolarWinds, when built, gets
-   its own as well.
-5. **Domain model over wire format.** The committed document should be
-   the human-reviewable middle layer — neither raw wizard input nor the
-   target system's native payload. Specified in
-   `docs/spec/raise-an-alert-domain-model.md` (draft v0.1); *not yet
-   implemented* — today's real config files are DX UIM wire format
-   (`probeConfigKeys`) passed through almost as-is.
-6. **Additive schema evolution.** New fields default to today's implicit
-   behavior so pre-existing files keep working; `schemaVersion` exists
-   for the day a default has to change.
-7. **Notify either way, fail loudly.** A merged PR that fails to activate
-   must not fail silently — the repo would disagree with reality. The
-   sync notifies the requester on success *and* failure, and still fails
-   the CI job on failure so operators see it too.
+The git repository is the single source of truth for "what alerting
+should exist." Nothing gets configured on a monitoring tool that isn't
+in git first.
 
-## 3. System context
+## 2. The big picture
 
 ```mermaid
 flowchart LR
-    subgraph Users
-        REQ[Requester]
-        APPR[Approver / SRE]
-    end
-
-    subgraph Backstage
-        WIZ["Raise an Alert wizard<br/>(Scaffolder template)"]
-        CAT[Catalog<br/>robot / service entities]
-        NOTIF[Notifications]
-    end
-
-    subgraph Bitbucket ["Bitbucket (system of record)"]
-        REPO_DX[dxuim-config repo]
-        REPO_ELK[elk-watchers repo]
-        REPO_SW["solarwinds-config repo<br/>(planned)"]
-    end
-
-    subgraph Ansible ["Ansible (activation engine)"]
-        SYNC_DX[dxuim_config_sync]
-        SYNC_ELK["elk watcher sync<br/>(scope decision pending)"]
-        SYNC_SW["solarwinds sync<br/>(planned)"]
-        NR[notify_requester]
-    end
-
-    subgraph Targets
-        DXUIM["DX UIM<br/>uimapi REST"]
-        ELK["ELK Stack<br/>Watcher API"]
-        SW["SolarWinds<br/>Orion SDK / REST (TBC)"]
-    end
-
-    GRAF[Grafana dashboards]
-
-    REQ --> WIZ
-    WIZ -->|"PR on staging/<name>"| Bitbucket
-    APPR -->|review + merge| Bitbucket
-    Bitbucket -->|"read-only<br/>(webhook or poll)"| Ansible
-    SYNC_DX -->|PUT config| DXUIM
-    SYNC_ELK -.-> ELK
-    SYNC_SW -.-> SW
-    Ansible --> NR
-    NR -->|POST notification| NOTIF
-    NOTIF --> REQ
-    CAT --- GRAF
+    U[User] -->|1. fills wizard| BS[Backstage]
+    BS -->|2. opens PR| BB[Bitbucket]
+    R[Reviewer] -->|3. merges PR| BB
+    BB -->|4. webhook / poll| AN[Ansible]
+    AN -->|5. pushes config| T["Monitoring tools<br/>DX UIM · ELK · SolarWinds"]
+    AN -->|6. success or failure| BS
+    BS -->|notification| U
 ```
 
-Solid lines are built and verified; dashed lines are planned. Note the
-one-way flow through Bitbucket: nothing to the right of it ever writes
-back to it.
+Each of the three stack components has exactly one job:
 
-### Roles of each stack component
-
-| Component | Role in the architecture | What it must never do |
+| Component | Job | Deliberately does NOT |
 |---|---|---|
-| **Backstage** | Front door (wizard), inventory (Catalog — the robot/service entities *are* the asset view, there is no separate inventory), and feedback channel (Notifications). | Talk to target systems directly. |
-| **Bitbucket** | System of record and approval workflow. One repo per backend; `main` is truth. | Hold anything that isn't reviewable text. |
-| **Ansible** | Stateless activation engine: read config from Bitbucket, transform, PUT to target, notify. | Write to git; hold state between runs. |
+| **Backstage** | The user-facing layer: the request wizard, the catalog of monitored assets, and notifications back to requesters. | Talk to monitoring tools directly. |
+| **Bitbucket** | The system of record and the approval workflow. Holds one config repository per monitoring tool. | Hold anything that isn't human-reviewable text. |
+| **Ansible** | The activation engine: reads approved config from Bitbucket, pushes it to the monitoring tool, reports the result. | Write to git. Ever. All git writes come from Backstage or humans. |
 
-## 4. Request-to-activation flow
+That last cell is the most important design rule in the platform:
+**data flows one way**. Backstage writes to git; Ansible reads from git
+and writes to monitoring tools. Because Ansible never writes back,
+whatever is committed must contain everything Ansible needs — there is
+no side channel.
+
+## 3. Terminology
+
+Terms used throughout this document, for readers who don't work with
+these tools daily:
+
+| Term | Meaning |
+|---|---|
+| **DX UIM** | Broadcom's infrastructure monitoring product (formerly CA UIM). Monitors servers ("Open Systems"). |
+| **Robot** | DX UIM's agent installed on a monitored server. One robot = one host. |
+| **Probe** | A plugin running on a robot that does one kind of monitoring. The three we use: `processes` (is a process running?), `cdm` (CPU/disk/memory thresholds), `logmon` (log file scanning). |
+| **Hub** | A DX UIM server that manages a group of robots. Each environment (UAT, PROD…) has its own hub. |
+| **ELK** | Elasticsearch + Logstash + Kibana. Monitors microservice logs; alerts are implemented as **Elasticsearch Watchers** (saved queries that fire on matches). |
+| **SolarWinds** | Network/infrastructure monitoring platform. Planned target; not integrated yet. |
+| **Scaffolder** | Backstage's template engine. Our "Raise an Alert" wizard is a Scaffolder template: it collects form input and performs git actions. |
+| **Catalog** | Backstage's inventory of software and infrastructure. Each monitored server is registered here via a small `catalog-info.yaml` file, which gives it an owner, dashboards, and a page in the portal. |
+| **Open System** | A plain server/VM (Linux, Windows, AIX) — as opposed to a microservice running in Kubernetes. |
+| **Routing** | The decision of *which* monitoring tool serves a given request. Microservices → ELK. Servers → DX UIM, unless they've been migrated to the new OTel-based stack, in which case → ELK. |
+
+## 4. How a request flows, step by step
 
 ```mermaid
 sequenceDiagram
     participant U as Requester
-    participant B as Backstage Scaffolder
+    participant W as Backstage wizard
     participant BB as Bitbucket
-    participant A as Ansible (sync role)
-    participant T as Target system
-    participant N as Backstage Notifications
+    participant A as Ansible
+    participant M as Monitoring tool
+    participant N as Notifications
 
-    U->>B: Raise an Alert wizard (log / cmd / process)
-    B->>B: Resolve routing (asset registry:<br/>migrated→ELK, legacy→DX UIM)
-    B->>BB: Commit config on staging/<name>, open PR
-    Note over BB: Human review — PR merge is the approval gate
-    BB->>A: Repository Push webhook (fromHash/toHash)<br/>or scheduled poll
-    A->>BB: Resolve changed files (compare API),<br/>fetch raw content
-    A->>A: Parse path → environment/robot/probe,<br/>read metadata (requestedBy, approvedBy)
-    A->>T: Idempotent PUT of config
-    alt success
-        A->>N: "Alert activated" → requester
-    else failure
-        A->>N: "Activation FAILED" (critical) → requester
-        A->>A: Re-raise → CI job fails visibly
+    U->>W: Describe the alert (form)
+    W->>W: Decide routing (which tool?)
+    W->>BB: Write config file to branch staging/<name>, open PR
+    Note over BB: Reviewer approves by merging the PR
+    BB->>A: Push webhook fires (or Ansible polls on a schedule)
+    A->>BB: Read the changed config files
+    A->>M: Push the config (idempotent PUT)
+    alt activation succeeded
+        A->>N: "Your alert is live"
+    else activation failed
+        A->>N: "Activation FAILED — needs attention"
+        Note over A: The job itself also fails,<br/>so operators see it too
     end
+    N->>U: Notification in Backstage
 ```
 
-Three sync trigger modes, in priority order (built and verified in
-`ansible/roles/dxuim_config_sync/tasks/fetch_from_bitbucket.yml`):
+Points worth understanding:
 
-1. **Commit range** (`bitbucket_from_hash`/`to_hash`) — the intended
-   production wiring: Bitbucket's push webhook passes its hashes straight
-   through; Ansible resolves the changed-file set itself via the compare
-   API. Correctly handles multi-commit, multi-robot pushes.
-2. **Single file** (`changed_file_path`) — simplest webhook wiring or a
-   manual re-run of one file.
-3. **Full poll** — no arguments; walks the whole config tree. Safe
-   because activation is idempotent; used for drift repair and first runs.
+- **The PR is the approval gate.** There is no separate approval database
+  or workflow tool. `main` always describes what should be live;
+  `staging/<name>` branches hold one pending request each.
+- **Activation is idempotent.** Config is pushed as a complete "this is
+  what should be configured" document, not as a diff. Re-running a sync
+  is always safe. This is why Ansible needs no state between runs.
+- **Failure is loud, twice.** If activation fails after a PR was merged,
+  git and reality now disagree — the worst silent state. So the requester
+  is notified with severity *critical*, and the Ansible job still exits
+  failed so it shows red in CI.
+- **Ansible can be triggered three ways** (all built): by a push webhook
+  passing the commit range (the intended production wiring — Ansible
+  itself works out which files changed), by naming a single file (manual
+  re-runs), or with no arguments at all (full re-sync of everything —
+  safe because of idempotency, useful for drift repair).
 
-## 5. Repository & data layout
+## 5. What's stored in git
 
-Per-backend config repos share one path convention:
+One config repository per monitoring tool, all following the same
+folder convention:
 
 ```
-{config-root}/{environment}/{asset}/{probe-or-alert}.json
+<config-root>/<environment>/<asset>/<config-file>.json
 ```
 
-DX UIM concretely (`dxuim-config/`, real today):
+For DX UIM, concretely (this exists today):
 
 ```
-dxuim-config/{environment}/{robot}/{cdm|logmon|processes}.json
-dxuim-config/{environment}/{robot}/catalog-info.yaml   ← Backstage registration
+dxuim-config/
+└── UAT/
+    └── ulaeiapos0a/            ← one folder per robot (server)
+        ├── processes.json      ← process monitoring config
+        ├── cdm.json            ← CPU/disk/memory config
+        ├── logmon.json         ← log monitoring config
+        └── catalog-info.yaml   ← registers the server in Backstage
 ```
 
-Key conventions (full detail in `dxuim-config/guide.md`):
+Three conventions apply to every config file:
 
-- **`metadata` envelope** — `requestedBy` / `approvedBy` entity refs ride
-  alongside the payload, are stripped before the PUT, and drive
-  notifications. Files predating the convention degrade gracefully
-  (sync runs, nobody gets notified).
-- **`catalog-info.yaml` per asset folder** — makes the asset visible in
-  the Backstage Catalog (owner, lifecycle, Grafana tab). Currently
-  hand-authored per commit because Ansible never writes git; the fix is
-  a DX UIM Scaffolder template that generates it (backlog,
-  `[ELK/backstage]`).
-- **Empty file = not configured yet**, not "clear the target." Empty
-  configs are skipped, never PUT.
+1. **A `metadata` block rides along** with the config, recording who
+   requested and who approved it. Ansible strips it before pushing to
+   the monitoring tool and uses it to know who to notify. Old files
+   without it still sync — they just can't notify anyone.
+2. **An empty file means "not configured yet"**, not "delete what's
+   there." Ansible skips empty files and never pushes an empty config.
+3. **Every asset folder carries `catalog-info.yaml`** so the asset shows
+   up in Backstage. Today this file is written by hand (because Ansible
+   never writes git, nothing generates it automatically yet — see
+   section 8).
 
-### The domain model layer (specified, not yet implemented)
+### The planned "domain model" format
 
-`docs/spec/raise-an-alert-domain-model.md` defines the target committed
-format: a common envelope (`schemaVersion`, `systemType`, `category`,
-`routing`, `asset`, `approver`, `metadata` incl. `changeRecordId` and
-`sourceTaskId`) plus one category extension (`log` / `cmd` / `process`).
-Adopting it means adding a transform step to each sync role — the wire
-format moves from "what's committed" to "what Ansible generates at
-activation time." This is the single most important pending change to the
-data architecture, because it's what makes one committed document shape
-serve *all three* target systems.
+Today, the committed files are written in DX UIM's own native format,
+which works but has a problem: a PR reviewer sees raw probe
+configuration keys, which are hard to review, and the git history is
+coupled to one vendor's format.
 
-## 6. Target-system integrations
+The fix — specified in `docs/spec/raise-an-alert-domain-model.md`, not
+yet implemented — is to commit a **tool-neutral document** instead
+("alert on process `*java*`, severity Critical, check every 5 minutes")
+and have Ansible translate it into each tool's native format at
+activation time. One committed format, three translators. This is the
+key pending change, because it's what lets the same request format
+serve DX UIM, ELK, *and* SolarWinds.
 
-The pattern per backend is always the same four things: a config repo, a
-sync role, a transform (domain model → native payload), and an API
-endpoint. The three backends are at very different stages:
+## 6. The three monitoring tools
 
-### 6.1 DX UIM — built, verified (octopod)
+Each tool integration is the same four pieces: a config repo, an
+Ansible role, a translator (neutral format → tool format), and the
+tool's API. The three tools are at very different stages.
 
-- **Endpoint**: `PUT {dxuim_api_base}/uimapi/probes/{domain}/{hub}/{robot}/{probe}/config`,
-  basic auth, body = `probeConfigKeys` array.
-- **Hub resolution**: the hub is *not* in the repo path; it's mapped from
-  environment via `dxuim_hub_by_environment` in inventory group_vars.
-- **Transform**: passthrough today (committed files are already wire
-  format). Domain-model transform is specced: Process mapping is real and
-  verified against `processes.json`; CDM and Log Monitor key conventions
-  are sketched but **unverified** — confirm against Broadcom probe docs
-  before implementing (spec §8.1).
-- **Resilience**: 3 retries with delay on the PUT, block/rescue wrapping
-  so failure notifies the requester *and* fails the job.
-- **Verified end-to-end** against `dxuim-stub/` with real Ansible (WSL).
-- **Known gaps**: `validate_certs: false` (matches the UAT sample; must
-  be revisited before PROD), compare-API pagination logs a warning past
-  1000 changes but doesn't page.
+### 6.1 DX UIM — ✅ built and verified
 
-### 6.2 ELK Stack — pattern proven, home undecided
+This is what the octopod repository contains.
 
-- **Mechanism**: Elasticsearch Watcher per log-keyword alert (keyword
-  match query against an index pattern, condition on hit count within a
-  lookback window, action fires a notification).
-- **Status**: the watcher-sync automation exists but was deliberately
-  removed from octopod; it currently survives only as a **stale, non-git
-  mirror** at `ELK/ansible/` (old repo slug, old branch name, none of the
-  M1 hardening). There is a standing decision item: promote it into its
-  own repo (the architecture's preferred answer — it matches the
-  one-repo-per-backend principle) or explicitly retire it. Leaving it
-  rotting is the one wrong option (`docs/planning/backlog.md`).
-- **Open design gap**: only `log` has a defined ELK-side shape. `cmd` and
-  `process` against an OTel-migrated host have **no designed mechanism at
-  all** (Prometheus-style rules over OTel metrics? Grafana-managed
-  alerts?). This will be hit the first time someone raises a CMD/Process
-  alert on a migrated host (spec §8.2).
+- Ansible reads config from Bitbucket and pushes it with a single API
+  call per probe:
+  `PUT /uimapi/probes/{domain}/{hub}/{robot}/{probe}/config`.
+- The hub isn't stored in the repo path — Ansible looks it up from a
+  per-environment mapping in its inventory.
+- Failed pushes retry 3 times, then notify the requester and fail the job.
+- The whole path has been tested end-to-end against a local stub of the
+  DX UIM API (`dxuim-stub/`) using real Ansible.
 
-### 6.3 SolarWinds — planned, not started
+Known limitations, tracked in the backlog: TLS verification is switched
+off (acceptable for UAT, must change before PROD), and very large pushes
+(over 1,000 changed files) would only be partially detected — a warning
+is logged, but paging isn't implemented.
 
-Nothing SolarWinds-specific exists in any repo yet. The architecture for
-it is prescribed by the pattern, not invented per-backend:
+### 6.2 ELK — ⚠️ working pattern, but currently homeless
 
-- **Config repo**: `solarwinds-config/{environment}/{node}/...` with the
-  same `metadata` + `catalog-info.yaml` conventions.
-- **Sync role**: `solarwinds_config_sync`, structurally cloned from
-  `dxuim_config_sync` (same three trigger modes, same block/rescue +
-  `notify_requester` reuse — that role was deliberately kept generic for
-  exactly this).
-- **Transform**: domain model → SolarWinds alert definitions. This is
-  the design work: SolarWinds' Orion platform exposes alerting via the
-  Orion SDK / SWIS REST API, and its alert model (trigger conditions on
-  polled node/interface/application metrics) maps most naturally onto the
-  spec's `cmd` and `process` categories rather than `log`.
-- **Routing**: `routing.tool` in the domain-model envelope is currently
-  `enum: ELK, DX UIM`. Adding SolarWinds means extending this enum and
-  the wizard's routing resolution — an additive schema change plus an
-  `[ELK/backstage]` wizard change. **Decision needed before build**: what
-  determines that an asset routes to SolarWinds (asset registry
-  attribute? network-device asset class?).
+Log alerts on ELK are implemented as Elasticsearch Watchers, and
+automation for syncing them exists — but it was deliberately moved *out*
+of this repository (one repo per tool), and its new home was never
+created. It currently sits as an out-of-date copy in a OneDrive folder,
+which is the worst of both worlds. **A decision is pending**: give it
+its own git repository (recommended — it matches the one-repo-per-tool
+rule) or formally retire it.
 
-**Decisions required to start the SolarWinds build** (in order): (1) the
-routing rule, (2) which alert categories SolarWinds owns vs. overlaps
-with DX UIM, (3) API authentication model and whether SWIS is reachable
-from the Ansible execution environment, (4) whether an idempotent
-"PUT-equivalent" exists in SWIS — if alert definitions can only be
-created/updated by ID, the sync role needs a lookup-then-upsert step,
-which is more logic than DX UIM needed but doesn't break principle 3.
+Separately, only *log* alerts have a designed ELK implementation.
+CPU/memory/process alerts for servers that have migrated to the new
+stack have **no designed mechanism yet** — this gap will be hit the
+first time someone requests one.
 
-## 7. Observability of the platform itself
+### 6.3 SolarWinds — ⭕ planned, not started
 
-- **Grafana** (`grafana/`): per-entity and overview dashboards, linked
-  from Catalog entities. DX UIM panels are explicit `TODO`s — blocked on
-  confirming what actually bridges DX UIM metrics into Grafana (milestone
-  item). Sync runs are intended to emit Grafana annotations; the
-  annotation key shape is flagged unverified.
-- **Backstage Notifications**: the requester-facing feedback channel.
-  Request shape built against the 1.20-era API and flagged for
-  verification against the installed version.
-- **CI job status**: activation failure re-raises after notifying, so
-  the pipeline run itself is red — operator-facing signal independent of
-  the requester-facing notification.
+Nothing SolarWinds-related exists in any repository yet. When built, it
+follows the established pattern rather than inventing a new one:
 
-## 8. Security posture
+- Its own config repo (`solarwinds-config/`) with the same folder and
+  metadata conventions.
+- Its own Ansible role, structurally copied from the DX UIM one — the
+  notification role was deliberately built to be shared, so it plugs in
+  as-is.
+- A translator from the neutral format to SolarWinds alert definitions,
+  talking to the SolarWinds Orion API.
 
-- **Secrets**: all tokens/passwords in Ansible Vault
-  (`vault_bitbucket_token`, `vault_dxuim_password`,
-  `vault_backstage_token`); `vault.yml.example` documents the shape.
-  `no_log: true` on every task that handles a secret or config payload.
-- **Bitbucket access**: bearer token, read-only usage by construction
-  (the roles contain no write calls).
-- **Browser never talks to Bitbucket**: the planned Catalog
-  "Configuration" tab is designed behind a server-side read proxy.
-- **Known debt**: `validate_certs: false` on the DX UIM PUT (UAT-only
-  assumption); DX UIM uses basic auth per the vendor API.
+Four decisions are needed before build starts:
 
-## 9. Build-stage status matrix
+1. **Routing rule** — what property of an asset says "this one is
+   monitored by SolarWinds"? (Today routing only knows ELK and DX UIM.)
+2. **Category ownership** — which alert types does SolarWinds handle,
+   and where does it overlap with DX UIM?
+3. **Access** — API credentials, and whether the SolarWinds API is
+   reachable from where Ansible runs.
+4. **Idempotency check** — confirm SolarWinds' API supports a safe
+   "set it to exactly this" update. If it only supports create/update by
+   ID, the role needs a lookup step first (more logic, but the one-way,
+   stateless design still holds).
 
-| Capability | Status |
+## 7. Security, in brief
+
+- All credentials (Bitbucket token, DX UIM password, Backstage token)
+  live in Ansible Vault; every task handling secrets or payloads has
+  logging suppressed.
+- Ansible's Bitbucket access is read-only by construction — the roles
+  contain no write calls.
+- Browsers never talk to Bitbucket directly; any future UI that shows
+  config from git goes through a server-side proxy.
+- Known debt: TLS verification is disabled on the DX UIM call (UAT
+  assumption — fix before PROD).
+
+## 8. What's built vs. what isn't
+
+| Piece | Status |
 |---|---|
-| DX UIM sync (3 trigger modes, retry, notify) | **Built, verified vs stub** |
-| Requester notifications (success + failure) | **Built** (API shape unverified vs installed plugin) |
-| Branching / PR approval model | **Defined** (`docs/design/branching-strategy.html`) |
-| Robot Catalog registration (`catalog-info.yaml`) | **Built, manual** (template to automate is backlog) |
-| Domain model schema | **Specified** (draft v0.1) — transform not implemented |
-| DX UIM CDM + Log Monitor configs | Placeholders only; key conventions unverified |
-| Grafana dashboards | Built; DX UIM panels TODO (no confirmed data source) |
-| ELK watcher sync | Exists as stale mirror — repo decision pending |
-| ELK cmd/process mechanism | **Not designed** |
-| SolarWinds (repo, role, transform, routing) | **Not started** — pattern prescribed in §6.3 |
-| DX UIM Scaffolder template | Not built (`[ELK/backstage]`) |
-| `changeRecordId` / `sourceTaskId` provenance | Specified, not captured anywhere yet |
+| DX UIM sync — webhook/single-file/full-sync triggers, retries, notifications | ✅ Built, tested against stub |
+| Requester notifications (success and failure) | ✅ Built (request format still to be verified against the installed Backstage version) |
+| Branching / PR-approval model | ✅ Defined and in use |
+| Server registration in Backstage Catalog | ✅ Works, but manual — automation depends on a wizard change (owned by the Backstage repo, not octopod) |
+| Tool-neutral config format (domain model) | 📄 Specified, translator not implemented |
+| Real CPU/memory and log configs for the first server | ⭕ Placeholder files only |
+| Grafana dashboards | ⚠️ Built, but DX UIM panels are TODO — no confirmed data source yet |
+| ELK watcher sync | ⚠️ Exists as a stale copy — needs a home (decision pending) |
+| ELK CPU/memory/process alerting | ⭕ Not designed |
+| SolarWinds (everything) | ⭕ Not started — see section 6.3 |
+| Audit trail (change record ID, request task ID in committed files) | 📄 Specified, not captured yet |
 
-## 10. Architectural risks & open questions
+Current milestone: **DX UIM base hardening, due 30 September 2026** —
+verify the unverified assumptions above, fill in the placeholder
+configs, and resolve the ELK-home decision. Details in
+`docs/planning/milestones.md`.
 
-1. **Routing staleness** — routing is resolved at request time; a host
-   migrating to OTel between commit and activation lands config on the
-   old backend. Options (trust-as-committed vs. re-derive at activation
-   and fail on disagreement) are documented in the spec §4; undecided.
-2. **Branch-name collision** — `staging/<name>` derives from asset
-   identity only; two concurrent requests for the same asset collide.
-   Fixed by threading `sourceTaskId` into the branch name (also fixes
-   notification deep-linking). `[ELK/backstage]`.
-3. **Approver identity** — captured as free text in the wizard, not a
-   validated entity ref; weakens the audit chain the PR model otherwise
-   provides.
-4. **Unverified vendor surfaces** — CDM/Log Monitor probe keys, Grafana
-   annotation keys, Notifications API shape. All flagged inline where
-   assumed; the current milestone's first work item is verifying them.
-5. **Three-backend drift** — as ELK and SolarWinds roles come online, the
-   pattern (trigger modes, metadata convention, notify contract) must be
-   kept identical across roles or the platform decays into three bespoke
-   pipelines. Mitigation: `notify_requester` stays shared; consider
-   extracting the Bitbucket-fetch tasks into a shared role before the
-   second consumer is built, not after the third.
+## 9. Open risks and decisions
 
-## 11. Related documents
+1. **Stale routing.** The "which tool?" decision is made when the
+   request is raised, not when it's activated. If a server migrates
+   between request and activation, config lands on the old tool.
+   Documented options exist (spec §4); no decision yet.
+2. **Branch-name collisions.** Two simultaneous requests for the same
+   server would generate the same `staging/<name>` branch name. Fix is
+   specified (include the request's task ID in the name) but belongs to
+   the wizard, which lives in the Backstage repo.
+3. **Approver is free text.** The wizard captures the approver's name as
+   typed, not as a validated identity — weakening an otherwise strong
+   audit chain.
+4. **Unverified vendor assumptions.** Several integration details
+   (DX UIM's cdm/logmon key format, the Backstage notifications request
+   shape, Grafana annotation keys) were built from documentation, not
+   verified against the installed systems. Verifying them is the current
+   milestone's first work item; each is flagged inline in the code.
+5. **Three-tool drift.** With three parallel tool integrations, the
+   shared conventions (trigger modes, metadata block, notification
+   contract) must stay identical or the platform decays into three
+   bespoke pipelines. The notification role is already shared; the
+   Bitbucket-reading logic should be extracted into a shared role when
+   the second consumer is built — not after the third.
 
-- `docs/planning/overview.md` — scope boundary (octopod vs. wider program)
-- `docs/planning/milestones.md` — current milestone: DX UIM base hardening, 30 Sep 2026
-- `docs/planning/backlog.md` — itemized gaps referenced throughout
-- `docs/spec/raise-an-alert-domain-model.md` — committed document schema (draft)
-- `docs/design/branching-strategy.html` — branching/approval model
-- `dxuim-config/guide.md` — DX UIM API + metadata/catalog conventions
+## 10. Where to read more
+
+| Document | What it covers |
+|---|---|
+| `docs/planning/overview.md` | Scope boundary: what octopod owns vs. the wider program |
+| `docs/planning/milestones.md` | Current milestone and its contents |
+| `docs/planning/backlog.md` | Every known gap, itemized and tagged by owning repo |
+| `docs/spec/raise-an-alert-domain-model.md` | The tool-neutral config format (draft) |
+| `docs/design/branching-strategy.html` | The branching/approval model, illustrated |
+| `dxuim-config/guide.md` | DX UIM API usage and file conventions |

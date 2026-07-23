@@ -3090,11 +3090,11 @@
         const CATEGORY_LABEL = { log: 'Log Monitoring', cmd: 'CMD Monitoring', process: 'Process Monitoring' };
         const STEP4_LABEL = { log: 'Keywords', cmd: 'Resource Threshold', process: 'Process Details' };
 
-        let wizState = { systemType: null, category: null, step: 1, hosts: [''] };
+        let wizState = { systemType: null, category: null, step: 1, tplStep: 1, hosts: [''] };
 
         function openAlertWizard(event) {
             if (event) event.preventDefault();
-            wizState = { systemType: null, category: null, step: 1, hosts: [''] };
+            wizState = { systemType: null, category: null, step: 1, tplStep: 1, hosts: [''] };
             document.querySelectorAll('#alertWizardModal .pick-card').forEach(c => c.classList.remove('selected'));
             document.getElementById('keywordRows').innerHTML = '';
             addKeywordRow();
@@ -3556,36 +3556,36 @@
                 : '<span style="color:var(--ink-dim); font-size:12px;">Nothing to preview yet</span>';
         }
 
+        // ---------- Chooser modal (steps 1-2 only) ----------
+        // The modal ends at Category. Those two picks resolve which concrete
+        // Scaffolder template to launch; everything from Identify Service
+        // onward lives on the full template page (view-template), the way the
+        // real Scaffolder renders it at /create/templates/<name>.
         function goToStep(step) {
             wizState.step = step;
             document.querySelectorAll('#alertWizardModal .wiz-pane').forEach(p => p.classList.toggle('active', Number(p.dataset.pane) === step));
             document.querySelectorAll('#wizStepper .step').forEach(s => s.classList.toggle('active', Number(s.dataset.step) === step));
 
             if (step === 2) renderCategoryGrid();
-            if (step === 3) renderIdentifyPane();
-            if (step === 4) renderCategoryDetailsPane();
-            if (step === 6) renderReview();
 
             document.getElementById('wizBackBtn').textContent = step === 1 ? 'Cancel' : 'Back';
-            document.getElementById('wizNextBtn').textContent = step === 6 ? 'Submit for Approval' : 'Next';
+            document.getElementById('wizNextBtn').textContent = step === 2 ? 'Open Template' : 'Next';
         }
 
         function wizNext() {
-            if (wizState.step === 1 && !wizState.systemType) {
-                alert('Pick a system type to continue.');
+            if (wizState.step === 1) {
+                if (!wizState.systemType) {
+                    alert('Pick a system type to continue.');
+                    return;
+                }
+                goToStep(2);
                 return;
             }
-            if (wizState.step === 2 && !wizState.category) {
+            if (!wizState.category) {
                 alert('Pick an alert category to continue.');
                 return;
             }
-            if (wizState.step === 6) {
-                const names = generateWatcherNames();
-                alert(`Sent for approval.\n${names.length} watcher(s) will be created once approved and validated in Infinity.`);
-                closeWizard();
-                return;
-            }
-            goToStep(wizState.step + 1);
+            launchTemplate();
         }
 
         function wizBack() {
@@ -3594,6 +3594,88 @@
                 return;
             }
             goToStep(wizState.step - 1);
+        }
+
+        // ---------- Template page (full Scaffolder template) ----------
+        // One concrete template per (system type x category) pair — the
+        // chooser only decides which one gets launched.
+        function resolveTemplateRef() {
+            if (wizState.systemType === 'microservice') return 'template:default/microservice-keyword-alert';
+            return `template:default/opensystem-${wizState.category}-alert`;
+        }
+
+        function launchTemplate() {
+            closeWizard();
+            const isMicro = wizState.systemType === 'microservice';
+            document.getElementById('tplTitle').textContent = 'Raise an Alert — ' + CATEGORY_LABEL[wizState.category];
+            document.getElementById('tplSub').textContent = isMicro
+                ? 'Kubernetes workload alert — watcher created on the elk-stack pipeline once approved.'
+                : 'Host alert, routed per host — DX UIM by default, ELK for OTel-enabled hosts.';
+            document.getElementById('tplRef').textContent = resolveTemplateRef();
+            document.getElementById('tplChipSystem').innerHTML =
+                `<svg class="ic"><use href="#i-${isMicro ? 'package' : 'server'}"/></svg> ${isMicro ? 'Microservice' : 'Open System'}`;
+            document.getElementById('tplChipCategory').innerHTML =
+                `<svg class="ic"><use href="#i-${CATEGORY_ICON[wizState.category]}"/></svg> ${CATEGORY_LABEL[wizState.category]}`;
+            goToTplStep(1);
+            switchView('template');
+        }
+
+        function goToTplStep(step) {
+            wizState.tplStep = step;
+            document.querySelectorAll('#view-template .wiz-pane').forEach(p => p.classList.toggle('active', Number(p.dataset.pane) === step));
+            document.querySelectorAll('#tplStepper .tpl-step').forEach(s => {
+                const n = Number(s.dataset.step);
+                s.classList.toggle('active', n === step);
+                s.classList.toggle('done', n < step);
+            });
+
+            if (step === 1) renderIdentifyPane();
+            if (step === 2) renderCategoryDetailsPane();
+            if (step === 4) renderReview();
+
+            document.getElementById('tplBackBtn').textContent = step === 1 ? 'Back to Chooser' : 'Back';
+            document.getElementById('tplNextBtn').textContent = step === 4 ? 'Submit for Approval' : 'Next';
+            document.querySelector('#view-template .page-body').scrollTop = 0;
+        }
+
+        function tplNext() {
+            if (wizState.tplStep === 4) {
+                const names = generateWatcherNames();
+                alert(`Sent for approval.\n${names.length} watcher(s) will be created once approved and validated in Infinity.`);
+                switchView('home');
+                return;
+            }
+            goToTplStep(wizState.tplStep + 1);
+        }
+
+        function tplBack() {
+            if (wizState.tplStep === 1) {
+                reopenChooser();
+                return;
+            }
+            goToTplStep(wizState.tplStep - 1);
+        }
+
+        // Completed steps are clickable, matching the Scaffolder's stepper.
+        function tplStepClick(step) {
+            if (step < wizState.tplStep) goToTplStep(step);
+        }
+
+        function cancelTemplate() {
+            switchView('home');
+        }
+
+        // "Change selection" / Back-from-step-1: reopen the chooser with the
+        // current picks intact. openAlertWizard() stays the fresh-start path.
+        function reopenChooser() {
+            const savedType = wizState.systemType, savedCat = wizState.category;
+            document.getElementById('alertWizardModal').classList.add('active');
+            goToStep(2); // renderCategoryGrid() clears the selection — restore it
+            wizState.category = savedCat;
+            const typeCard = document.querySelector(`#alertWizardModal .wiz-pane[data-pane="1"] .pick-card[data-value="${savedType}"]`);
+            if (typeCard) typeCard.classList.add('selected');
+            const catCard = document.querySelector(`#categoryGrid .pick-card[data-value="${savedCat}"]`);
+            if (catCard && !catCard.classList.contains('disabled')) catCard.classList.add('selected');
         }
 
         document.getElementById('alertWizardModal').addEventListener('click', function(e) {
