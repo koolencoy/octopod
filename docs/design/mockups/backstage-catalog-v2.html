@@ -1222,6 +1222,143 @@
         .wiz-pane { display: none; }
         .wiz-pane.active { display: block; }
 
+        /* ============ Template page (full Scaffolder template) ============
+           The chooser modal ends at Category — everything from Identify
+           Service onward renders here, as a real Backstage template page
+           would (/create/templates/<name>). Mirrors the Scaffolder layout:
+           vertical MUI-style stepper on the left, form panes on the right. */
+        .tpl-context {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 10px 16px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-card);
+            font-size: 12.5px;
+            color: var(--ink-dim);
+        }
+
+        .tpl-context-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            border-radius: 999px;
+            padding: 4px 11px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .tpl-context-chip .ic { width: 13px; height: 13px; }
+
+        .tpl-change {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: var(--primary);
+            font: inherit;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tpl-change:hover { text-decoration: underline; }
+
+        .tpl-layout {
+            display: grid;
+            grid-template-columns: 250px minmax(0, 1fr);
+            gap: 24px;
+            align-items: start;
+            max-width: 1240px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .tpl-stepper {
+            position: sticky;
+            top: 0;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 10px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .tpl-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 11px 12px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        /* vertical connector between step circles */
+        .tpl-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 27px;
+            top: 40px;
+            bottom: -12px;
+            width: 2px;
+            background: var(--border-strong);
+        }
+
+        .tpl-step .step-circle { width: 30px; height: 30px; flex-shrink: 0; }
+
+        .tpl-step.active .step-circle {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-soft);
+        }
+
+        .tpl-step.done { cursor: pointer; }
+
+        .tpl-step.done .step-circle {
+            background: var(--primary-soft);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .tpl-step.done:hover { background: var(--primary-soft); }
+
+        .tpl-step.done:not(:last-child)::after { background: var(--primary); }
+
+        .tpl-step-text { padding-top: 2px; min-width: 0; }
+
+        .tpl-step .step-label { text-align: left; font-size: 12.5px; }
+
+        .tpl-step.active .step-label, .tpl-step.done .step-label { color: var(--ink); }
+
+        .tpl-step-desc { font-size: 11px; color: var(--ink-dim); margin-top: 2px; }
+
+        .tpl-footer {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .ph-chip.mono-chip { font-family: var(--mono); font-size: 11.5px; }
+
+        @media (max-width: 900px) {
+            .tpl-layout { grid-template-columns: 1fr; }
+            .tpl-stepper { position: static; display: flex; gap: 4px; }
+            .tpl-step { flex: 1; flex-direction: column; align-items: center; gap: 6px; padding: 8px 4px; }
+            .tpl-step:not(:last-child)::after { display: none; }
+            .tpl-step .step-label { text-align: center; }
+            .tpl-step-desc { display: none; }
+        }
+
         .pick-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -1330,7 +1467,7 @@
         .wiz-route.migrated .ic { color: var(--status-ok); }
         .wiz-route.legacy { background: var(--status-warn-soft); border-color: rgba(245,147,0,0.3); color: #8a5800; }
         .wiz-route.legacy .ic { color: var(--status-warn); }
-        .wiz-route.unknown { background: #f2f4f8; border-color: var(--border-strong); }
+        .wiz-route.unknown, .wiz-route.mixed { background: #f2f4f8; border-color: var(--border-strong); }
 
         .wiz-route-cta {
             margin-left: auto;
@@ -1340,6 +1477,30 @@
             text-decoration: none;
             white-space: nowrap;
         }
+
+        .host-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+
+        .host-row { display: flex; align-items: center; gap: 8px; }
+
+        .host-row .form-input { flex: 1; }
+
+        .host-badge {
+            flex-shrink: 0;
+            font-size: 10.5px;
+            font-weight: 700;
+            font-family: var(--mono);
+            padding: 3px 9px;
+            border-radius: 20px;
+            white-space: nowrap;
+            color: var(--ink-dim);
+            background: #eef2f8;
+            min-width: 74px;
+            text-align: center;
+        }
+
+        .host-badge.migrated { background: var(--status-ok-soft); color: #146b45; }
+        .host-badge.legacy { background: var(--status-warn-soft); color: #8a5800; }
+        .host-badge.unknown { background: #f2f4f8; color: var(--ink-dim); }
 
         .existing-config-card {
             background: #f8f9fc;
@@ -2295,6 +2456,320 @@
                     </div>
                 </div>
             </section>
+
+            <!-- ================= Template page (full Scaffolder template) =================
+                 The chooser modal hands off here after Category. In the real app this is
+                 the Scaffolder page at /create/templates/<name> — one template per
+                 (system type x category) pair; the chooser only decides which one. -->
+            <section class="view" id="view-template">
+                <header class="page-header">
+                    <div class="ph-top">
+                        <div>
+                            <div class="ph-eyebrow">Create &middot; Software Template</div>
+                            <h1 class="ph-title" id="tplTitle">Raise an Alert</h1>
+                            <p class="ph-sub" id="tplSub"></p>
+                            <div class="ph-meta">
+                                <span class="ph-chip mono-chip" id="tplRef"></span>
+                                <span class="ph-chip"><svg class="ic"><use href="#i-users"/></svg> acbc/observability</span>
+                            </div>
+                        </div>
+                        <div class="ph-actions">
+                            <button class="btn btn-ghost" onclick="cancelTemplate()"><svg class="ic ic-sm"><use href="#i-x"/></svg> Cancel</button>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="page-body">
+                    <div class="tpl-context">
+                        <span>Launched from the chooser:</span>
+                        <span class="tpl-context-chip" id="tplChipSystem"></span>
+                        <span class="tpl-context-chip" id="tplChipCategory"></span>
+                        <button type="button" class="tpl-change" onclick="reopenChooser()">Change selection <svg class="ic ic-sm"><use href="#i-arrow-r"/></svg></button>
+                    </div>
+
+                    <div class="tpl-layout">
+                        <aside class="tpl-stepper" id="tplStepper">
+                            <div class="tpl-step active" data-step="1" onclick="tplStepClick(1)">
+                                <div class="step-circle">1</div>
+                                <div class="tpl-step-text">
+                                    <div class="step-label">Identify Service</div>
+                                    <div class="tpl-step-desc">Which asset this alert belongs to</div>
+                                </div>
+                            </div>
+                            <div class="tpl-step" data-step="2" onclick="tplStepClick(2)">
+                                <div class="step-circle">2</div>
+                                <div class="tpl-step-text">
+                                    <div class="step-label" id="stepLabel4">Alert Details</div>
+                                    <div class="tpl-step-desc">Category-specific fields</div>
+                                </div>
+                            </div>
+                            <div class="tpl-step" data-step="3" onclick="tplStepClick(3)">
+                                <div class="step-circle">3</div>
+                                <div class="tpl-step-text">
+                                    <div class="step-label">Approver</div>
+                                    <div class="tpl-step-desc">Who signs this off</div>
+                                </div>
+                            </div>
+                            <div class="tpl-step" data-step="4" onclick="tplStepClick(4)">
+                                <div class="step-circle">4</div>
+                                <div class="tpl-step-text">
+                                    <div class="step-label">Review</div>
+                                    <div class="tpl-step-desc">Confirm and submit</div>
+                                </div>
+                            </div>
+                        </aside>
+
+                        <div class="tpl-panes">
+                        <!-- TEMPLATE PANE 1: Identify service (system-type specific) -->
+                        <div class="wiz-pane" data-pane="1">
+                            <div class="wiz-route" id="wizRoute"></div>
+
+                            <div class="prefill-hint">
+                                <svg class="ic"><use href="#i-bulb"/></svg>
+                                <span>New to this? Load a sample request to see how it works.</span>
+                                <button type="button" onclick="loadWizardSample()">Load Sample</button>
+                            </div>
+
+                            <div class="form-section" id="fieldsetMicroservice">
+                                <div class="form-section-header">
+                                    <span class="form-section-icon"><svg class="ic"><use href="#i-package"/></svg></span>
+                                    <span class="form-section-title">Microservice Details</span>
+                                    <span class="form-section-desc">Fill in once — applies to the alert below</span>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group compact">
+                                        <label class="form-label required">Entity</label>
+                                        <select class="form-select" id="wEntity">
+                                            <option value="">Select entity</option>
+                                            <option value="CBS">CBS</option>
+                                            <option value="MIDDLEWARE">MIDDLEWARE</option>
+                                            <option value="PAYMENTS">PAYMENTS</option>
+                                            <option value="CHANNELS">CHANNELS</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group compact">
+                                        <label class="form-label required">Environment</label>
+                                        <select class="form-select" id="wEnv">
+                                            <option value="">Select environment</option>
+                                            <option value="SIT">SIT</option>
+                                            <option value="UAT">UAT</option>
+                                            <option value="PROD">Production</option>
+                                            <option value="DR">DR</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group compact">
+                                        <label class="form-label required">K8s Namespace</label>
+                                        <input type="text" class="form-input" id="wNamespace" placeholder="e.g. deposit-adapter-sg">
+                                    </div>
+                                    <div class="form-group compact">
+                                        <label class="form-label required">K8s Container Name</label>
+                                        <input type="text" class="form-input" id="wContainer" placeholder="e.g. ms-cbs-account-movement-adapter">
+                                    </div>
+                                    <div class="form-group compact">
+                                        <label class="form-label required">Service ID (HPSM)</label>
+                                        <input type="text" class="form-input" id="wServiceId" placeholder="e.g. 572">
+                                    </div>
+                                    <div class="form-group compact">
+                                        <label class="form-label required">Search Code (HPSM)</label>
+                                        <input type="text" class="form-input" id="wSearchCode" placeholder="e.g. MIDDLEWARE">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section" id="fieldsetOpenSystem" style="display: none;">
+                                <div class="form-section-header">
+                                    <span class="form-section-icon"><svg class="ic"><use href="#i-server"/></svg></span>
+                                    <span class="form-section-title">Open System Details</span>
+                                    <span class="form-section-desc">Fill in once — applies to every host below</span>
+                                </div>
+                                <div class="form-group compact full-width" style="margin-bottom: 14px;">
+                                    <label class="form-label required">Hosts</label>
+                                    <div class="host-rows" id="hostRows"></div>
+                                    <button type="button" class="btn-add-keyword" onclick="addHostRow()">
+                                        <svg class="ic"><use href="#i-plus"/></svg> Add Another Host
+                                    </button>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group compact">
+                                        <label class="form-label required">OS Type</label>
+                                        <select class="form-select" id="wOsType">
+                                            <option value="">Select OS</option>
+                                            <option value="Linux">Linux</option>
+                                            <option value="Windows">Windows</option>
+                                            <option value="AIX">AIX</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group compact">
+                                        <label class="form-label required">Environment</label>
+                                        <select class="form-select" id="wOpenEnv">
+                                            <option value="">Select environment</option>
+                                            <option value="SIT">SIT</option>
+                                            <option value="UAT">UAT</option>
+                                            <option value="PROD">Production</option>
+                                            <option value="DR">DR</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group compact">
+                                        <label class="form-label required">Application Name</label>
+                                        <input type="text" class="form-input" id="wOpenAppName" placeholder="e.g. MIDDLEWARE">
+                                    </div>
+                                    <div class="form-group compact">
+                                        <label class="form-label required">Service ID (HPSM)</label>
+                                        <input type="text" class="form-input" id="wOpenServiceId" placeholder="e.g. 572">
+                                    </div>
+                                    <div class="form-group compact">
+                                        <label class="form-label required">Search Code (HPSM)</label>
+                                        <input type="text" class="form-input" id="wOpenSearchCode" placeholder="e.g. MIDDLEWARE">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TEMPLATE PANE 2: Category-specific details -->
+                        <div class="wiz-pane" data-pane="2">
+                            <div id="existingConfigPanel"></div>
+
+                            <div class="form-section" id="catFieldsLog">
+                                <div class="form-section-header">
+                                    <span class="form-section-icon"><svg class="ic"><use href="#i-key"/></svg></span>
+                                    <span class="form-section-title">Keywords to monitor</span>
+                                    <span class="form-section-desc">Add one or more keywords</span>
+                                </div>
+                                <div class="form-group compact full-width" id="logFilepathGroup" style="display: none; margin-bottom: 14px;">
+                                    <label class="form-label required">Log Filepath</label>
+                                    <input type="text" class="form-input" id="wLogFilepath" placeholder="e.g. /apps/log/system">
+                                </div>
+                                <table class="keyword-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 50%;">Keyword</th>
+                                            <th style="width: 40%;">Severity</th>
+                                            <th style="width: 10%;"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="keywordRows"></tbody>
+                                </table>
+                                <button type="button" class="btn-add-keyword" onclick="addKeywordRow()">
+                                    <svg class="ic"><use href="#i-plus"/></svg> Add Keyword
+                                </button>
+                            </div>
+
+                            <div class="form-section" id="catFieldsCmd" style="display: none;">
+                                <div class="form-section-header">
+                                    <span class="form-section-icon"><svg class="ic"><use href="#i-gauge"/></svg></span>
+                                    <span class="form-section-title">Resource threshold</span>
+                                    <span class="form-section-desc">CPU, Memory, or Disk</span>
+                                </div>
+                                <div class="form-group compact full-width" style="margin-bottom: 14px;">
+                                    <label class="form-label required">Metric</label>
+                                    <div class="chip-select" id="cmdMetricSelect">
+                                        <div class="chip-option" data-value="CPU" onclick="selectChip('cmdMetricSelect', 'CPU', this)">CPU</div>
+                                        <div class="chip-option" data-value="Memory" onclick="selectChip('cmdMetricSelect', 'Memory', this)">Memory</div>
+                                        <div class="chip-option" data-value="Disk" onclick="selectChip('cmdMetricSelect', 'Disk', this)">Disk</div>
+                                    </div>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group compact">
+                                        <label class="form-label required">Threshold (%)</label>
+                                        <input type="text" class="form-input" id="wCmdThreshold" placeholder="e.g. 85">
+                                    </div>
+                                    <div class="form-group compact">
+                                        <label class="form-label required">Sustained for (minutes)</label>
+                                        <input type="text" class="form-input" id="wCmdDuration" placeholder="e.g. 5">
+                                    </div>
+                                    <div class="form-group compact full-width">
+                                        <label class="form-label required">Severity</label>
+                                        <select class="form-select" id="wCmdSeverity">
+                                            <option value="">Select severity</option>
+                                            <option value="Critical">Critical</option>
+                                            <option value="Major">Major</option>
+                                            <option value="Minor">Minor</option>
+                                            <option value="Warning">Warning</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section" id="catFieldsProcess" style="display: none;">
+                                <div class="form-section-header">
+                                    <span class="form-section-icon"><svg class="ic"><use href="#i-server"/></svg></span>
+                                    <span class="form-section-title">Process to watch</span>
+                                    <span class="form-section-desc">Alert on process state changes</span>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group compact full-width">
+                                        <label class="form-label required">Process Name</label>
+                                        <input type="text" class="form-input" id="wProcessName" placeholder="e.g. java, sshd, batch_settlement.sh">
+                                    </div>
+                                    <div class="form-group compact">
+                                        <label class="form-label required">Expected State</label>
+                                        <select class="form-select" id="wProcessState">
+                                            <option value="Running">Running</option>
+                                            <option value="Stopped">Stopped</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group compact">
+                                        <label class="form-label required">Check Interval (minutes)</label>
+                                        <input type="text" class="form-input" id="wProcessInterval" placeholder="e.g. 5">
+                                    </div>
+                                    <div class="form-group compact full-width">
+                                        <label class="form-label required">Severity</label>
+                                        <select class="form-select" id="wProcessSeverity">
+                                            <option value="">Select severity</option>
+                                            <option value="Critical">Critical</option>
+                                            <option value="Major">Major</option>
+                                            <option value="Minor">Minor</option>
+                                            <option value="Warning">Warning</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TEMPLATE PANE 3: Approver -->
+                        <div class="wiz-pane" data-pane="3">
+                            <div class="form-section">
+                                <div class="form-section-header">
+                                    <span class="form-section-icon"><svg class="ic"><use href="#i-users"/></svg></span>
+                                    <span class="form-section-title">Select Approver</span>
+                                    <span class="form-section-desc">Routes to your reporting manager for sign-off</span>
+                                </div>
+                                <div class="form-group compact full-width">
+                                    <label class="form-label required">Reporting Manager</label>
+                                    <input type="text" class="form-input" id="wApprover" placeholder="e.g. lead-sre (resolved via Active Directory)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TEMPLATE PANE 4: Review -->
+                        <div class="wiz-pane" data-pane="4">
+                            <div class="form-section">
+                                <div class="form-section-header">
+                                    <span class="form-section-icon"><svg class="ic"><use href="#i-check-circle"/></svg></span>
+                                    <span class="form-section-title">Review</span>
+                                    <span class="form-section-desc">Confirm before sending for approval</span>
+                                </div>
+                                <div class="review-grid" id="reviewGrid"></div>
+                                <div class="summary-box">
+                                    <div class="summary-title">
+                                        Watchers to be created
+                                        <span class="summary-count" id="summaryCount">0</span>
+                                    </div>
+                                    <div class="summary-tags" id="summaryTags">
+                                        <span style="color:var(--ink-dim); font-size:12px;">Nothing to preview yet</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="tpl-footer">
+                                <button class="btn btn-secondary" id="tplBackBtn" onclick="tplBack()">Back</button>
+                                <button class="btn btn-primary" id="tplNextBtn" onclick="tplNext()">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
         </main>
     </div>
 
@@ -2303,7 +2778,7 @@
         <div class="modal-content" style="max-width: 960px;">
             <div class="modal-header">
                 <h2 class="modal-title">Raise an Alert</h2>
-                <p class="modal-subtitle" id="wizSubtitle">Guided CMD, Log, and Process monitoring — routes to ELK or DX UIM automatically</p>
+                <p class="modal-subtitle" id="wizSubtitle">Two quick choices — then you'll continue in the matching template</p>
             </div>
 
             <div class="modal-body">
@@ -2315,22 +2790,6 @@
                     <div class="step" data-step="2">
                         <div class="step-circle">2</div>
                         <div class="step-label">Category</div>
-                    </div>
-                    <div class="step" data-step="3">
-                        <div class="step-circle">3</div>
-                        <div class="step-label">Identify Service</div>
-                    </div>
-                    <div class="step" data-step="4">
-                        <div class="step-circle">4</div>
-                        <div class="step-label" id="stepLabel4">Alert Details</div>
-                    </div>
-                    <div class="step" data-step="5">
-                        <div class="step-circle">5</div>
-                        <div class="step-label">Approver</div>
-                    </div>
-                    <div class="step" data-step="6">
-                        <div class="step-circle">6</div>
-                        <div class="step-label">Review</div>
                     </div>
                 </div>
 
@@ -2387,245 +2846,6 @@
                                 <div class="pick-icon"><svg class="ic"><use href="#i-server"/></svg></div>
                                 <div class="pick-title">Process Monitoring</div>
                                 <div class="pick-desc">Alert if a named process stops (or starts).</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PANE 3: Identify service (system-type specific) -->
-                <div class="wiz-pane" data-pane="3">
-                    <div class="wiz-route" id="wizRoute"></div>
-
-                    <div class="prefill-hint">
-                        <svg class="ic"><use href="#i-bulb"/></svg>
-                        <span>New to this? Load a sample request to see how it works.</span>
-                        <button type="button" onclick="loadWizardSample()">Load Sample</button>
-                    </div>
-
-                    <div class="form-section" id="fieldsetMicroservice">
-                        <div class="form-section-header">
-                            <span class="form-section-icon"><svg class="ic"><use href="#i-package"/></svg></span>
-                            <span class="form-section-title">Microservice Details</span>
-                            <span class="form-section-desc">Fill in once — applies to the alert below</span>
-                        </div>
-                        <div class="form-grid">
-                            <div class="form-group compact">
-                                <label class="form-label required">Entity</label>
-                                <select class="form-select" id="wEntity">
-                                    <option value="">Select entity</option>
-                                    <option value="CBS">CBS</option>
-                                    <option value="MIDDLEWARE">MIDDLEWARE</option>
-                                    <option value="PAYMENTS">PAYMENTS</option>
-                                    <option value="CHANNELS">CHANNELS</option>
-                                </select>
-                            </div>
-                            <div class="form-group compact">
-                                <label class="form-label required">Environment</label>
-                                <select class="form-select" id="wEnv">
-                                    <option value="">Select environment</option>
-                                    <option value="SIT">SIT</option>
-                                    <option value="UAT">UAT</option>
-                                    <option value="PROD">Production</option>
-                                    <option value="DR">DR</option>
-                                </select>
-                            </div>
-                            <div class="form-group compact">
-                                <label class="form-label required">K8s Namespace</label>
-                                <input type="text" class="form-input" id="wNamespace" placeholder="e.g. deposit-adapter-sg">
-                            </div>
-                            <div class="form-group compact">
-                                <label class="form-label required">K8s Container Name</label>
-                                <input type="text" class="form-input" id="wContainer" placeholder="e.g. ms-cbs-account-movement-adapter">
-                            </div>
-                            <div class="form-group compact">
-                                <label class="form-label required">Service ID (HPSM)</label>
-                                <input type="text" class="form-input" id="wServiceId" placeholder="e.g. 572">
-                            </div>
-                            <div class="form-group compact">
-                                <label class="form-label required">Search Code (HPSM)</label>
-                                <input type="text" class="form-input" id="wSearchCode" placeholder="e.g. MIDDLEWARE">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-section" id="fieldsetOpenSystem" style="display: none;">
-                        <div class="form-section-header">
-                            <span class="form-section-icon"><svg class="ic"><use href="#i-server"/></svg></span>
-                            <span class="form-section-title">Open System Details</span>
-                            <span class="form-section-desc">Fill in once — applies to the alert below</span>
-                        </div>
-                        <div class="form-grid">
-                            <div class="form-group compact">
-                                <label class="form-label required">Hostname</label>
-                                <input type="text" class="form-input" id="wHostname" placeholder="e.g. sgapp0231">
-                            </div>
-                            <div class="form-group compact">
-                                <label class="form-label required">OS Type</label>
-                                <select class="form-select" id="wOsType">
-                                    <option value="">Select OS</option>
-                                    <option value="Linux">Linux</option>
-                                    <option value="Windows">Windows</option>
-                                    <option value="AIX">AIX</option>
-                                </select>
-                            </div>
-                            <div class="form-group compact">
-                                <label class="form-label required">Environment</label>
-                                <select class="form-select" id="wOpenEnv">
-                                    <option value="">Select environment</option>
-                                    <option value="SIT">SIT</option>
-                                    <option value="UAT">UAT</option>
-                                    <option value="PROD">Production</option>
-                                    <option value="DR">DR</option>
-                                </select>
-                            </div>
-                            <div class="form-group compact">
-                                <label class="form-label required">Application Name</label>
-                                <input type="text" class="form-input" id="wOpenAppName" placeholder="e.g. MIDDLEWARE">
-                            </div>
-                            <div class="form-group compact">
-                                <label class="form-label required">Service ID (HPSM)</label>
-                                <input type="text" class="form-input" id="wOpenServiceId" placeholder="e.g. 572">
-                            </div>
-                            <div class="form-group compact">
-                                <label class="form-label required">Search Code (HPSM)</label>
-                                <input type="text" class="form-input" id="wOpenSearchCode" placeholder="e.g. MIDDLEWARE">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PANE 4: Category-specific details -->
-                <div class="wiz-pane" data-pane="4">
-                    <div id="existingConfigPanel"></div>
-
-                    <div class="form-section" id="catFieldsLog">
-                        <div class="form-section-header">
-                            <span class="form-section-icon"><svg class="ic"><use href="#i-key"/></svg></span>
-                            <span class="form-section-title">Keywords to monitor</span>
-                            <span class="form-section-desc">Add one or more keywords</span>
-                        </div>
-                        <div class="form-group compact full-width" id="logFilepathGroup" style="display: none; margin-bottom: 14px;">
-                            <label class="form-label required">Log Filepath</label>
-                            <input type="text" class="form-input" id="wLogFilepath" placeholder="e.g. /apps/log/system">
-                        </div>
-                        <table class="keyword-table">
-                            <thead>
-                                <tr>
-                                    <th style="width: 50%;">Keyword</th>
-                                    <th style="width: 40%;">Severity</th>
-                                    <th style="width: 10%;"></th>
-                                </tr>
-                            </thead>
-                            <tbody id="keywordRows"></tbody>
-                        </table>
-                        <button type="button" class="btn-add-keyword" onclick="addKeywordRow()">
-                            <svg class="ic"><use href="#i-plus"/></svg> Add Keyword
-                        </button>
-                    </div>
-
-                    <div class="form-section" id="catFieldsCmd" style="display: none;">
-                        <div class="form-section-header">
-                            <span class="form-section-icon"><svg class="ic"><use href="#i-gauge"/></svg></span>
-                            <span class="form-section-title">Resource threshold</span>
-                            <span class="form-section-desc">CPU, Memory, or Disk</span>
-                        </div>
-                        <div class="form-group compact full-width" style="margin-bottom: 14px;">
-                            <label class="form-label required">Metric</label>
-                            <div class="chip-select" id="cmdMetricSelect">
-                                <div class="chip-option" data-value="CPU" onclick="selectChip('cmdMetricSelect', 'CPU', this)">CPU</div>
-                                <div class="chip-option" data-value="Memory" onclick="selectChip('cmdMetricSelect', 'Memory', this)">Memory</div>
-                                <div class="chip-option" data-value="Disk" onclick="selectChip('cmdMetricSelect', 'Disk', this)">Disk</div>
-                            </div>
-                        </div>
-                        <div class="form-grid">
-                            <div class="form-group compact">
-                                <label class="form-label required">Threshold (%)</label>
-                                <input type="text" class="form-input" id="wCmdThreshold" placeholder="e.g. 85">
-                            </div>
-                            <div class="form-group compact">
-                                <label class="form-label required">Sustained for (minutes)</label>
-                                <input type="text" class="form-input" id="wCmdDuration" placeholder="e.g. 5">
-                            </div>
-                            <div class="form-group compact full-width">
-                                <label class="form-label required">Severity</label>
-                                <select class="form-select" id="wCmdSeverity">
-                                    <option value="">Select severity</option>
-                                    <option value="Critical">Critical</option>
-                                    <option value="Major">Major</option>
-                                    <option value="Minor">Minor</option>
-                                    <option value="Warning">Warning</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-section" id="catFieldsProcess" style="display: none;">
-                        <div class="form-section-header">
-                            <span class="form-section-icon"><svg class="ic"><use href="#i-server"/></svg></span>
-                            <span class="form-section-title">Process to watch</span>
-                            <span class="form-section-desc">Alert on process state changes</span>
-                        </div>
-                        <div class="form-grid">
-                            <div class="form-group compact full-width">
-                                <label class="form-label required">Process Name</label>
-                                <input type="text" class="form-input" id="wProcessName" placeholder="e.g. java, sshd, batch_settlement.sh">
-                            </div>
-                            <div class="form-group compact">
-                                <label class="form-label required">Expected State</label>
-                                <select class="form-select" id="wProcessState">
-                                    <option value="Running">Running</option>
-                                    <option value="Stopped">Stopped</option>
-                                </select>
-                            </div>
-                            <div class="form-group compact">
-                                <label class="form-label required">Check Interval (minutes)</label>
-                                <input type="text" class="form-input" id="wProcessInterval" placeholder="e.g. 5">
-                            </div>
-                            <div class="form-group compact full-width">
-                                <label class="form-label required">Severity</label>
-                                <select class="form-select" id="wProcessSeverity">
-                                    <option value="">Select severity</option>
-                                    <option value="Critical">Critical</option>
-                                    <option value="Major">Major</option>
-                                    <option value="Minor">Minor</option>
-                                    <option value="Warning">Warning</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PANE 5: Approver -->
-                <div class="wiz-pane" data-pane="5">
-                    <div class="form-section">
-                        <div class="form-section-header">
-                            <span class="form-section-icon"><svg class="ic"><use href="#i-users"/></svg></span>
-                            <span class="form-section-title">Select Approver</span>
-                            <span class="form-section-desc">Routes to your reporting manager for sign-off</span>
-                        </div>
-                        <div class="form-group compact full-width">
-                            <label class="form-label required">Reporting Manager</label>
-                            <input type="text" class="form-input" id="wApprover" placeholder="e.g. lead-sre (resolved via Active Directory)">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PANE 6: Review -->
-                <div class="wiz-pane" data-pane="6">
-                    <div class="form-section">
-                        <div class="form-section-header">
-                            <span class="form-section-icon"><svg class="ic"><use href="#i-check-circle"/></svg></span>
-                            <span class="form-section-title">Review</span>
-                            <span class="form-section-desc">Confirm before sending for approval</span>
-                        </div>
-                        <div class="review-grid" id="reviewGrid"></div>
-                        <div class="summary-box">
-                            <div class="summary-title">
-                                Watchers to be created
-                                <span class="summary-count" id="summaryCount">0</span>
-                            </div>
-                            <div class="summary-tags" id="summaryTags">
-                                <span style="color:var(--ink-dim); font-size:12px;">Nothing to preview yet</span>
                             </div>
                         </div>
                     </div>
@@ -2870,11 +3090,11 @@
         const CATEGORY_LABEL = { log: 'Log Monitoring', cmd: 'CMD Monitoring', process: 'Process Monitoring' };
         const STEP4_LABEL = { log: 'Keywords', cmd: 'Resource Threshold', process: 'Process Details' };
 
-        let wizState = { systemType: null, category: null, step: 1 };
+        let wizState = { systemType: null, category: null, step: 1, hosts: [''] };
 
         function openAlertWizard(event) {
             if (event) event.preventDefault();
-            wizState = { systemType: null, category: null, step: 1 };
+            wizState = { systemType: null, category: null, step: 1, hosts: [''] };
             document.querySelectorAll('#alertWizardModal .pick-card').forEach(c => c.classList.remove('selected'));
             document.getElementById('keywordRows').innerHTML = '';
             addKeywordRow();
@@ -2932,17 +3152,65 @@
             const isMicro = wizState.systemType === 'microservice';
             document.getElementById('fieldsetMicroservice').style.display = isMicro ? '' : 'none';
             document.getElementById('fieldsetOpenSystem').style.display = isMicro ? 'none' : '';
-            document.getElementById('wHostname').oninput = updateOpenSystemRouting;
+            if (!isMicro) renderHostRows();
             renderRouteBanner();
         }
 
-        // Recomputes routing for Open Systems whenever the hostname changes —
-        // this is what makes the ELK-vs-DX-UIM decision live instead of
-        // something the user has to know or pick themselves.
-        function updateOpenSystemRouting() {
-            if (wizState.systemType !== 'opensystem') return;
+        // ---------- Open System: multiple hosts ----------
+        // One alert config, applied to every host in this list — each host
+        // still resolves its own ELK-vs-DX-UIM routing (a fleet can mix
+        // migrated and legacy hosts), so each produces its own domain-model
+        // document downstream (see docs/spec/raise-an-alert-domain-model.md).
+        // This list is purely a wizard-side batching convenience.
+
+        function renderHostRows() {
+            if (!wizState.hosts || wizState.hosts.length === 0) wizState.hosts = [''];
+            const container = document.getElementById('hostRows');
+            container.innerHTML = wizState.hosts.map((host, i) => `
+                <div class="host-row">
+                    <input type="text" class="form-input" value="${host}" placeholder="e.g. sgapp0231" oninput="updateHostValue(${i}, this.value)">
+                    <span class="host-badge" id="hostBadge${i}"></span>
+                    <button type="button" class="keyword-remove" onclick="removeHostRow(${i})" title="Remove host" ${wizState.hosts.length <= 1 ? 'style="visibility:hidden;"' : ''}>&times;</button>
+                </div>
+            `).join('');
+            wizState.hosts.forEach((_, i) => updateHostBadge(i));
+        }
+
+        function addHostRow() {
+            wizState.hosts.push('');
+            renderHostRows();
+        }
+
+        function removeHostRow(i) {
+            if (wizState.hosts.length <= 1) return;
+            wizState.hosts.splice(i, 1);
+            renderHostRows();
             renderRouteBanner();
             renderCategoryDetailsPane();
+        }
+
+        // Deliberately doesn't re-render the whole row list on every
+        // keystroke (that would drop input focus) — only this row's badge
+        // and the aggregate banner update live.
+        function updateHostValue(i, value) {
+            wizState.hosts[i] = value;
+            updateHostBadge(i);
+            renderRouteBanner();
+            renderCategoryDetailsPane();
+        }
+
+        function updateHostBadge(i) {
+            const badge = document.getElementById('hostBadge' + i);
+            if (!badge) return;
+            const hostname = (wizState.hosts[i] || '').trim();
+            if (!hostname) {
+                badge.className = 'host-badge';
+                badge.textContent = '';
+                return;
+            }
+            const routing = resolveOpenSystemRouting(hostname);
+            badge.className = 'host-badge ' + routing.state;
+            badge.textContent = `${routing.tool} · ${routing.state}`;
         }
 
         function renderRouteBanner() {
@@ -2958,31 +3226,59 @@
                 return;
             }
 
-            const hostname = document.getElementById('wHostname').value;
-            const routing = resolveOpenSystemRouting(hostname);
-            wizState.routing = routing;
-
-            if (routing.state === 'migrated') {
-                banner.className = 'wiz-route migrated';
-                banner.innerHTML =
-                    `<svg class="ic"><use href="#i-check-circle"/></svg> <b>${hostname}</b> is on OTel — routing to ` +
-                    `<b>ELK</b> <span class="mono">elk-stack</span> as a <b>${catLabel}</b> alert`;
-            } else if (routing.state === 'legacy') {
-                banner.className = 'wiz-route legacy';
-                banner.innerHTML =
-                    `<svg class="ic"><use href="#i-activity"/></svg> <b>${hostname}</b> isn't on OTel yet — routing to ` +
-                    `<b>DX UIM</b> <span class="mono">dxuim-monitoring</span> as a <b>${catLabel}</b> alert` +
-                    `<a class="wiz-route-cta" onclick="comingSoon('Log Onboarding')">Enable OTel for this host &rarr;</a>`;
-            } else if (routing.state === 'unknown') {
-                banner.className = 'wiz-route unknown';
-                banner.innerHTML =
-                    `<svg class="ic"><use href="#i-package"/></svg> <b>${hostname}</b> isn't registered — defaulting to ` +
-                    `<b>DX UIM</b> <span class="mono">dxuim-monitoring</span> as a <b>${catLabel}</b> alert` +
-                    `<a class="wiz-route-cta" onclick="comingSoon('Asset Registry')">Register this host &rarr;</a>`;
-            } else {
+            const hosts = (wizState.hosts || ['']).map(h => h.trim()).filter(Boolean);
+            if (hosts.length === 0) {
                 banner.className = 'wiz-route unknown';
                 banner.innerHTML = `<svg class="ic"><use href="#i-server"/></svg> Enter a hostname to see routing`;
+                wizState.routing = null;
+                wizState.hostRoutings = [];
+                return;
             }
+
+            const routings = hosts.map(h => ({ host: h, ...resolveOpenSystemRouting(h) }));
+            wizState.routing = routings[0];
+            wizState.hostRoutings = routings;
+
+            const allSameState = routings.every(r => r.state === routings[0].state);
+
+            if (routings.length === 1 || allSameState) {
+                const r = routings[0];
+                const plural = routings.length > 1;
+                const hostLabel = plural ? `all <b>${routings.length} hosts</b>` : `<b>${r.host}</b>`;
+                if (r.state === 'migrated') {
+                    banner.className = 'wiz-route migrated';
+                    banner.innerHTML =
+                        `<svg class="ic"><use href="#i-check-circle"/></svg> ${hostLabel} ${plural ? 'are' : 'is'} on OTel — routing to ` +
+                        `<b>ELK</b> <span class="mono">elk-stack</span> as a <b>${catLabel}</b> alert`;
+                } else if (r.state === 'legacy') {
+                    banner.className = 'wiz-route legacy';
+                    banner.innerHTML =
+                        `<svg class="ic"><use href="#i-activity"/></svg> ${hostLabel} ${plural ? "aren't" : "isn't"} on OTel yet — routing to ` +
+                        `<b>DX UIM</b> <span class="mono">dxuim-monitoring</span> as a <b>${catLabel}</b> alert` +
+                        (plural ? '' : `<a class="wiz-route-cta" onclick="comingSoon('Log Onboarding')">Enable OTel for this host &rarr;</a>`);
+                } else {
+                    banner.className = 'wiz-route unknown';
+                    banner.innerHTML =
+                        `<svg class="ic"><use href="#i-package"/></svg> ${hostLabel} ${plural ? "aren't" : "isn't"} registered — defaulting to ` +
+                        `<b>DX UIM</b> <span class="mono">dxuim-monitoring</span> as a <b>${catLabel}</b> alert` +
+                        (plural ? '' : `<a class="wiz-route-cta" onclick="comingSoon('Asset Registry')">Register this host &rarr;</a>`);
+                }
+                return;
+            }
+
+            // Mixed fleet — hosts split across backends, called out explicitly
+            // rather than picking one to display, since this submission will
+            // in fact produce documents routed to more than one target system.
+            const counts = { migrated: 0, legacy: 0, unknown: 0 };
+            routings.forEach(r => counts[r.state]++);
+            const parts = [];
+            if (counts.migrated) parts.push(`<b>${counts.migrated}</b> → ELK`);
+            if (counts.legacy) parts.push(`<b>${counts.legacy}</b> → DX UIM`);
+            if (counts.unknown) parts.push(`<b>${counts.unknown}</b> unregistered`);
+            banner.className = 'wiz-route mixed';
+            banner.innerHTML =
+                `<svg class="ic"><use href="#i-activity"/></svg> Mixed routing across ${routings.length} hosts: ${parts.join(', ')} ` +
+                `as <b>${catLabel}</b> alerts — this submission will split across backends.`;
         }
 
         function renderCategoryDetailsPane() {
@@ -2990,10 +3286,11 @@
             document.getElementById('catFieldsCmd').style.display = wizState.category === 'cmd' ? '' : 'none';
             document.getElementById('catFieldsProcess').style.display = wizState.category === 'process' ? '' : 'none';
             // ELK/OTel already knows a log's location via resource attributes —
-            // only the still-DX-UIM-routed path needs a literal filepath.
+            // only when at least one selected host is still DX-UIM-routed
+            // does this fleet's submission need a literal filepath.
             const needsFilepath = wizState.category === 'log'
                 && wizState.systemType === 'opensystem'
-                && wizState.routing && wizState.routing.tool === 'DX UIM';
+                && wizState.hostRoutings && wizState.hostRoutings.some(r => r.tool === 'DX UIM');
             document.getElementById('logFilepathGroup').style.display = needsFilepath ? '' : 'none';
             document.getElementById('stepLabel4').textContent = STEP4_LABEL[wizState.category] || 'Alert Details';
             renderExistingConfigPanel();
@@ -3020,43 +3317,41 @@
             return groups;
         }
 
-        function renderExistingConfigEntries(cat, entries, isCurrent) {
+        function renderExistingConfigEntries(key, cat, entries, isCurrent) {
+            const k = key.replace(/'/g, "\\'");
             if (cat === 'log') {
                 return groupLogEntriesByFilepath(entries).map((g, i) => {
                     const kw = g.entries.map(e => `${e.keyword} (${e.severity})`).join(', ');
                     const label = g.filepath ? `<b>${g.filepath}</b> — ${kw}` : kw;
-                    const btn = isCurrent ? `<button type="button" class="existing-config-load-sm" onclick="loadExistingLogGroup(${i})">Load</button>` : '';
+                    const btn = isCurrent ? `<button type="button" class="existing-config-load-sm" onclick="loadExistingLogGroup('${k}', ${i})">Load</button>` : '';
                     return `<div class="existing-config-entry"><div>${label}</div>${btn}</div>`;
                 }).join('');
             }
             if (cat === 'cmd') {
                 return entries.map((e, i) => {
-                    const btn = isCurrent ? `<button type="button" class="existing-config-load-sm" onclick="loadExistingCmdEntry(${i})">Load</button>` : '';
+                    const btn = isCurrent ? `<button type="button" class="existing-config-load-sm" onclick="loadExistingCmdEntry('${k}', ${i})">Load</button>` : '';
                     return `<div class="existing-config-entry"><div><b>${e.metric}</b> &gt; ${e.threshold}% for ${e.duration}m (${e.severity})</div>${btn}</div>`;
                 }).join('');
             }
             if (cat === 'process') {
                 return entries.map((e, i) => {
-                    const btn = isCurrent ? `<button type="button" class="existing-config-load-sm" onclick="loadExistingProcessEntry(${i})">Load</button>` : '';
+                    const btn = isCurrent ? `<button type="button" class="existing-config-load-sm" onclick="loadExistingProcessEntry('${k}', ${i})">Load</button>` : '';
                     return `<div class="existing-config-entry"><div><b>${e.name}</b> — expected ${e.state} (${e.severity})</div>${btn}</div>`;
                 }).join('');
             }
             return '';
         }
 
-        function renderExistingConfigPanel() {
-            const panel = document.getElementById('existingConfigPanel');
-            const key = getPrefix();
+        function renderExistingConfigCard(key) {
             const existing = EXISTING_CONFIG[key.toLowerCase()] || EXISTING_CONFIG[key];
 
             if (!existing || Object.keys(existing).length === 0) {
-                panel.innerHTML = `
+                return `
                     <div class="existing-config-card">
                         <div class="existing-config-title"><svg class="ic"><use href="#i-clipboard"/></svg> Existing configuration for <span class="mono">${key}</span></div>
                         <div class="existing-config-empty">Nothing configured yet — this will be the first alert for this asset.</div>
                     </div>
                 `;
-                return;
             }
 
             const rows = Object.entries(existing).map(([cat, entries]) => {
@@ -3064,12 +3359,12 @@
                 return `
                     <div class="existing-config-row ${isCurrent ? 'current' : ''}">
                         <div class="existing-config-cat"><svg class="ic"><use href="#i-${CATEGORY_ICON[cat]}"/></svg> ${CATEGORY_LABEL[cat]} <span class="pick-tag">${entries.length}</span></div>
-                        <div class="existing-config-list">${renderExistingConfigEntries(cat, entries, isCurrent)}</div>
+                        <div class="existing-config-list">${renderExistingConfigEntries(key, cat, entries, isCurrent)}</div>
                     </div>
                 `;
             }).join('');
 
-            panel.innerHTML = `
+            return `
                 <div class="existing-config-card">
                     <div class="existing-config-title"><svg class="ic"><use href="#i-clipboard"/></svg> Existing configuration for <span class="mono">${key}</span></div>
                     ${rows}
@@ -3077,8 +3372,19 @@
             `;
         }
 
-        function loadExistingLogGroup(groupIndex) {
-            const key = getPrefix();
+        // One card per selected asset — a fleet submission shows each host's
+        // existing configuration independently, since "Load" always fills
+        // the one shared form below for every host in the batch.
+        function renderExistingConfigPanel() {
+            const panel = document.getElementById('existingConfigPanel');
+            const keys = getPrefixes();
+            const note = keys.length > 1
+                ? `<div class="existing-config-empty" style="margin-bottom:10px;">Loading fills the shared form below, applied to all ${keys.length} selected hosts.</div>`
+                : '';
+            panel.innerHTML = note + keys.map(renderExistingConfigCard).join('');
+        }
+
+        function loadExistingLogGroup(key, groupIndex) {
             const existing = EXISTING_CONFIG[key.toLowerCase()] || EXISTING_CONFIG[key];
             const group = existing && groupLogEntriesByFilepath(existing.log || [])[groupIndex];
             if (!group) return;
@@ -3087,8 +3393,7 @@
             if (group.filepath) document.getElementById('wLogFilepath').value = group.filepath;
         }
 
-        function loadExistingCmdEntry(index) {
-            const key = getPrefix();
+        function loadExistingCmdEntry(key, index) {
             const existing = EXISTING_CONFIG[key.toLowerCase()] || EXISTING_CONFIG[key];
             const e = existing && existing.cmd && existing.cmd[index];
             if (!e) return;
@@ -3099,8 +3404,7 @@
             document.getElementById('wCmdSeverity').value = e.severity;
         }
 
-        function loadExistingProcessEntry(index) {
-            const key = getPrefix();
+        function loadExistingProcessEntry(key, index) {
             const existing = EXISTING_CONFIG[key.toLowerCase()] || EXISTING_CONFIG[key];
             const e = existing && existing.process && existing.process[index];
             if (!e) return;
@@ -3146,12 +3450,14 @@
 
         function loadWizardSample() {
             if (wizState.systemType === 'opensystem') {
-                document.getElementById('wHostname').value = 'xxx';
+                wizState.hosts = ['xxx'];
+                renderHostRows();
                 document.getElementById('wOsType').value = 'Linux';
                 document.getElementById('wOpenEnv').value = 'PROD';
                 document.getElementById('wOpenAppName').value = 'MIDDLEWARE';
                 document.getElementById('wOpenServiceId').value = '572';
                 document.getElementById('wOpenSearchCode').value = 'MIDDLEWARE';
+                renderRouteBanner();
             } else {
                 document.getElementById('wEntity').value = 'CBS';
                 document.getElementById('wEnv').value = 'PROD';
@@ -3172,43 +3478,70 @@
                 const container = document.getElementById('wContainer').value.trim() || 'container';
                 return `${ns}_${container}`;
             }
-            return document.getElementById('wHostname').value.trim() || 'hostname';
+            return ((wizState.hosts && wizState.hosts[0]) || '').trim() || 'hostname';
+        }
+
+        // One prefix per selected asset. Microservice is always a single
+        // namespace/container pair; Open System can be several hosts — each
+        // one still becomes its own domain-model document downstream (see
+        // docs/spec/raise-an-alert-domain-model.md), this just fans the
+        // shared form out across all of them for naming/preview purposes.
+        function getPrefixes() {
+            if (wizState.systemType === 'microservice') return [getPrefix()];
+            const hosts = (wizState.hosts || []).map(h => h.trim()).filter(Boolean);
+            return hosts.length ? hosts : ['hostname'];
         }
 
         function generateWatcherNames() {
-            const prefix = getPrefix();
+            const prefixes = getPrefixes();
             const names = [];
-            if (wizState.category === 'log') {
-                const usesFilepath = wizState.systemType === 'opensystem'
-                    && wizState.routing && wizState.routing.tool === 'DX UIM';
-                const filepathPart = usesFilepath
-                    ? '_' + sanitizeForName(document.getElementById('wLogFilepath').value || 'logpath')
-                    : '';
-                document.querySelectorAll('#keywordRows tr').forEach(row => {
-                    const kw = row.querySelector('.kw-keyword').value.trim();
-                    const sev = row.querySelector('.kw-severity').value || 'None';
-                    if (kw) names.push({ name: `${prefix}${filepathPart}_${kw}`, sev });
-                });
-            } else if (wizState.category === 'cmd') {
-                const metric = (wizState.cmdMetricSelect || 'CPU').toLowerCase();
-                const sev = document.getElementById('wCmdSeverity').value || 'None';
-                names.push({ name: `${prefix}_${metric}_cmd`, sev });
-            } else if (wizState.category === 'process') {
-                const proc = sanitizeForName(document.getElementById('wProcessName').value || 'process');
-                const sev = document.getElementById('wProcessSeverity').value || 'None';
-                names.push({ name: `${prefix}_${proc}_process`, sev });
-            }
+            prefixes.forEach(prefix => {
+                if (wizState.category === 'log') {
+                    const usesFilepath = wizState.systemType === 'opensystem'
+                        && resolveOpenSystemRouting(prefix).tool === 'DX UIM';
+                    const filepathPart = usesFilepath
+                        ? '_' + sanitizeForName(document.getElementById('wLogFilepath').value || 'logpath')
+                        : '';
+                    document.querySelectorAll('#keywordRows tr').forEach(row => {
+                        const kw = row.querySelector('.kw-keyword').value.trim();
+                        const sev = row.querySelector('.kw-severity').value || 'None';
+                        if (kw) names.push({ name: `${prefix}${filepathPart}_${kw}`, sev });
+                    });
+                } else if (wizState.category === 'cmd') {
+                    const metric = (wizState.cmdMetricSelect || 'CPU').toLowerCase();
+                    const sev = document.getElementById('wCmdSeverity').value || 'None';
+                    names.push({ name: `${prefix}_${metric}_cmd`, sev });
+                } else if (wizState.category === 'process') {
+                    const proc = sanitizeForName(document.getElementById('wProcessName').value || 'process');
+                    const sev = document.getElementById('wProcessSeverity').value || 'None';
+                    names.push({ name: `${prefix}_${proc}_process`, sev });
+                }
+            });
             return names;
+        }
+
+        function summarizeHostRouting(hosts) {
+            const routings = hosts.map(h => resolveOpenSystemRouting(h));
+            if (routings.length === 1) return `${routings[0].tool} (${routings[0].slug})`;
+            const counts = { migrated: 0, legacy: 0, unknown: 0 };
+            routings.forEach(r => counts[r.state]++);
+            const parts = [];
+            if (counts.migrated) parts.push(`${counts.migrated} → ELK`);
+            if (counts.legacy) parts.push(`${counts.legacy} → DX UIM`);
+            if (counts.unknown) parts.push(`${counts.unknown} unregistered`);
+            return parts.join(', ');
         }
 
         function renderReview() {
             const isMicro = wizState.systemType === 'microservice';
-            const routing = isMicro ? ALERT_MATRIX.microservice : wizState.routing;
+            const prefixes = getPrefixes();
             const rows = [
                 ['System Type', isMicro ? 'Microservice' : 'Open System'],
                 ['Category', CATEGORY_LABEL[wizState.category]],
-                ['Routes To', `${routing.tool} (${routing.slug || routing.toolSlug})`],
-                isMicro ? ['Namespace / Container', getPrefix()] : ['Hostname', getPrefix()],
+                isMicro
+                    ? ['Routes To', `${ALERT_MATRIX.microservice.tool} (${ALERT_MATRIX.microservice.toolSlug})`]
+                    : ['Routes To', summarizeHostRouting(prefixes)],
+                isMicro ? ['Namespace / Container', prefixes[0]] : ['Hosts', prefixes.join(', ')],
                 ['Approver', document.getElementById('wApprover').value.trim() || '—'],
             ];
             document.getElementById('reviewGrid').innerHTML = rows.map(([l, v]) =>

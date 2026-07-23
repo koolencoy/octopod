@@ -42,7 +42,7 @@ maintain. This is what gives the robot a Grafana tab, an owner, and a
 lifecycle, the same way the ELK skeleton does for microservices.
 
 Important: Ansible only ever reads from Bitbucket (see
-mock/branching-strategy.html) — it never commits anything back. So
+docs/design/branching-strategy.md) — it never commits anything back. So
 unlike the ELK path, where the Scaffolder template generates
 catalog-info.yaml automatically, this file currently has to be authored
 by hand alongside the probe configs, in the same commit. There's no DX

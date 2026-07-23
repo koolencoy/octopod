@@ -15,7 +15,7 @@ with which repo it belongs to.
   `stdout_callback`, the `group_vars` relocation). It needs one of:
   promote it into its own real git repo (the natural home for ELK
   watcher-sync automation, matching the one-repo-per-backend
-  principle in `mock/branching-strategy.html`), or explicitly retire
+  principle in `docs/design/branching-strategy.md`), or explicitly retire
   it if ELK watcher sync isn't being pursued right now. Leaving it as
   a silently-rotting copy is the one option that's actually wrong.
 - **[decision needed]** The Asset Catalog & Scoring spec

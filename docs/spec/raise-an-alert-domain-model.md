@@ -2,7 +2,7 @@
 
 Author role: Observability Engineer (domain data modeling)
 Status: Draft v0.1 — proposed schema, not yet enforced by Ansible
-Applies to: the "Raise an Alert" Scaffolder wizard (`mock/backstage-catalog-v2.html`),
+Applies to: the "Raise an Alert" Scaffolder wizard (`docs/design/mockups/backstage-catalog-v2.html`),
 the files committed to Bitbucket as a result of it, and the Ansible roles that
 read those files (`ansible/roles/dxuim_config_sync`).
 
@@ -34,7 +34,7 @@ way around:
   day); a fully-transformed `probeConfigKeys` array is opaque to a PR
   reviewer and couples git history to DX UIM's schema. The domain model is
   the human-reviewable middle layer.
-- **Ansible never writes git** (`mock/branching-strategy.html`). It only
+- **Ansible never writes git** (`docs/design/branching-strategy.md`). It only
   reads via the Bitbucket REST API and PUTs to the target system. So this
   document is the *only* artifact Ansible has to work with — anything not
   captured here is lost.
@@ -163,7 +163,7 @@ Plus a system-type-specific `identity` sub-object:
 | `filepath` | string | conditional | Only when `routing.tool === "DX UIM"`. ELK/OTel resolves log location via resource attributes, so this is meaningless there — mirrors `needsFilepath` in the wizard today. |
 | `matchType` | enum: `phrase`, `wildcard`, `regex` | no, default `phrase` | New — closes backlog gap "log watchers hardcode phrase-match today." Default reproduces current behavior exactly. |
 | `lookbackWindow` | string | no, default `"1m"` | New — closes backlog gap "hardcoded `now-1m` in the ELK watcher template." Default matches that hardcode. |
-| `keywords` | array of `{ keyword: string, severity: enum }` | yes, min 1 | `severity` ∈ `Critical`, `Major`, `Minor`, `Warning`. One document can carry several keywords sharing one `filepath` — matches how the wizard's keyword table works (one filepath field, many keyword rows) and how `mock/backstage-catalog-v2.html`'s demo data groups `EXISTING_CONFIG` entries by filepath. |
+| `keywords` | array of `{ keyword: string, severity: enum }` | yes, min 1 | `severity` ∈ `Critical`, `Major`, `Minor`, `Warning`. One document can carry several keywords sharing one `filepath` — matches how the wizard's keyword table works (one filepath field, many keyword rows) and how `docs/design/mockups/backstage-catalog-v2.html`'s demo data groups `EXISTING_CONFIG` entries by filepath. |
 
 A single asset accumulates multiple log documents over time (one per
 filepath, since each wizard submission targets one filepath) — see §7.1.

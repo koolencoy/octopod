@@ -38,7 +38,7 @@ repo at all yet, and out of date — see backlog).
   still empty placeholders.
 - `grafana/` — entity + overview dashboards; DX UIM panels are
   explicit `TODO` placeholders pending a confirmed data source.
-- `mock/branching-strategy.html` — the branching model this pipeline
+- `docs/design/branching-strategy.md` — the branching model this pipeline
   assumes (`main` = truth, `staging/<name>` = per-request, PR =
   approval gate).
 
