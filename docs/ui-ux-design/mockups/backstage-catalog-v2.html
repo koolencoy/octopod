@@ -1692,6 +1692,227 @@
 
         .lo-stage-detail { font-size: 12px; color: var(--ink-secondary); margin-top: 3px; line-height: 1.5; }
 
+        /* ============ My Actions (maker-checker) ============ */
+        .appr-list { display: flex; flex-direction: column; gap: 12px; }
+
+        .appr-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 15px 18px;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .appr-card.actioned { opacity: 0.78; }
+
+        .appr-head { display: flex; align-items: flex-start; gap: 11px; }
+
+        .appr-head-main { flex: 1; min-width: 0; }
+
+        .appr-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .appr-icon.sm { width: 26px; height: 26px; border-radius: 7px; }
+        .appr-icon.sm .ic { width: 13px; height: 13px; }
+
+        .appr-title { font-size: 13.5px; font-weight: 700; }
+
+        .appr-id { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--ink-dim); margin-left: 4px; }
+
+        .appr-sub { font-size: 11.5px; color: var(--ink-dim); margin-top: 2px; }
+
+        .appr-summary {
+            font-size: 12.5px;
+            color: var(--ink-secondary);
+            line-height: 1.7;
+            border-left: 3px solid var(--border-strong);
+            padding-left: 12px;
+        }
+
+        .appr-summary .mono { font-family: var(--mono); font-size: 11.5px; color: var(--primary); }
+
+        .appr-outcome {
+            font-size: 12px;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            line-height: 1.5;
+        }
+
+        .appr-outcome.approved { background: var(--status-ok-soft); color: #146b45; }
+        .appr-outcome.rejected { background: var(--status-error-soft); color: #a51e2a; }
+
+        .appr-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+        .appr-empty { font-size: 12.5px; color: var(--ink-dim); padding: 14px 2px; }
+
+        .req-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .req-row:last-child { border-bottom: none; }
+
+        .req-main { flex: 1; min-width: 0; }
+
+        .status-badge {
+            border-radius: 999px;
+            padding: 3px 11px;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .status-badge.pending { background: var(--status-warn-soft); color: #8a5800; }
+        .status-badge.in-progress { background: var(--primary-soft); color: var(--primary); }
+        .status-badge.complete, .status-badge.approved { background: var(--status-ok-soft); color: #146b45; }
+        .status-badge.rejected { background: var(--status-error-soft); color: #a51e2a; }
+
+        /* ============ Health Check ============ */
+        .hc-result-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .hc-check, .hc-rec {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 11px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hc-check:last-child, .hc-rec:last-child { border-bottom: none; }
+
+        .hc-ico {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 2px solid var(--border-strong);
+            color: var(--ink-dim);
+            background: var(--card);
+        }
+
+        .hc-ico.pass { background: var(--status-ok); border-color: var(--status-ok); color: #fff; }
+        .hc-ico.warn { background: var(--status-warn-soft); border-color: var(--status-warn); color: #8a5800; }
+        .hc-ico.fail { background: var(--status-error); border-color: var(--status-error); color: #fff; }
+        .hc-ico.running { border-color: var(--primary); animation: loPulse 1.2s ease infinite; }
+
+        .hc-main { flex: 1; min-width: 0; }
+
+        .hc-title { font-size: 13px; font-weight: 600; }
+
+        .hc-detail { font-size: 12px; color: var(--ink-secondary); margin-top: 2px; line-height: 1.5; }
+
+        .hc-status {
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            flex-shrink: 0;
+            padding-top: 4px;
+        }
+
+        .hc-status.pass { color: var(--status-ok); }
+        .hc-status.warn { color: var(--status-warn); }
+        .hc-status.fail { color: var(--status-error); }
+        .hc-status.running { color: var(--primary); }
+
+        .hc-asset-head {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 14px 0 6px;
+            font-family: var(--mono);
+            font-size: 13px;
+            font-weight: 700;
+            border-top: 1px solid var(--border);
+            margin-top: 6px;
+        }
+
+        .hc-asset-head:first-child { border-top: none; margin-top: 0; padding-top: 2px; }
+
+        .hc-asset-head .ic { width: 15px; height: 15px; color: var(--primary); }
+
+        .hc-asset-head .status-badge { margin-left: auto; }
+
+        /* ============ Synthetic Alerting ============ */
+        .sy-alert-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 13px;
+            border: 1.5px solid var(--border-strong);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            margin-bottom: 8px;
+            font-size: 12.5px;
+            transition: border-color 0.15s ease, background 0.15s ease;
+        }
+
+        .sy-alert-row:hover { border-color: var(--primary); }
+
+        .sy-alert-row.selected { border-color: var(--primary); background: var(--primary-soft); }
+
+        .sy-radio {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 2px solid var(--border-strong);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .sy-alert-row.selected .sy-radio { border-color: var(--primary); }
+
+        .sy-alert-row.selected .sy-radio::after {
+            content: '';
+            position: absolute;
+            inset: 2.5px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+
+        .sy-alert-label { flex: 1; min-width: 0; }
+
+        .sy-alert-label b { font-family: var(--mono); font-weight: 700; }
+
+        .sy-summary {
+            margin-top: 14px;
+            padding: 13px 16px;
+            border-radius: var(--radius-sm);
+            background: var(--status-ok-soft);
+            font-size: 12.5px;
+            line-height: 1.5;
+        }
+
+        .sy-summary b { font-family: var(--mono); }
+
         .existing-config-card {
             background: #f8f9fc;
             border: 1px solid var(--border);
@@ -2414,6 +2635,9 @@
                 <div class="side-item" data-view="catalog" onclick="switchView('catalog', this)">
                     <svg class="ic"><use href="#i-grid"/></svg> Catalog <span class="pill">7</span>
                 </div>
+                <div class="side-item" data-view="myactions" onclick="switchView('myactions', this)">
+                    <svg class="ic"><use href="#i-check-circle"/></svg> My Actions <span class="pill" id="myActionsPill">2</span>
+                </div>
             </div>
 
             <div class="side-label">Services</div>
@@ -2430,8 +2654,11 @@
                 <div class="side-item" onclick="comingSoon('Asset Registry')">
                     <svg class="ic"><use href="#i-package"/></svg> Asset Registry
                 </div>
-                <div class="side-item" onclick="comingSoon('Health Check')">
+                <div class="side-item" onclick="openHealthCheck()">
                     <svg class="ic"><use href="#i-activity"/></svg> Health Check
+                </div>
+                <div class="side-item" onclick="openSynthetic()">
+                    <svg class="ic"><use href="#i-launch"/></svg> Synthetic Alerting
                 </div>
             </div>
 
@@ -2515,7 +2742,13 @@
                                     <div class="qc-desc">Add your service, dashboard, or index to the asset registry.</div>
                                     <div class="qc-cta">Register now <svg class="ic"><use href="#i-arrow-r"/></svg></div>
                                 </div>
-                                <div class="quick-card" style="--qc-accent:#f59300; --qc-soft:rgba(245,147,0,0.09);" onclick="comingSoon('Health Check')">
+                                <div class="quick-card" style="--qc-accent:#cf2e8d; --qc-soft:rgba(207,46,141,0.08);" onclick="openSynthetic()">
+                                    <div class="qc-icon"><svg class="ic"><use href="#i-launch"/></svg></div>
+                                    <div class="qc-title">Synthetic Alerting</div>
+                                    <div class="qc-desc">Fire-drill an alert end to end — synthetic event in, [DRILL] ticket out.</div>
+                                    <div class="qc-cta">Run a drill <svg class="ic"><use href="#i-arrow-r"/></svg></div>
+                                </div>
+                                <div class="quick-card" style="--qc-accent:#f59300; --qc-soft:rgba(245,147,0,0.09);" onclick="openHealthCheck()">
                                     <div class="qc-icon"><svg class="ic"><use href="#i-activity"/></svg></div>
                                     <div class="qc-title">Health Check</div>
                                     <div class="qc-desc">End-to-end health of your app: logs, APM, infra, and alerts.</div>
@@ -3296,6 +3529,177 @@
                 </div>
             </section>
 
+            <!-- ================= Synthetic Alerting (fire drill) =================
+                 Tests a configured alert end to end: inject a synthetic event
+                 at the source, trace every hop of the real chain, and land a
+                 real HPSM ticket tagged [DRILL] at the destination — then
+                 auto-close it. Proves the chain before a real incident needs it. -->
+            <section class="view" id="view-synthetic">
+                <header class="page-header">
+                    <div class="ph-top">
+                        <div>
+                            <div class="ph-eyebrow">Self-service &middot; Diagnostics</div>
+                            <h1 class="ph-title">Synthetic Alerting</h1>
+                            <p class="ph-sub">Fire-drill an alert end to end — a synthetic event at the source, a real ticket at the destination. The ticket is tagged [DRILL] and auto-closed, so operations never mistakes it for an incident.</p>
+                        </div>
+                        <div class="ph-actions">
+                            <button class="btn btn-ghost" onclick="switchView('home')"><svg class="ic ic-sm"><use href="#i-x"/></svg> Close</button>
+                        </div>
+                    </div>
+                </header>
+                <div class="page-body">
+                    <div class="board">
+                        <div class="prefill-hint">
+                            <svg class="ic"><use href="#i-bulb"/></svg>
+                            <span>New to this? Load a sample drill to see how it works.</span>
+                            <button type="button" onclick="syLoadSample()">Load Sample</button>
+                        </div>
+
+                        <div class="form-section">
+                            <div class="form-section-header">
+                                <span class="form-section-icon"><svg class="ic"><use href="#i-server"/></svg></span>
+                                <span class="form-section-title">Identify Asset</span>
+                                <span class="form-section-desc">Hostname or service name — resolved from the observability catalog</span>
+                            </div>
+                            <div class="form-group compact full-width">
+                                <label class="form-label required">Host / Asset</label>
+                                <div class="host-item">
+                                    <div class="host-row">
+                                        <input type="text" class="form-input" id="syAssetInput" placeholder="e.g. sgapp0410 or ms-cbs-account-movement-adapter" oninput="syUpdateAsset(this.value)">
+                                    </div>
+                                    <div class="host-cmdb" id="syCmdb"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section" id="syAlertSection" style="display:none;">
+                            <div class="form-section-header">
+                                <span class="form-section-icon"><svg class="ic"><use href="#i-bell"/></svg></span>
+                                <span class="form-section-title">Pick the alert to drill</span>
+                                <span class="form-section-desc">Read from the asset's live configuration — only real alerts can be drilled</span>
+                            </div>
+                            <div id="syAlertList"></div>
+                            <div style="display:flex; justify-content:flex-end; margin-top:14px;">
+                                <button class="btn btn-primary" id="syRunBtn" onclick="syRun()" disabled>Fire Drill</button>
+                            </div>
+                        </div>
+
+                        <div id="syResults" style="display:none;">
+                            <div class="card" style="padding: 20px 24px;">
+                                <div class="hc-result-head">
+                                    <div class="section-title" id="syTraceTitle">Drill trace</div>
+                                    <span class="status-badge" id="syOverall"></span>
+                                </div>
+                                <div class="lo-track" id="syTrace"></div>
+                                <div id="sySummary"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= Health Check (on-demand diagnostics) =================
+                 Runs every check observability can answer about an asset —
+                 heartbeat, agents, log ingestion, alert coverage, catalog
+                 hygiene — and turns failures into deep links to the fixing
+                 service (Raise an Alert, Log Onboarding, Asset Registry). -->
+            <section class="view" id="view-healthcheck">
+                <header class="page-header">
+                    <div class="ph-top">
+                        <div>
+                            <div class="ph-eyebrow">Self-service &middot; Diagnostics</div>
+                            <h1 class="ph-title">Health Check</h1>
+                            <p class="ph-sub">End-to-end health of an asset across everything observability knows — logs, metrics, agents, alert coverage, and catalog hygiene. Every failed check links to the service that fixes it.</p>
+                        </div>
+                        <div class="ph-actions">
+                            <button class="btn btn-ghost" onclick="switchView('home')"><svg class="ic ic-sm"><use href="#i-x"/></svg> Close</button>
+                        </div>
+                    </div>
+                </header>
+                <div class="page-body">
+                    <div class="board">
+                        <div class="prefill-hint">
+                            <svg class="ic"><use href="#i-bulb"/></svg>
+                            <span>New to this? Load a sample to see how it works.</span>
+                            <button type="button" onclick="hcLoadSample()">Load Sample</button>
+                        </div>
+                        <div class="form-section">
+                            <div class="form-section-header">
+                                <span class="form-section-icon"><svg class="ic"><use href="#i-activity"/></svg></span>
+                                <span class="form-section-title">Identify Asset</span>
+                                <span class="form-section-desc">Hostnames or service names — resolved from the observability catalog</span>
+                            </div>
+                            <div class="form-group compact full-width">
+                                <label class="form-label required">Hosts / Assets</label>
+                                <div class="host-rows" id="hcAssetRows"></div>
+                                <button type="button" class="btn-add-keyword" onclick="hcAddAsset()">
+                                    <svg class="ic"><use href="#i-plus"/></svg> Add Another Asset
+                                </button>
+                            </div>
+                            <div id="hcAssetNote"></div>
+                            <div style="display:flex; justify-content:flex-end; margin-top:16px;">
+                                <button class="btn btn-primary" id="hcRunBtn" onclick="hcRun()" disabled>Run Health Check</button>
+                            </div>
+                        </div>
+
+                        <div id="hcResults" style="display:none;">
+                            <div class="card" style="padding: 20px 24px;">
+                                <div class="hc-result-head">
+                                    <div class="section-title" id="hcResultTitle">Results</div>
+                                    <span class="status-badge" id="hcOverall"></span>
+                                </div>
+                                <div id="hcChecks"></div>
+                            </div>
+                            <div class="form-section" id="hcRecs" style="display:none; margin-top:16px;">
+                                <div class="form-section-header">
+                                    <span class="form-section-icon"><svg class="ic"><use href="#i-wrench"/></svg></span>
+                                    <span class="form-section-title">Recommended fixes</span>
+                                    <span class="form-section-desc">Each one opens the service that closes the gap</span>
+                                </div>
+                                <div id="hcRecList"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= My Actions (maker-checker workflow) =================
+                 Maker and checker are different workflows: makers track the
+                 requests they raised; checkers get an approval queue. A user
+                 can hold both roles, but never on the same request. -->
+            <section class="view" id="view-myactions">
+                <header class="page-header">
+                    <div class="ph-top">
+                        <div>
+                            <div class="ph-eyebrow">Workflow</div>
+                            <h1 class="ph-title">My Actions</h1>
+                            <p class="ph-sub">Approvals waiting on you as checker, and the requests you have raised as maker.</p>
+                            <div class="ph-meta">
+                                <span class="ph-chip" id="maPendingChip"></span>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+                <div class="page-body">
+                    <div class="board">
+                        <div>
+                            <div class="section-head">
+                                <div class="section-title">Pending my approval</div>
+                                <span style="font-size:12px; color:var(--ink-dim);">Requests from other makers — you can never approve your own</span>
+                            </div>
+                            <div class="appr-list" id="apprList"></div>
+                        </div>
+                        <div>
+                            <div class="section-head">
+                                <div class="section-title">My requests</div>
+                                <span style="font-size:12px; color:var(--ink-dim);">You are the maker — a checker signs off before anything runs</span>
+                            </div>
+                            <div class="card" style="padding: 6px 18px;" id="myReqList"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- ================= Log Onboarding progress tracker ================= -->
             <section class="view" id="view-logprogress">
                 <header class="page-header">
@@ -3482,6 +3886,8 @@
             document.querySelectorAll('.side-item[data-view]').forEach(i => i.classList.remove('selected'));
             const target = el || document.querySelector('.side-item[data-view="' + view + '"]');
             if (target) target.classList.add('selected');
+
+            if (view === 'myactions') renderMyActions();
         }
 
         function comingSoon(name) {
@@ -4318,8 +4724,16 @@
             }
             if (wizState.tplStep === 4) {
                 const names = generateWatcherNames();
-                alert(`Sent for approval.\n${names.length} watcher(s) will be created once approved and validated in Infinity.`);
-                switchView('home');
+                const isMicro = wizState.systemType === 'microservice';
+                addMyRequest({
+                    id: 'AL-' + (3000 + Math.floor(Math.random() * 900)),
+                    kind: 'alert',
+                    title: `Raise an Alert — ${CATEGORY_LABEL[wizState.category]}`,
+                    meta: `${isMicro ? getPrefix() : getPrefixes().join(', ')} · ${names.length} watcher${names.length !== 1 ? 's' : ''}`,
+                    status: 'pending',
+                    statusNote: `Waiting for ${document.getElementById('wApprover').value.trim() || 'your reporting manager'} (checker) — nothing runs until approved`,
+                });
+                switchView('myactions');
                 return;
             }
             goToTplStep(wizState.tplStep + 1);
@@ -4640,6 +5054,15 @@
             document.getElementById('loReqTitle').textContent = `Log Onboarding — ${req.id}`;
             document.getElementById('loReqSub').textContent =
                 `${req.hosts.length} host${req.hosts.length > 1 ? 's' : ''} · ${req.apps.join(', ') || '—'} · ${req.envs[0] || '—'} · submitted just now`;
+            addMyRequest({
+                id: req.id,
+                kind: 'logonboard',
+                title: `Log Onboarding — ${req.apps.join(', ') || '—'}`,
+                meta: `${req.hosts.length} host${req.hosts.length > 1 ? 's' : ''} · ${req.paths.length} log file${req.paths.length > 1 ? 's' : ''}`,
+                status: 'in-progress',
+                statusNote: 'Automation running — ELK Engineer review is the one manual gate',
+                live: true,
+            });
             switchView('logprogress');
 
             loRun.stages[0].status = 'active';
@@ -4682,6 +5105,12 @@
         function loComplete() {
             document.getElementById('loReqStatus').innerHTML = '<span class="dot-ok"></span> Complete — logs are flowing';
             loRenderTimeline();
+            const entry = myRequests.find(r => loRun.request && r.id === loRun.request.id);
+            if (entry) {
+                entry.status = 'complete';
+                entry.statusNote = 'Logs flowing — explore in Kibana';
+                renderMyActions();
+            }
         }
 
         const LO_STATUS_LABEL = { done: 'Done', active: 'Running', waiting: 'Waiting for review', pending: 'Queued', skipped: 'Skipped' };
@@ -4709,6 +5138,553 @@
                 </div>
             `).join('');
         }
+
+        // ---------- My Actions (maker-checker workflow) ----------
+        // Two distinct workflows: the checker queue (other makers' requests,
+        // with approve/reject — rejection requires a reason) and the maker
+        // list (your own requests, tracked read-only until a checker acts).
+        const MA_STATUS_LABEL = {
+            pending: 'Pending approval',
+            'in-progress': 'In progress',
+            complete: 'Complete',
+            approved: 'Approved',
+            rejected: 'Rejected',
+        };
+
+        let pendingApprovals = [
+            {
+                id: 'AL-3092', kind: 'alert', maker: 'jane.tan', role: 'Reporting Manager',
+                title: 'Raise an Alert — CMD Monitoring', time: '2h ago', status: 'pending',
+                summary: ['sgapp0410 · MIDDLEWARE · PROD', 'CPU &gt; 90% for 5 minutes — Critical', 'HPSM 572 / MIDDLEWARE'],
+            },
+            {
+                id: 'LO-2214', kind: 'logonboard', maker: 'raj.kumar', role: 'ELK Engineer',
+                title: 'Log Onboarding — PAYMENTS', time: 'Yesterday', status: 'pending',
+                summary: ['sgapp0231 · PROD', '2 log files · 4 parse fields · sample lines attached', 'Will create <span class="mono">logs.payments.prod</span> + pipeline + indices'],
+            },
+        ];
+
+        let myRequests = [
+            {
+                id: 'AL-2981', kind: 'alert', title: 'Raise an Alert — Process Monitoring',
+                meta: 'ulaeiapos0a · 1 watcher', status: 'complete', statusNote: 'Approved by lead-sre · live since Tuesday',
+            },
+            {
+                id: 'LO-2103', kind: 'logonboard', title: 'Log Onboarding — CHANNELS',
+                meta: 'sgapp0233 · 3 log files', status: 'rejected', statusNote: 'Rejected by ELK Engineering — sample lines missing the multiline stack traces',
+            },
+        ];
+
+        function addMyRequest(req) {
+            myRequests.unshift(req);
+            renderMyActions();
+        }
+
+        function maApprove(id) {
+            const a = pendingApprovals.find(x => x.id === id);
+            if (!a || a.status !== 'pending') return;
+            a.status = 'approved';
+            a.outcome = `Approved — automation started, ${a.maker} has been notified.`;
+            renderMyActions();
+        }
+
+        function maReject(id) {
+            const a = pendingApprovals.find(x => x.id === id);
+            if (!a || a.status !== 'pending') return;
+            const reason = prompt('Reason for rejection (required — the maker sees this):');
+            if (!reason || !reason.trim()) return;
+            a.status = 'rejected';
+            a.outcome = `Rejected — ${reason.trim()}`;
+            renderMyActions();
+        }
+
+        function renderMyActions() {
+            const apprList = document.getElementById('apprList');
+            if (apprList) {
+                apprList.innerHTML = pendingApprovals.map(a => `
+                    <div class="appr-card ${a.status !== 'pending' ? 'actioned' : ''}">
+                        <div class="appr-head">
+                            <span class="appr-icon"><svg class="ic"><use href="#i-${a.kind === 'alert' ? 'bell' : 'download'}"/></svg></span>
+                            <div class="appr-head-main">
+                                <div class="appr-title">${a.title} <span class="appr-id">${a.id}</span></div>
+                                <div class="appr-sub">by <b>${a.maker}</b> (maker) · ${a.time} · your role: <b>${a.role}</b> (checker)</div>
+                            </div>
+                            <span class="status-badge ${a.status}">${MA_STATUS_LABEL[a.status]}</span>
+                        </div>
+                        <div class="appr-summary">${a.summary.map(s => `<div>${s}</div>`).join('')}</div>
+                        ${a.outcome ? `<div class="appr-outcome ${a.status}">${a.outcome}</div>` : ''}
+                        ${a.status === 'pending' ? `
+                            <div class="appr-actions">
+                                <button class="btn btn-secondary" onclick="maReject('${a.id}')">Reject</button>
+                                <button class="btn btn-primary" onclick="maApprove('${a.id}')">Approve</button>
+                            </div>` : ''}
+                    </div>
+                `).join('') || '<div class="appr-empty">Nothing waiting on you. ✓</div>';
+            }
+
+            const reqList = document.getElementById('myReqList');
+            if (reqList) {
+                reqList.innerHTML = myRequests.map(r => `
+                    <div class="req-row">
+                        <span class="appr-icon sm"><svg class="ic"><use href="#i-${r.kind === 'alert' ? 'bell' : 'download'}"/></svg></span>
+                        <div class="req-main">
+                            <div class="appr-title">${r.title} <span class="appr-id">${r.id}</span></div>
+                            <div class="appr-sub">${r.meta || ''}${r.statusNote ? ' · ' + r.statusNote : ''}</div>
+                        </div>
+                        ${r.live ? `<button class="btn btn-secondary" style="padding:5px 12px; font-size:12px;" onclick="switchView('logprogress')">Track</button>` : ''}
+                        <span class="status-badge ${r.status}">${MA_STATUS_LABEL[r.status]}</span>
+                    </div>
+                `).join('') || '<div class="appr-empty">No requests yet.</div>';
+            }
+
+            const n = pendingApprovals.filter(a => a.status === 'pending').length;
+            const pill = document.getElementById('myActionsPill');
+            if (pill) {
+                pill.textContent = n;
+                pill.style.display = n ? '' : 'none';
+            }
+            const chip = document.getElementById('maPendingChip');
+            if (chip) {
+                chip.innerHTML = n
+                    ? `<svg class="ic"><use href="#i-bell"/></svg> ${n} approval${n > 1 ? 's' : ''} waiting on you`
+                    : `<svg class="ic"><use href="#i-check-circle"/></svg> Queue clear`;
+            }
+        }
+
+        // ---------- Health Check (on-demand diagnostics) ----------
+        // Check results mirror the demo estate: sgapp0410 is missing its
+        // ELK agent, ulaeiapos0a has only process watchers (its cdm.json /
+        // logmon.json are genuinely empty in the repo), payments has no
+        // watchers at all. Every fail/warn carries a deep link to the
+        // service that fixes it.
+        const HEALTH_ASSETS = {
+            'ms-cbs-account-movement-adapter': {
+                type: 'microservice', sub: 'CBS · deposit-adapter-sg · PROD',
+                checks: [
+                    { t: 'Kubernetes liveness & readiness', s: 'pass', d: '3/3 pods healthy' },
+                    { t: 'Log ingestion (OTel → ELK)', s: 'pass', d: 'Last event 14s ago · ~2.1k lines/min' },
+                    { t: 'APM reporting (AppDynamics)', s: 'pass', d: 'Baseline normal · no open violations' },
+                    { t: 'Alert coverage', s: 'pass', d: '2 log watchers · 3 CMD watchers active' },
+                    { t: 'Catalog & dashboard hygiene', s: 'pass', d: 'Owner acbc/sre · Grafana tab linked' },
+                ],
+            },
+            'ms-payments-fast-transfer': {
+                type: 'microservice', sub: 'PAYMENTS · payments-sg · PROD',
+                checks: [
+                    { t: 'Kubernetes liveness & readiness', s: 'pass', d: '4/4 pods healthy' },
+                    { t: 'Log ingestion (OTel → ELK)', s: 'pass', d: 'Last event 9s ago · ~5.4k lines/min' },
+                    { t: 'APM reporting (AppDynamics)', s: 'warn', d: 'Error rate 2.1% — above 7-day baseline' },
+                    { t: 'Alert coverage', s: 'fail', d: 'No watchers configured — errors would go unnoticed', fix: { label: 'Raise an Alert', action: "openAlertWizard()" } },
+                    { t: 'Catalog & dashboard hygiene', s: 'pass', d: 'Owner acbc/payments-sre · Grafana tab linked' },
+                ],
+            },
+            'sgapp0231': {
+                type: 'host', sub: 'Linux · PROD · PAYMENTS · OTel-enabled',
+                checks: [
+                    { t: 'Host heartbeat', s: 'pass', d: 'Reporting via OTel collector · uptime 41d' },
+                    { t: 'ELK agent', s: 'pass', d: 'Installed and shipping' },
+                    { t: 'Log ingestion', s: 'pass', d: 'Last event 22s ago' },
+                    { t: 'Alert coverage', s: 'fail', d: 'No watchers configured for this host', fix: { label: 'Raise an Alert', action: "openAlertWizard()" } },
+                    { t: 'CMDB registration', s: 'pass', d: 'PAYMENTS · PROD · ownership current' },
+                ],
+            },
+            'sgapp0410': {
+                type: 'host', sub: 'Linux · PROD · MIDDLEWARE · DX UIM',
+                checks: [
+                    { t: 'Host heartbeat (DX UIM robot)', s: 'pass', d: 'Robot responding · uptime 87d' },
+                    { t: 'ELK agent', s: 'fail', d: 'Not installed — logs are only searchable on the host', fix: { label: 'Onboard Logs', action: "openLogOnboarding()" } },
+                    { t: 'Alert coverage — logs', s: 'pass', d: '18 log files monitored (DX UIM)' },
+                    { t: 'Alert coverage — CMD & process', s: 'pass', d: '3 CMD watchers · 10 process watchers' },
+                    { t: 'CMDB registration', s: 'pass', d: 'MIDDLEWARE · PROD · ownership current' },
+                ],
+            },
+            'ulaeiapos0a': {
+                type: 'host', sub: 'Linux · UAT · MIDDLEWARE · DX UIM',
+                checks: [
+                    { t: 'Host heartbeat (DX UIM robot)', s: 'pass', d: 'Robot responding' },
+                    { t: 'Alert coverage — process', s: 'pass', d: '12 process watchers active' },
+                    { t: 'Alert coverage — CMD', s: 'fail', d: 'cdm.json is empty — no CPU/memory/disk thresholds', fix: { label: 'Raise an Alert', action: "openAlertWizard()" } },
+                    { t: 'Alert coverage — logs', s: 'fail', d: 'logmon.json is empty — no log monitoring', fix: { label: 'Raise an Alert', action: "openAlertWizard()" } },
+                    { t: 'ELK agent', s: 'warn', d: 'Not installed — optional for UAT', fix: { label: 'Onboard Logs', action: "openLogOnboarding()" } },
+                    { t: 'CMDB registration', s: 'pass', d: 'MIDDLEWARE · UAT · ownership current' },
+                ],
+            },
+        };
+
+        const HC_STATUS = { pass: 'OK', warn: 'Warning', fail: 'Failed', running: 'Checking…' };
+
+        let hcState = { assets: [''], timer: null };
+
+        function openHealthCheck() {
+            hcRenderRows();
+            switchView('healthcheck');
+        }
+
+        // Same pattern as Identify Service: type a hostname or service name,
+        // it resolves from the catalog — nothing to browse or memorize.
+        function hcResolveAsset(name) {
+            const n = (name || '').trim().toLowerCase();
+            if (!n) return null;
+            const key = Object.keys(HEALTH_ASSETS).find(k => k.toLowerCase() === n);
+            return key ? { key, ...HEALTH_ASSETS[key] } : undefined; // undefined = typed but unknown
+        }
+
+        function hcRenderRows() {
+            if (!hcState.assets.length) hcState.assets = [''];
+            document.getElementById('hcAssetRows').innerHTML = hcState.assets.map((a, i) => `
+                <div class="host-item">
+                    <div class="host-row">
+                        <input type="text" class="form-input" value="${a}" placeholder="e.g. sgapp0410 or ms-payments-fast-transfer" oninput="hcUpdateAsset(${i}, this.value)">
+                        <button type="button" class="keyword-remove" onclick="hcRemoveAsset(${i})" title="Remove asset" ${hcState.assets.length <= 1 ? 'style="visibility:hidden;"' : ''}>&times;</button>
+                    </div>
+                    <div class="host-cmdb" id="hcCmdb${i}"></div>
+                </div>
+            `).join('');
+            hcState.assets.forEach((_, i) => hcUpdateCmdb(i));
+            hcUpdateNote();
+        }
+
+        function hcAddAsset() { hcState.assets.push(''); hcRenderRows(); }
+
+        function hcRemoveAsset(i) {
+            if (hcState.assets.length <= 1) return;
+            hcState.assets.splice(i, 1);
+            hcRenderRows();
+        }
+
+        function hcUpdateAsset(i, value) {
+            hcState.assets[i] = value;
+            hcUpdateCmdb(i);
+            hcUpdateNote();
+        }
+
+        function hcUpdateCmdb(i) {
+            const line = document.getElementById('hcCmdb' + i);
+            if (!line) return;
+            const resolved = hcResolveAsset(hcState.assets[i]);
+            if (resolved === null) { line.className = 'host-cmdb'; line.innerHTML = ''; return; }
+            if (resolved === undefined) {
+                line.className = 'host-cmdb missing';
+                line.innerHTML = `<svg class="ic"><use href="#i-package"/></svg> Not in the observability catalog — <a class="wiz-route-cta" style="margin-left:4px;" onclick="comingSoon('Asset Registry')">register this asset &rarr;</a>`;
+                return;
+            }
+            line.className = 'host-cmdb resolved';
+            line.innerHTML =
+                `<span class="cmdb-chip app">${resolved.type}</span>` +
+                resolved.sub.split(' · ').map(p => `<span class="cmdb-chip">${p}</span>`).join('') +
+                `<span class="cmdb-src">from catalog</span>`;
+        }
+
+        function hcResolvedKeys() {
+            return [...new Set(hcState.assets.map(hcResolveAsset).filter(Boolean).map(r => r.key))];
+        }
+
+        function hcUpdateNote() {
+            const unknown = hcState.assets.filter(a => hcResolveAsset(a) === undefined);
+            document.getElementById('hcAssetNote').innerHTML = unknown.length
+                ? `<div class="fleet-note warn"><svg class="ic"><use href="#i-package"/></svg> ${unknown.length} asset${unknown.length > 1 ? 's' : ''} not found in the catalog — checks can only run on registered assets.</div>`
+                : '';
+            document.getElementById('hcRunBtn').disabled = hcResolvedKeys().length === 0;
+        }
+
+        function hcLoadSample() {
+            hcState.assets = ['ulaeiapos0a', 'ms-payments-fast-transfer'];
+            hcRenderRows();
+        }
+
+        function hcRun() {
+            const keys = hcResolvedKeys();
+            if (!keys.length) return;
+            if (hcState.timer) clearTimeout(hcState.timer);
+            const groups = keys.map(key => ({ key, checks: HEALTH_ASSETS[key].checks.map(c => ({ ...c, shown: 'hidden' })) }));
+            const flat = groups.flatMap(g => g.checks);
+
+            document.getElementById('hcResults').style.display = '';
+            document.getElementById('hcRecs').style.display = 'none';
+            document.getElementById('hcResultTitle').textContent = keys.length > 1 ? `Results — ${keys.length} assets` : `Results — ${keys[0]}`;
+            document.getElementById('hcOverall').className = 'status-badge in-progress';
+            document.getElementById('hcOverall').textContent = 'Running…';
+            document.getElementById('hcResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            let i = 0;
+            function step() {
+                if (i > 0) flat[i - 1].shown = 'final';
+                if (i < flat.length) {
+                    flat[i].shown = 'running';
+                    i++;
+                    hcRenderChecks(groups);
+                    hcState.timer = setTimeout(step, 600);
+                } else {
+                    hcRenderChecks(groups);
+                    hcFinish(groups);
+                }
+            }
+            step();
+        }
+
+        function hcCheckRow(c) {
+            const st = c.shown === 'running' ? 'running' : c.s;
+            return `
+                <div class="hc-check">
+                    <span class="hc-ico ${st}">${st === 'pass' ? '✓' : st === 'fail' ? '✕' : st === 'warn' ? '!' : ''}</span>
+                    <div class="hc-main">
+                        <div class="hc-title">${c.t}</div>
+                        ${st === 'running' ? '' : `<div class="hc-detail">${c.d}</div>`}
+                    </div>
+                    <span class="hc-status ${st}">${HC_STATUS[st]}</span>
+                </div>
+            `;
+        }
+
+        function hcGroupBadge(g) {
+            if (!g.checks.every(c => c.shown === 'final')) return '<span class="status-badge in-progress">Running…</span>';
+            const fails = g.checks.filter(c => c.s === 'fail').length;
+            const warns = g.checks.filter(c => c.s === 'warn').length;
+            if (fails) return `<span class="status-badge rejected">${fails} failed</span>`;
+            if (warns) return `<span class="status-badge pending">${warns} warning${warns > 1 ? 's' : ''}</span>`;
+            return '<span class="status-badge complete">Healthy</span>';
+        }
+
+        function hcRenderChecks(groups) {
+            document.getElementById('hcChecks').innerHTML = groups.map(g => {
+                const shown = g.checks.filter(c => c.shown !== 'hidden');
+                if (!shown.length) return '';
+                return `
+                    <div class="hc-asset-head">
+                        <svg class="ic"><use href="#i-${HEALTH_ASSETS[g.key].type === 'microservice' ? 'package' : 'server'}"/></svg>
+                        <span>${g.key}</span>
+                        ${hcGroupBadge(g)}
+                    </div>
+                    ${shown.map(hcCheckRow).join('')}
+                `;
+            }).join('');
+        }
+
+        function hcFinish(groups) {
+            const all = groups.flatMap(g => g.checks);
+            const fails = all.filter(c => c.s === 'fail').length;
+            const warns = all.filter(c => c.s === 'warn').length;
+            const overall = document.getElementById('hcOverall');
+            if (fails) { overall.className = 'status-badge rejected'; overall.textContent = `Attention needed — ${fails} failed`; }
+            else if (warns) { overall.className = 'status-badge pending'; overall.textContent = `Degraded — ${warns} warning${warns > 1 ? 's' : ''}`; }
+            else { overall.className = 'status-badge complete'; overall.textContent = 'Healthy — all checks passed'; }
+
+            const recs = groups.flatMap(g => g.checks.filter(c => (c.s === 'fail' || c.s === 'warn') && c.fix).map(c => ({ ...c, asset: g.key })));
+            const recsBox = document.getElementById('hcRecs');
+            if (recs.length) {
+                recsBox.style.display = '';
+                document.getElementById('hcRecList').innerHTML = recs.map(c => `
+                    <div class="hc-rec">
+                        <span class="hc-ico ${c.s}" style="flex-shrink:0;">${c.s === 'fail' ? '✕' : '!'}</span>
+                        <div class="hc-main">
+                            <div class="hc-title">${c.t} — <span style="font-family:var(--mono); font-size:12px;">${c.asset}</span></div>
+                            <div class="hc-detail">${c.d}</div>
+                        </div>
+                        <button class="btn btn-primary" style="padding:7px 14px; font-size:12.5px;" onclick="${c.fix.action}">${c.fix.label} &rarr;</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // ---------- Synthetic Alerting (fire drill) ----------
+        // Drills only what actually exists: the alert picker reads the
+        // asset's live config (EXISTING_CONFIG), and the trace follows the
+        // asset's real routing — ELK hops for OTel assets, DX UIM hub hops
+        // for legacy hosts. Destination is a real HPSM ticket tagged
+        // [DRILL], auto-closed after verification. On-demand like Health
+        // Check: a drill changes nothing, so there is no checker step.
+        const SY_CONFIG_KEY = {
+            'ms-cbs-account-movement-adapter': 'deposit-adapter-sg_ms-cbs-account-movement-adapter',
+        };
+
+        let syState = { asset: null, alerts: [], selected: -1, timer: null };
+
+        function openSynthetic() {
+            switchView('synthetic');
+        }
+
+        function syUpdateAsset(value) {
+            const line = document.getElementById('syCmdb');
+            const resolved = hcResolveAsset(value);
+            syState.asset = resolved && resolved.key ? resolved.key : null;
+            syState.selected = -1;
+            document.getElementById('syResults').style.display = 'none';
+            document.getElementById('syRunBtn').disabled = true;
+
+            if (resolved === null) {
+                line.className = 'host-cmdb';
+                line.innerHTML = '';
+                document.getElementById('syAlertSection').style.display = 'none';
+                return;
+            }
+            if (resolved === undefined) {
+                line.className = 'host-cmdb missing';
+                line.innerHTML = `<svg class="ic"><use href="#i-package"/></svg> Not in the observability catalog — <a class="wiz-route-cta" style="margin-left:4px;" onclick="comingSoon('Asset Registry')">register this asset &rarr;</a>`;
+                document.getElementById('syAlertSection').style.display = 'none';
+                return;
+            }
+            line.className = 'host-cmdb resolved';
+            line.innerHTML =
+                `<span class="cmdb-chip app">${resolved.type}</span>` +
+                resolved.sub.split(' · ').map(p => `<span class="cmdb-chip">${p}</span>`).join('') +
+                `<span class="cmdb-src">from catalog</span>`;
+            syBuildAlertList(resolved.key);
+        }
+
+        function syBuildAlertList(key) {
+            const cfgKey = SY_CONFIG_KEY[key] || key;
+            const cfg = EXISTING_CONFIG[cfgKey.toLowerCase()] || EXISTING_CONFIG[cfgKey];
+            const alerts = [];
+            if (cfg) {
+                (cfg.log || []).forEach(e => alerts.push({ cat: 'log', sev: e.severity, label: `<b>${e.keyword}</b> in ${e.filepath || 'container stdout'}`, entry: e }));
+                (cfg.cmd || []).forEach(e => alerts.push({ cat: 'cmd', sev: e.severity, label: `<b>${e.metric}</b> &gt; ${e.threshold}% for ${e.duration}m`, entry: e }));
+                (cfg.process || []).forEach(e => alerts.push({ cat: 'process', sev: e.severity, label: `<b>${e.name}</b> expected ${e.state}`, entry: e }));
+            }
+            syState.alerts = alerts;
+            document.getElementById('syAlertSection').style.display = '';
+
+            if (!alerts.length) {
+                document.getElementById('syAlertList').innerHTML =
+                    `<div class="fleet-note warn"><svg class="ic"><use href="#i-bell"/></svg> No alerts configured for this asset — there is nothing to drill yet. <a class="wiz-route-cta" onclick="openAlertWizard()">Raise an Alert first &rarr;</a></div>`;
+                return;
+            }
+            document.getElementById('syAlertList').innerHTML = alerts.map((a, i) => `
+                <div class="sy-alert-row ${i === syState.selected ? 'selected' : ''}" onclick="sySelectAlert(${i})">
+                    <span class="sy-radio"></span>
+                    <span class="cmdb-chip">${CATEGORY_LABEL[a.cat].replace(' Monitoring', '')}</span>
+                    <span class="sy-alert-label">${a.label}</span>
+                    <span class="sev-dot sev-${(a.sev || 'none').toLowerCase()}" title="${a.sev}"></span>
+                </div>
+            `).join('');
+        }
+
+        function sySelectAlert(i) {
+            syState.selected = i;
+            document.querySelectorAll('#syAlertList .sy-alert-row').forEach((r, j) => r.classList.toggle('selected', j === i));
+            document.getElementById('syRunBtn').disabled = false;
+        }
+
+        function syInjectDesc(a, isMs) {
+            const marker = 'SYNTH-DRILL-' + Math.floor(1000 + Math.random() * 9000);
+            if (a.cat === 'log') return `Synthetic line &ldquo;${marker} ${a.entry.keyword}&rdquo; ${isMs ? 'emitted to container stdout' : 'appended to ' + (a.entry.filepath || 'the watched file')}`;
+            if (a.cat === 'cmd') return `Synthetic ${a.entry.metric} reading of ${Math.min(Number(a.entry.threshold) + 9, 100)}% pushed for one evaluation window`;
+            return `Watched process &ldquo;${a.entry.name}&rdquo; state flipped in the probe sandbox — the real process is untouched`;
+        }
+
+        function syBuildStages(key, a) {
+            const isMs = HEALTH_ASSETS[key].type === 'microservice';
+            const routing = isMs ? 'ELK' : resolveOpenSystemRouting(key).tool;
+            const reg = HOST_REGISTRY[key.toLowerCase()];
+            const app = ((reg && reg.app) || (isMs ? 'CBS' : 'APP')).toLowerCase();
+            const env = ((reg && reg.env) || 'PROD').toLowerCase();
+            const inc = 'INC0' + Math.floor(400000 + Math.random() * 99999);
+            const probe = { log: 'logmon', cmd: 'cdm', process: 'processes' }[a.cat];
+
+            const stages = routing === 'ELK' ? [
+                { t: 'Inject synthetic event', d: syInjectDesc(a, isMs), ms: 300 },
+                { t: isMs ? 'OTel collector pickup' : 'ELK agent pickup', d: 'Event collected and forwarded', ms: 1100 },
+                { t: 'Kafka transport', d: `Landed on topic`, art: `logs.${app}.${env}`, ms: 400 },
+                { t: 'Logstash parse', d: 'Fields extracted, severity mapped', ms: 600 },
+                { t: 'Watcher fires', d: 'Elasticsearch watcher matched the synthetic event', ms: 1900 },
+                { t: 'Moogsoft correlation', d: 'Event enriched and tagged [DRILL] — excluded from dedup with real incidents', ms: 800 },
+                { t: 'HPSM ticket created', d: `Severity ${a.sev} · queue per alert HPSM code`, art: `${inc} [DRILL]`, ms: 1600 },
+                { t: 'Notification delivered', d: 'Owner team notified via Backstage + email', ms: 700 },
+                { t: 'Auto-cleanup', d: 'Drill ticket closed, synthetic event flagged in the index', ms: 500 },
+            ] : [
+                { t: 'Inject synthetic event', d: syInjectDesc(a, isMs), ms: 300 },
+                { t: `Robot probe detection (${probe})`, d: 'DX UIM probe matched the synthetic event on next poll', ms: 2100 },
+                { t: 'Hub alarm forwarded', d: 'Alarm relayed via hub ulnstapor0a', ms: 400 },
+                { t: 'Moogsoft correlation', d: 'Alarm enriched and tagged [DRILL] — excluded from dedup with real incidents', ms: 800 },
+                { t: 'HPSM ticket created', d: `Severity ${a.sev} · queue per alert HPSM code`, art: `${inc} [DRILL]`, ms: 1600 },
+                { t: 'Notification delivered', d: 'Owner team notified via Backstage + email', ms: 700 },
+                { t: 'Auto-cleanup', d: 'Drill ticket closed, synthetic alarm annotated', ms: 500 },
+            ];
+
+            // Known contact-hygiene gap on this host — drills surface it.
+            if (key === 'sgapp0410') {
+                const n = stages.find(s => s.t === 'Notification delivered');
+                n.warn = true;
+                n.d = 'Backstage notification delivered — but the MIDDLEWARE-OPS email bounced. Update contacts in Asset Registry.';
+            }
+            return { stages, inc, routing };
+        }
+
+        function syRun() {
+            if (!syState.asset || syState.selected < 0) return;
+            if (syState.timer) clearTimeout(syState.timer);
+            const a = syState.alerts[syState.selected];
+            const drill = syBuildStages(syState.asset, a);
+            const id = 'SD-' + Math.floor(1000 + Math.random() * 9000);
+            drill.stages.forEach(s => s.status = 'pending');
+            drill.stages[0].status = 'active';
+
+            document.getElementById('syResults').style.display = '';
+            document.getElementById('sySummary').innerHTML = '';
+            document.getElementById('syTraceTitle').textContent = `Drill trace ${id} — ${syState.asset} · via ${drill.routing}`;
+            document.getElementById('syOverall').className = 'status-badge in-progress';
+            document.getElementById('syOverall').textContent = 'Drill running…';
+            document.getElementById('syResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            function step() {
+                const i = drill.stages.findIndex(s => s.status === 'active');
+                if (i === -1) return;
+                drill.stages[i].status = drill.stages[i].warn ? 'warn' : 'done';
+                if (i + 1 < drill.stages.length) {
+                    drill.stages[i + 1].status = 'active';
+                    syRenderTrace(drill);
+                    syState.timer = setTimeout(step, 750);
+                } else {
+                    syRenderTrace(drill);
+                    syFinish(drill, a);
+                }
+            }
+            syRenderTrace(drill);
+            syState.timer = setTimeout(step, 750);
+        }
+
+        function syRenderTrace(drill) {
+            document.getElementById('syTrace').innerHTML = drill.stages.map((s, i) => `
+                <div class="lo-stage ${s.status === 'warn' ? 'waiting' : s.status}">
+                    <div class="lo-dot">${s.status === 'done' ? '✓' : s.status === 'warn' ? '!' : i + 1}</div>
+                    <div class="lo-stage-body">
+                        <div class="lo-stage-head">
+                            <span class="lo-stage-title">${s.t}</span>
+                            <span class="lo-status ${s.status === 'warn' ? 'waiting' : s.status}">${s.status === 'done' || s.status === 'warn' ? (s.ms / 1000).toFixed(1) + 's' : s.status === 'active' ? 'Running' : 'Queued'}</span>
+                        </div>
+                        ${s.art ? `<div class="lo-artifact">${s.art}</div>` : ''}
+                        ${s.status === 'done' || s.status === 'warn' ? `<div class="lo-stage-detail">${s.d}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function syFinish(drill, a) {
+            const warns = drill.stages.filter(s => s.status === 'warn').length;
+            const total = (drill.stages.reduce((sum, s) => sum + s.ms, 0) / 1000).toFixed(1);
+            const overall = document.getElementById('syOverall');
+            if (warns) { overall.className = 'status-badge pending'; overall.textContent = `Drill passed with ${warns} warning${warns > 1 ? 's' : ''}`; }
+            else { overall.className = 'status-badge complete'; overall.textContent = 'Drill passed — chain verified'; }
+
+            document.getElementById('sySummary').innerHTML = `
+                <div class="sy-summary">
+                    <div><b>${drill.inc}</b> <span class="cmdb-chip">[DRILL]</span> created and auto-closed · end-to-end <b>${total}s</b> from source to ticket.</div>
+                    <div class="lo-stage-detail" style="margin-top:4px;">Drill evidence is attached to the asset's audit trail — use it as proof the ${CATEGORY_LABEL[a.cat].toLowerCase()} chain works before the next real incident.</div>
+                    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:10px;">
+                        <button class="btn btn-secondary" onclick="syRun()">Run Again</button>
+                        <button class="btn btn-primary" onclick="comingSoon('HPSM')">View Ticket</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function syLoadSample() {
+            document.getElementById('syAssetInput').value = 'sgapp0410';
+            syUpdateAsset('sgapp0410');
+            sySelectAlert(0);
+        }
+
+        renderMyActions();
+        hcRenderRows();
 
         document.getElementById('alertWizardModal').addEventListener('click', function(e) {
             if (e.target === this) closeWizard();
@@ -4805,8 +5781,15 @@
                 aikaBotSay(
                     "Right now <span class='mono'>ms-cbs-account-movement-adapter</span> is <b style='color:var(--status-error)'>Critical</b> — error spike in the last 2 hours with 3 open alerts (2 critical). <span class='mono'>ms-payments-fast-transfer</span> is <b style='color:#c07300'>Degraded</b> with 1 major alert. DX UIM is also reporting degraded platform status, which may add noise.",
                     "Run full health check",
-                    "comingSoon('Health Check');",
+                    "openHealthCheck();",
                     "activity"
+                );
+            } else if (/(synthetic|drill|fire.?drill|test.*alert)/.test(q)) {
+                aikaBotSay(
+                    "<b>Synthetic Alerting</b> fire-drills an alert end to end: a synthetic event at the source, every hop traced, and a real HPSM ticket tagged <span class='mono'>[DRILL]</span> at the destination — auto-closed after verification. Run one before go-live or after any pipeline change.",
+                    "Run a drill",
+                    "openSynthetic(); toggleAika();",
+                    "launch"
                 );
             } else if (/(access|kibana|grafana|permission|grant|role)/.test(q)) {
                 aikaBotSay(
