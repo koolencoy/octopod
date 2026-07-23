@@ -13,11 +13,13 @@ with which repo it belongs to.
   `bitbucket_branch: staging` (should be `main`), the old `ocbc`
   naming, and none of the hardening fixes from M1 (`roles_path`,
   `stdout_callback`, the `group_vars` relocation). It needs one of:
-  promote it into its own real git repo (the natural home for ELK
-  watcher-sync automation, matching the one-repo-per-backend
-  principle in `docs/design/branching-strategy.md`), or explicitly retire
-  it if ELK watcher sync isn't being pursued right now. Leaving it as
-  a silently-rotting copy is the one option that's actually wrong.
+  fold it back into this repo (now that octopod is the overall
+  Observability Portal, an ELK watcher-sync role next to
+  `dxuim_config_sync` is a natural shape), promote it into its own
+  git repo (one-repo-per-backend, matching
+  `docs/design/branching-strategy.md`), or explicitly retire it if
+  ELK watcher sync isn't being pursued right now. Leaving it as a
+  silently-rotting copy is the one option that's actually wrong.
 - **[decision needed]** The Asset Catalog & Scoring spec
   (`ELK/ELK-Asset-Catalog-Entity-Model-and-Scoring-Spec.md`, drafted
   2026-06-20) is a full separate workstream — ServiceNow CMDB entity

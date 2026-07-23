@@ -1,20 +1,41 @@
-# octopod
+# octopod — the Observability Portal
 
-The **DX UIM (Open Systems) automation backend** of the Observability
-Portal — the internal developer platform built on **Backstage**
-(self-service front end), **Bitbucket** (config-as-code source of
-truth, PR = approval gate), and **Ansible** (execution engine).
+octopod is the **Observability Portal**: the self-service window
+between developers/engineers and the Observability Platform team — the
+"yellow pages" for everything observability. It is built on
+**Backstage** (catalog + self-service wizards), **Bitbucket**
+(config-as-code, PR = approval gate), and **Ansible** (execution
+engine).
 
-octopod owns one slice of that platform: taking approved DX UIM probe
-configurations out of Bitbucket and activating them on the Broadcom DX
-UIM probe config API, then telling the requester what happened. The
-Backstage app itself and the ELK/Elasticsearch side live in separate
-projects — see `docs/planning/overview.md` for the scope boundary.
+## Why it exists
 
-## How it works
+For the past ~20 years, observability has run on heavy, interrupt-
+driven operations: anyone needing an alert, a dashboard, or an answer
+pings or calls a platform engineer, and documentation drifts because
+it lives apart from the systems it describes. The Portal replaces both
+habits:
 
-1. An engineer raises an alert through the Observability Portal's
-   "Raise an Alert" wizard (Backstage Scaffolder).
+- **Self-service instead of calls** — requests go through wizards,
+  approvals through PRs, activation through automation. No human in
+  the loop except the approver.
+- **A living catalog instead of drifting docs** — every monitored
+  asset appears in the Backstage catalog with its owner, lifecycle,
+  and current config. The catalog *is* the inventory; there is no
+  separate document to keep in sync.
+
+## The tool estate (all on-premises)
+
+| Tool | Role | Portal automation today |
+| --- | --- | --- |
+| DX UIM (Broadcom) | Open Systems infrastructure monitoring | **Live in this repo** — config sync verified end-to-end against a local stub |
+| ELK Stack | Log ingestion, keyword watchers/alerts | Drafted in the ELK project (watcher sync + Scaffolder template); consolidation pending |
+| Grafana | Dashboards & visualization | Dashboard models in `grafana/`; DX UIM data source still TODO |
+| SolarWinds | Network monitoring | Not started — future backend slice |
+
+## How a request flows (DX UIM, the first delivered slice)
+
+1. An engineer raises an alert through the Portal's "Raise an Alert"
+   wizard (Backstage Scaffolder).
 2. The config is committed to a per-request `staging/<env>-<robot>`
    branch; a PR into `main` is the approval gate. `main` is production
    truth. (Full model: `docs/design/branching-strategy.md`.)
@@ -26,6 +47,8 @@ projects — see `docs/planning/overview.md` for the scope boundary.
    Notifications (`ansible/roles/notify_requester`).
 
 Ansible only ever **reads** from Bitbucket — it never commits back.
+The same pattern (wizard → PR → webhook → Ansible → tool API →
+notification) is the template for every other backend in the estate.
 
 ## Repository map
 
@@ -35,7 +58,7 @@ Ansible only ever **reads** from Bitbucket — it never commits back.
 | `dxuim-config/` | Probe config data tree, `{ENV}/{robot}/{probe}.json` — see `dxuim-config/guide.md` for conventions |
 | `dxuim-stub/` | Local Python stub of the DX UIM API for end-to-end testing |
 | `grafana/` | Entity + overview alerting dashboards (JSON models) |
-| `docs/planning/` | Scope, milestones, backlog — start at `overview.md` |
+| `docs/planning/` | Vision, scope, milestones, backlog — start at `overview.md` |
 | `docs/spec/` | "Raise an Alert" domain data model (Draft v0.1) |
 | `docs/design/` | Branching-strategy design doc, Backstage UI mockups, logo assets |
 

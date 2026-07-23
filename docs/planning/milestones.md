@@ -33,9 +33,12 @@ finish anyway.
   Tech Insights scoring across ~20k hosts) — a separate, larger
   workstream with its own drafted spec. Don't report this milestone's
   completion as if it includes Asset Registry progress.
-- **ELK Elasticsearch watcher sync** — no longer part of octopod.
-  Depends on the scope decision above; if promoted to its own repo,
-  it gets its own milestone tracking there, not here.
+- **ELK Elasticsearch watcher sync** — part of the Portal's remit
+  (octopod is the overall Observability Portal), but not this
+  milestone. Its automation currently lives in the ELK project;
+  the scope decision above determines whether it folds into this
+  repo, gets its own repo, or is retired — milestone tracking starts
+  wherever it lands.
 - **The DX UIM Scaffolder template, the Configuration tab, the wizard
   "existing config" summary** — all `[ELK/backstage]`-tagged items.
   octopod depends on some of these eventually but doesn't own them.

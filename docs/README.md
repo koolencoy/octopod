@@ -1,14 +1,17 @@
 # Documentation index
 
-Suggested reading order for anyone new to octopod. Remember the scope
-boundary: octopod is only the DX UIM automation slice of the wider
-Observability Portal program — `planning/overview.md` explains what
-lives where.
+Suggested reading order for anyone new to octopod — the Observability
+Portal, the self-service window between engineers and the
+Observability Platform team. DX UIM automation is the first delivered
+backend slice; ELK, Grafana, and SolarWinds follow the same pattern —
+`planning/overview.md` explains the vision and what lives where.
 
 ## 1. Orientation
 
-- `planning/overview.md` — what octopod is, what's live today, and
-  where it sits inside the wider observability program. **Read first.**
+- `planning/overview.md` — the Portal vision (self-service instead of
+  20 years of ping-the-engineer, a living catalog instead of doc
+  drift), the on-prem tool estate, and what's live today. **Read
+  first.**
 - `../README.md` — repo map and the end-to-end flow in brief.
 
 ## 2. Design

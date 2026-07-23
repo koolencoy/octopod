@@ -1,17 +1,52 @@
-# Overview — octopod
+# Overview — octopod, the Observability Portal
 
-octopod is the **DX UIM (Open Systems) automation backend of the
-Observability Portal**, the IDP built on Backstage + Bitbucket +
-Ansible. Its one job: when an approved probe config lands on `main` of
-the `dxuim-configs` Bitbucket repo, activate it on the DX UIM probe
-config API and tell the requester whether that worked.
+octopod is the **Observability Portal**: the self-service window
+between developers/engineers and the Observability Platform team — the
+"yellow pages" for everyone who needs monitoring, alerting, or
+dashboards. Built on Backstage (catalog + wizards), Bitbucket
+(config-as-code, PR = approval), and Ansible (execution).
 
-## The concrete flow
+## The problem being solved
 
-1. **Request** — an engineer fills the "Raise an Alert" wizard in the
-   Observability Portal (Backstage Scaffolder; lives in the separate
-   ELK/backstage project — no DX UIM template exists yet, so today the
-   config files are hand-authored, see backlog).
+Two decades of interrupt-driven operations:
+
+- **People ping and call the engineer.** Every alert request, every
+  onboarding, every "is this monitored?" question routes through a
+  human on the platform team. The team's capacity is spent on toil,
+  not on the platform.
+- **Documentation drift.** Inventories and runbooks live apart from
+  the systems they describe, so they rot the moment they're written.
+  Nobody trusts them; people go back to pinging the engineer.
+
+The Portal's answer, respectively: **self-service** (wizard → PR
+approval → automated activation → notification — no human in the loop
+except the approver) and **a living catalog** (every monitored asset
+is a Backstage catalog entity with an owner, lifecycle, and its
+current config; the catalog *is* the inventory).
+
+## The tool estate (all on-premises)
+
+The Observability Platform is not one tool. The Portal fronts all of
+them behind one experience:
+
+| Tool | Role | Portal automation status |
+| --- | --- | --- |
+| DX UIM (Broadcom) | Open Systems infra monitoring (process/CMD/log probes) | **Live — this repo.** Sync verified end-to-end against `dxuim-stub/` |
+| ELK Stack | Log ingestion, keyword watchers/alerts | Drafted in the ELK project: watcher-sync Ansible role + `microservice-keyword-alert` Scaffolder template. Consolidation into octopod is an open decision (see backlog) |
+| Grafana | Dashboards & visualization | `grafana/` dashboard models here; DX UIM data source unconfirmed (`TODO` panels) |
+| SolarWinds | Network monitoring | Not started — future backend slice, same wizard → PR → Ansible pattern |
+
+Every backend follows one pattern: **wizard → per-request branch → PR
+gate → webhook → Ansible reads Bitbucket → PUT to the tool's API →
+notify the requester.** DX UIM is the first slice delivered end to
+end; the rest of this document describes it concretely.
+
+## The DX UIM slice, concretely
+
+1. **Request** — an engineer fills the "Raise an Alert" wizard
+   (Backstage Scaffolder; app code currently lives in the ELK
+   project — no DX UIM template exists yet, so today the config files
+   are hand-authored, see backlog).
 2. **Commit** — the config goes to a per-request branch
    `staging/<environment>-<robot>` off `main` in project `SRE`, repo
    `dxuim-configs` on `bitbucket.acbc.internal`. A PR into `main` is
@@ -19,8 +54,8 @@ config API and tell the requester whether that worked.
    `docs/design/branching-strategy.md`.
 3. **Trigger** — on merge, Bitbucket's `repo:refs_changed` webhook
    fires `ansible/playbooks/sync-dxuim-config.yml` with the merge's
-   `fromHash`/`toHash`. The playbook also supports two fallback modes:
-   single-file (`changed_file_path`) and full-tree poll (no vars).
+   `fromHash`/`toHash`. Two fallback modes exist: single-file
+   (`changed_file_path`) and full-tree poll (no vars).
 4. **Activate** — `dxuim_config_sync` reads the changed
    `{environment}/{robot}/{probe}.json` files over Bitbucket's REST
    API (never a clone), resolves the hub from
@@ -48,8 +83,7 @@ config API and tell the requester whether that worked.
   monitoring for this robot do not exist yet.
 - **`catalog-info.yaml` per robot** — hand-authored (once, for
   `ulaeiapos0a`) so the robot appears in the Portal's catalog with an
-  owner, lifecycle, and Grafana tab. That catalog view *is* the alert
-  asset inventory; there is no separate list to maintain.
+  owner, lifecycle, and Grafana tab — the "yellow pages" entry.
 - **`grafana/`** — entity + overview dashboards exist as JSON models;
   the DX UIM panels in them are `TODO` pending a confirmed
   DX UIM → Grafana data source.
@@ -68,27 +102,27 @@ config API and tell the requester whether that worked.
 Secrets (DX UIM password, Backstage token) come from Ansible Vault —
 `vault.yml.example` documents the two variables.
 
-## Scope boundary — what octopod is not
+## Assets currently outside this repo
 
-octopod is one slice of the Observability Portal program. Explicitly
-outside this repo:
+octopod is the Portal, but not everything Portal-related has been
+consolidated here yet:
 
-- **The Backstage app itself** — Scaffolder templates, the wizard, the
-  catalog UI. Lives in the ELK/backstage project; backlog items that
-  need changes there are tagged `[ELK/backstage]`.
-- **ELK Elasticsearch watcher sync** — deliberately removed from this
-  repo. Survives only as a stale mirror at `ELK/ansible/` (OneDrive,
-  not a git repo); promoting or retiring it is an open decision in the
-  backlog.
-- **Asset Registry at full scope** — the ServiceNow CMDB → Backstage →
-  Tech Insights scoring workstream (~20k hosts) has its own drafted
-  spec in the ELK project and is not covered by anything here.
+- **The Backstage app code** — Scaffolder templates, the wizard, the
+  catalog UI, app theme. Currently in the ELK project; backlog items
+  needing changes there are tagged `[ELK/backstage]`.
+- **ELK watcher-sync automation** — a stale mirror at `ELK/ansible/`
+  (OneDrive, not a git repo). Open decision: fold into octopod,
+  promote to its own repo, or retire (see backlog).
+- **Asset Registry** — the ServiceNow CMDB → Backstage → Tech Insights
+  scoring workstream (~20k hosts) has its own drafted spec in the ELK
+  project. It is the Portal's long-term "yellow pages at full scale,"
+  tracked as its own workstream.
 
 ## Where the plan lives
 
 - `milestones.md` — current milestone: **DX UIM base hardening, due
   30 September 2026**, with explicit in/out-of-scope lists.
-- `backlog.md` — every open gap, tagged by owning repo.
+- `backlog.md` — every open gap, tagged by owning repo/workstream.
 - `docs/spec/raise-an-alert-domain-model.md` — Draft v0.1 of the
   domain model that will replace raw `probeConfigKeys` as the
   committed format; not yet implemented in Ansible.
