@@ -1,33 +1,45 @@
-# Alert Automation Platform — Architecture
+# octopod, the Observability Portal — Architecture
 
 **Status:** Build stage. This is a living document; the status tables in
 section 8 change as components land.
 
 **Stack:** Backstage · Bitbucket · Ansible
-**Target systems:** DX UIM · ELK Stack · SolarWinds
+**Platform services behind the portal:** DX UIM · ELK Stack · SolarWinds · Grafana
 
 ---
 
-## 1. What this system does
+## 1. What this system is
 
-Today, getting a monitoring alert set up (for example: "page us if this
-log shows `OutOfMemoryError`", or "alert if CPU stays above 90% for 5
-minutes") means raising a ticket and waiting for someone to configure a
-monitoring tool by hand.
+octopod is an **internal developer portal for observability**: a
+self-service window between engineers and the Observability Platform
+team. Instead of pinging a platform engineer to get something done in a
+monitoring tool, an engineer serves themselves through the portal, and
+the platform services at the back (DX UIM, ELK, SolarWinds, Grafana)
+are configured automatically — with approval and audit built in.
 
-This platform replaces that with self-service:
+Every service the portal offers follows one pattern:
 
-1. A user fills in a **wizard** in Backstage describing the alert they want.
-2. The wizard turns that into a **pull request** in Bitbucket. A reviewer
-   approves it by merging — the merge *is* the approval.
-3. **Ansible** picks up the merged change and pushes the configuration to
-   the right monitoring tool (DX UIM, ELK, or in future SolarWinds).
-4. The requester gets a **notification** telling them whether the alert
-   is now live — or that activation failed and needs attention.
+1. The engineer describes what they need in a **wizard** in Backstage —
+   not in a ticket, not in a chat message.
+2. The wizard turns the request into a **pull request** in Bitbucket. A
+   reviewer approves it by merging — the merge *is* the approval, and
+   git *is* the audit trail.
+3. **Ansible** picks up the merged change and configures the relevant
+   platform service.
+4. The requester gets a **notification** with the outcome — live, or
+   failed and needing attention.
 
-The git repository is the single source of truth for "what alerting
-should exist." Nothing gets configured on a monitoring tool that isn't
-in git first.
+The git repository is the single source of truth for "what should be
+configured." Nothing reaches a platform service that isn't in git first,
+and the portal's catalog of monitored assets is driven by those same
+files — so the inventory can't drift from reality.
+
+**"Raise an Alert" is the first service** delivered through this
+pattern (built end-to-end for DX UIM, verified against a test stub).
+Most of this document uses it as the worked example — but the
+architecture is the *pattern*: new services (dashboard provisioning,
+maintenance windows, onboarding a new asset) plug in as new wizards and
+new Ansible roles, without changing the portal's shape.
 
 ## 2. The big picture
 
@@ -37,7 +49,7 @@ flowchart LR
     BS -->|2. opens PR| BB[Bitbucket]
     R[Reviewer] -->|3. merges PR| BB
     BB -->|4. webhook / poll| AN[Ansible]
-    AN -->|5. pushes config| T["Monitoring tools<br/>DX UIM · ELK · SolarWinds"]
+    AN -->|5. pushes config| T["Platform services<br/>DX UIM · ELK · SolarWinds"]
     AN -->|6. success or failure| BS
     BS -->|notification| U
 ```
@@ -63,6 +75,8 @@ these tools daily:
 
 | Term | Meaning |
 |---|---|
+| **octopod** | This project: the Observability Portal — the self-service layer (portal + pipeline + automation) in front of the platform services below. |
+| **Platform service** | A backend tool the portal configures on the user's behalf: DX UIM, ELK, SolarWinds (monitoring/alerting), Grafana (dashboards). |
 | **DX UIM** | Broadcom's infrastructure monitoring product (formerly CA UIM). Monitors servers ("Open Systems"). |
 | **Robot** | DX UIM's agent installed on a monitored server. One robot = one host. |
 | **Probe** | A plugin running on a robot that does one kind of monitoring. The three we use: `processes` (is a process running?), `cdm` (CPU/disk/memory thresholds), `logmon` (log file scanning). |
@@ -243,13 +257,17 @@ yet implemented — is to commit a **tool-neutral document** instead
 and have Ansible translate it into each tool's native format at
 activation time. One committed format, three translators. This is the
 key pending change, because it's what lets the same request format
-serve DX UIM, ELK, *and* SolarWinds.
+serve DX UIM, ELK, *and* SolarWinds. The implementation design —
+format detection, validation, failure isolation, and the migration
+sequence — is proposed in
+`docs/architecture/domain-model-transform-design.md`.
 
-## 6. The three monitoring tools
+## 6. The platform services behind the portal
 
-Each tool integration is the same four pieces: a config repo, an
-Ansible role, a translator (neutral format → tool format), and the
-tool's API. The three tools are at very different stages.
+Each alerting service integration is the same four pieces: a config
+repo, an Ansible role, a translator (neutral format → tool format), and
+the tool's API. The three alerting tools are at very different stages;
+Grafana (§6.4) plays a different role.
 
 ### 6.1 DX UIM — ✅ built and verified
 
@@ -309,6 +327,18 @@ Four decisions are needed before build starts:
    "set it to exactly this" update. If it only supports create/update by
    ID, the role needs a lookup step first (more logic, but the one-way,
    stateless design still holds).
+
+### 6.4 Grafana — visualization, not activation
+
+Grafana is a platform service the portal *surfaces* rather than one it
+configures per request: entity and overview dashboards exist
+(`grafana/`) and are linked from each asset's Catalog page, so a
+monitored server comes with its dashboards attached. There is no
+"request a dashboard" wizard today — if dashboard provisioning becomes
+a self-service offering later, it plugs into the same pattern (config
+repo → Ansible → Grafana API). Current gap: the DX UIM panels are
+placeholders until a DX UIM → Grafana data source is confirmed
+(a current-milestone item).
 
 ## 7. Security, in brief
 
@@ -376,4 +406,5 @@ configs, and resolve the ELK-home decision. Details in
 | `docs/planning/milestones.md` | Current milestone and its contents |
 | `docs/planning/backlog.md` | Every known gap, itemized and tagged by owning repo |
 | `docs/spec/raise-an-alert-domain-model.md` | The tool-neutral config format (draft) |
+| `docs/architecture/domain-model-transform-design.md` | How Ansible will translate that format — detection, validation, migration (proposed) |
 | `dxuim-config/guide.md` | DX UIM API usage and file conventions |

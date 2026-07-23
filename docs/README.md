@@ -23,6 +23,10 @@ backend slice; ELK, Grafana, and SolarWinds follow the same pattern —
   Ansible never writes git), per-target status (DX UIM built, ELK
   pending a home, SolarWinds not started), and the build-stage status
   matrix. Includes a terminology table for the DX UIM/Backstage jargon.
+- `architecture/domain-model-transform-design.md` — proposed design for
+  the translator machinery: how Ansible detects, validates, and
+  transforms domain-model documents, and the no-flag-day migration
+  sequence. Companion to the spec below.
 
 ## 3. Design
 
