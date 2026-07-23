@@ -56,7 +56,11 @@ backend slice; ELK, Grafana, and SolarWinds follow the same pattern —
 ## 7. Project management
 
 - `planning/milestones.md` — current milestone: **DX UIM base
-  hardening, due 30 September 2026**, with explicit in/out-of-scope
-  lists.
+  hardening, due 30 September 2026**, with the current-state baseline
+  and explicit in/out-of-scope lists.
+- `planning/execution-plan.md` — the week-by-week plan delivering
+  that milestone (27 Jul → 30 Sep 2026): decisions first, verify
+  against real systems, complete the first robot, provenance, buffer,
+  close. Living document — exit criteria ticked weekly.
 - `planning/backlog.md` — every open gap, each tagged with the repo it
   belongs to (`[octopod]` vs `[ELK/backstage]`).
