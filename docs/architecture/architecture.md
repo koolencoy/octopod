@@ -358,9 +358,11 @@ Log alerts on ELK are implemented as Elasticsearch Watchers, and
 automation for syncing them exists — but it was deliberately moved *out*
 of this repository (one repo per tool), and its new home was never
 created. It currently sits as an out-of-date copy in a OneDrive folder,
-which is the worst of both worlds. **A decision is pending**: give it
-its own git repository (recommended — it matches the one-repo-per-tool
-rule) or formally retire it.
+which is the worst of both worlds. **A decision is pending**
+(execution plan W3), with three options: fold it back into the
+octopod repo alongside the DX UIM role, give it its own git
+repository (matching the one-repo-per-tool rule), or formally retire
+it. Leaving the stale copy is the only wrong answer.
 
 Separately, only *log* alerts have a designed ELK implementation.
 CPU/memory/process alerts for servers that have migrated to the new

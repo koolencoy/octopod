@@ -31,7 +31,7 @@ so the record of what changed and who agreed is the git history.
 ## In scope — later (committed direction, not current work)
 
 - **ELK Stack slice**: watcher-sync automation exists but needs a
-  home (decision scheduled W2 of the execution plan); ELK
+  home (decision scheduled W3 of `execution-plan.md`); ELK
   CPU/memory/process alerting has no designed mechanism yet.
 - **SolarWinds slice**: not started; follows the established pattern
   (own config repo, own role, shared notifications). Four pre-build
@@ -42,6 +42,13 @@ so the record of what changed and who agreed is the git history.
 - **DX UIM Scaffolder template**: wizard-generated configs and
   `catalog-info.yaml` for Open Systems, retiring hand-authoring —
   blocked on the Backstage app side.
+- **AI-DLC / the second brain**: AI tools working over the markdown
+  and config-as-code knowledge base in Bitbucket — estate Q&A,
+  PR summaries for approvers, drafting config PRs, the Observability
+  Score guidance loop. Direction committed in `vision.md` ("The next
+  chapter"); use cases, guardrails, and dependencies agreed in
+  `second-brain-use-cases.md`. Nothing is being built yet; the rule
+  is fixed in advance: AI proposes, humans approve, git records.
 
 ## Out of scope
 

@@ -8,6 +8,10 @@ backend slice; ELK, Grafana, and SolarWinds follow the same pattern —
 
 ## 1. Orientation
 
+- `planning/overview.md` — the executive overview: the problem
+  (a decade of ping-the-engineer operations, documentation drift),
+  how the Portal resolves it, and the benefits and savings case.
+  **Read first.**
 - `planning/vision.md` — the vision for senior executives:
   modernizing a decade of observability operations — one portal as
   the front door and yellow pages, a fresh page for how the
@@ -17,10 +21,6 @@ backend slice; ELK, Grafana, and SolarWinds follow the same pattern —
   concretely enables: use cases in three governance tiers, the
   Observability Score as a natural-language guidance loop
   (crawl/walk/run), and the dependencies to line up first.
-- `planning/overview.md` — the executive overview: the problem
-  (a decade of ping-the-engineer operations, documentation drift),
-  how the Portal resolves it, and the benefits and savings case.
-  **Read first.**
 - `../README.md` — repo map and the end-to-end flow in brief.
 
 ## 2. Architecture

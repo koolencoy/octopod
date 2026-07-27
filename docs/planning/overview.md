@@ -126,6 +126,11 @@ planned.
 
 ## Read more
 
+- `vision.md` — the executive vision this case supports, including
+  the AI-DLC "second brain" direction.
+- `second-brain-use-cases.md` — the AI direction made concrete:
+  use cases, guardrails, dependencies.
 - `docs/architecture/architecture.md` — the full technical design,
   component status, and open risks.
-- `milestones.md` / `backlog.md` — delivery plan and itemized gaps.
+- `milestones.md` / `backlog.md` / `execution-plan.md` — delivery
+  plan and itemized gaps.

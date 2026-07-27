@@ -43,9 +43,11 @@ finish anyway.
    - Add `changeRecordId` to the DX UIM metadata convention
    - Consume `sourceTaskId` once the Scaffolder side starts sending it
      (blocked on the ELK/backstage item below — track, don't own)
-3. **Resolve the `ELK/ansible/` mirror decision** — promote to a real
-   repo or explicitly retire it. Either answer is fine; leaving it
-   silently stale is not.
+3. **Resolve the `ELK/ansible/` mirror decision** — fold it into
+   this repo, promote it to its own repo, or explicitly retire it
+   (the same three options everywhere: `backlog.md`,
+   `architecture.md` §6.2). Any answer is fine; leaving it silently
+   stale is not.
 4. **Grafana DX UIM data source** — get a confirmed answer on what
    actually bridges DX UIM into Grafana, so the two `TODO` panels can
    become real.
@@ -67,6 +69,22 @@ finish anyway.
   octopod depends on some of these eventually but doesn't own them.
 
 ## After this milestone
+
+The proposed next milestone (per `execution-plan.md` W11) is the
+**ELK slice + domain-model transform Phase 1**:
+
+- **ELK slice onboarding** — wherever the W3 home decision lands,
+  bring ELK watcher sync up to the same hardened standard as DX UIM.
+- **Domain-model transform Phase 1 (dual-read)** — per
+  `docs/architecture/domain-model-transform-design.md` §8; by close
+  of this milestone it will be designed, decided (W2), and have its
+  CMD/Log verification gates cleared (W7–W8).
+- **Second-brain preparations** — the cheap groundwork the AI
+  direction needs (`second-brain-use-cases.md` §4): write down the
+  authoring conventions, design the AI bot credential model. No AI
+  features yet.
+
+Also queued, not yet scheduled:
 
 - **DX UIM Scaffolder template** (ELK/backstage) — once built, retire
   the hand-authored `catalog-info.yaml` convention in favor of
