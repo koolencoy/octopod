@@ -50,6 +50,41 @@ instead of by hand.
 | Four tools, four tribal processes | One portal, one request pattern, whatever the tool behind it |
 | Knowledge in a few heads | Process and inventory in the platform, owned by everyone |
 
+## The next chapter — AI, and the second brain of Observability
+
+The timing of this vision is not accidental. With capable AI tools
+now generally available, the industry direction is **AI-DLC — the
+AI-driven development life cycle** — where the operational
+maintenance of automation itself is done with AI tools working under
+human approval. The Portal is built, deliberately, as the foundation
+that direction needs:
+
+- **Everything is markdown and config-as-code.** AI tools read and
+  write markdown natively — it is their working medium. The Portal
+  runs on Backstage, whose TechDocs is markdown-heavy by design: the
+  documentation, the runbooks, the specs, and the configuration all
+  live as plain, versioned text. That is not a limitation; it is the
+  fit that lets AI generate, maintain, and update these documents as
+  part of normal operations — with the same PR approval gate
+  governing AI-authored changes as human ones.
+- **Bitbucket becomes the second brain of Observability.** Every
+  config, convention, decision, and runbook accumulates in one
+  versioned, plain-text store. Humans read it through the Portal;
+  AI tools read the same source. Nothing needs to be exported,
+  synced, or re-explained — the knowledge base *is* the operating
+  system of record.
+- **Future use cases read straight from it.** An engineer asks the
+  Portal "what monitoring does this system have, and why?" and an AI
+  assistant answers from the markdown in Bitbucket — current,
+  sourced, and trustworthy because it is the same content that
+  drives the tools. Document generation, config proposals, and
+  operational answers all draw from — and write back to, via
+  approved PRs — the same second brain.
+
+The governance never changes: AI proposes, humans approve, git
+records. The Portal makes AI adoption safe by construction, because
+the approval gate was the architecture from day one.
+
 ## Why this succeeds now
 
 - **It is already working.** The first slice — infrastructure
