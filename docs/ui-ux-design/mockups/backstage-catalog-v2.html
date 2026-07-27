@@ -1784,7 +1784,7 @@
         .status-badge.complete, .status-badge.approved { background: var(--status-ok-soft); color: #146b45; }
         .status-badge.rejected { background: var(--status-error-soft); color: #a51e2a; }
 
-        /* ============ Health Check ============ */
+        /* ============ Observability Score ============ */
         .hc-result-head {
             display: flex;
             align-items: center;
@@ -2643,7 +2643,7 @@
             <div class="side-label">Services</div>
             <div class="side-group">
                 <div class="side-item" onclick="openAlertWizard()">
-                    <svg class="ic"><use href="#i-bell"/></svg> Alerts
+                    <svg class="ic"><use href="#i-bell"/></svg> Add Monitoring
                 </div>
                 <div class="side-item" onclick="openLogOnboarding()">
                     <svg class="ic"><use href="#i-download"/></svg> Log Onboarding
@@ -2655,7 +2655,7 @@
                     <svg class="ic"><use href="#i-package"/></svg> Asset Registry
                 </div>
                 <div class="side-item" onclick="openHealthCheck()">
-                    <svg class="ic"><use href="#i-activity"/></svg> Health Check
+                    <svg class="ic"><use href="#i-chart"/></svg> Observability Score
                 </div>
                 <div class="side-item" onclick="openSynthetic()">
                     <svg class="ic"><use href="#i-launch"/></svg> Synthetic Alerting
@@ -2720,8 +2720,8 @@
                             <div class="quick-grid">
                                 <div class="quick-card" style="--qc-accent:#da2837; --qc-soft:rgba(218,40,55,0.07);" onclick="openAlertWizard()">
                                     <div class="qc-icon"><svg class="ic"><use href="#i-bell"/></svg></div>
-                                    <div class="qc-title">Raise an Alert</div>
-                                    <div class="qc-desc">Guided CMD, Log, and Process alerts across Microservices (ELK) and Open Systems (DX UIM).</div>
+                                    <div class="qc-title">Add Monitoring</div>
+                                    <div class="qc-desc">Turn on CMD, Log, and Process monitoring for your services and hosts — routed to ELK or DX UIM.</div>
                                     <div class="qc-cta">Launch template <svg class="ic"><use href="#i-arrow-r"/></svg></div>
                                 </div>
                                 <div class="quick-card" style="--qc-accent:#0278d5;" onclick="openLogOnboarding()">
@@ -2749,10 +2749,10 @@
                                     <div class="qc-cta">Run a drill <svg class="ic"><use href="#i-arrow-r"/></svg></div>
                                 </div>
                                 <div class="quick-card" style="--qc-accent:#f59300; --qc-soft:rgba(245,147,0,0.09);" onclick="openHealthCheck()">
-                                    <div class="qc-icon"><svg class="ic"><use href="#i-activity"/></svg></div>
-                                    <div class="qc-title">Health Check</div>
-                                    <div class="qc-desc">End-to-end health of your app: logs, APM, infra, and alerts.</div>
-                                    <div class="qc-cta">Run check <svg class="ic"><use href="#i-arrow-r"/></svg></div>
+                                    <div class="qc-icon"><svg class="ic"><use href="#i-chart"/></svg></div>
+                                    <div class="qc-title">Observability Score</div>
+                                    <div class="qc-desc">How observable is your asset? A scored checklist with certification levels and remediation.</div>
+                                    <div class="qc-cta">View scorecard <svg class="ic"><use href="#i-arrow-r"/></svg></div>
                                 </div>
                             </div>
                         </div>
@@ -2996,12 +2996,12 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td><span class="app-name" onclick="openAlertWizard(event)"><svg class="ic"><use href="#i-key"/></svg>raise-an-alert</span></td>
+                                            <td><span class="app-name" onclick="openAlertWizard(event)"><svg class="ic"><use href="#i-key"/></svg>add-monitoring</span></td>
                                             <td><span class="kind-chip"><svg class="ic"><use href="#i-wrench"/></svg> idp</span></td>
                                             <td><a href="#" class="owner-link"><svg class="ic"><use href="#i-users"/></svg>acbc/sre</a></td>
                                             <td>template</td>
                                             <td><span class="lifecycle-badge lifecycle-production">production</span></td>
-                                            <td>Guided CMD, Log, and Process alert template — Microservice via ELK, Open System via DX UIM</td>
+                                            <td>Add Monitoring template — CMD, Log, and Process monitoring; Microservice via ELK, Open System via DX UIM</td>
                                             <td>
                                                 <div class="actions">
                                                     <div class="action-icon" onclick="openAlertWizard(event)" title="Launch template"><svg class="ic"><use href="#i-launch"/></svg></div>
@@ -3096,7 +3096,7 @@
                     <div class="ph-top">
                         <div>
                             <div class="ph-eyebrow">Create &middot; Software Template</div>
-                            <h1 class="ph-title" id="tplTitle">Raise an Alert</h1>
+                            <h1 class="ph-title" id="tplTitle">Add Monitoring</h1>
                             <p class="ph-sub" id="tplSub"></p>
                             <div class="ph-meta">
                                 <span class="ph-chip mono-chip" id="tplRef"></span>
@@ -3598,18 +3598,19 @@
                 </div>
             </section>
 
-            <!-- ================= Health Check (on-demand diagnostics) =================
-                 Runs every check observability can answer about an asset —
-                 heartbeat, agents, log ingestion, alert coverage, catalog
-                 hygiene — and turns failures into deep links to the fixing
-                 service (Raise an Alert, Log Onboarding, Asset Registry). -->
+            <!-- ================= Observability Score (Soundcheck-style scorecard) =================
+                 The Observability track: every check the platform can answer
+                 about an asset — heartbeat, agents, log ingestion, alert
+                 coverage, catalog hygiene — rolled into a score and a
+                 certification level, with remediation deep links into the
+                 fixing service (Add Monitoring, Log Onboarding, Asset Registry). -->
             <section class="view" id="view-healthcheck">
                 <header class="page-header">
                     <div class="ph-top">
                         <div>
-                            <div class="ph-eyebrow">Self-service &middot; Diagnostics</div>
-                            <h1 class="ph-title">Health Check</h1>
-                            <p class="ph-sub">End-to-end health of an asset across everything observability knows — logs, metrics, agents, alert coverage, and catalog hygiene. Every failed check links to the service that fixes it.</p>
+                            <div class="ph-eyebrow">Self-service &middot; Scorecard</div>
+                            <h1 class="ph-title">Observability Score</h1>
+                            <p class="ph-sub">A clear scorecard for how observable your asset is — hosts and microservices measured against the Observability track: logs, metrics, agents, alert coverage, and catalog hygiene. Score, certification level, and remediation for every gap.</p>
                         </div>
                         <div class="ph-actions">
                             <button class="btn btn-ghost" onclick="switchView('home')"><svg class="ic ic-sm"><use href="#i-x"/></svg> Close</button>
@@ -3638,14 +3639,14 @@
                             </div>
                             <div id="hcAssetNote"></div>
                             <div style="display:flex; justify-content:flex-end; margin-top:16px;">
-                                <button class="btn btn-primary" id="hcRunBtn" onclick="hcRun()" disabled>Run Health Check</button>
+                                <button class="btn btn-primary" id="hcRunBtn" onclick="hcRun()" disabled>Generate Scorecard</button>
                             </div>
                         </div>
 
                         <div id="hcResults" style="display:none;">
                             <div class="card" style="padding: 20px 24px;">
                                 <div class="hc-result-head">
-                                    <div class="section-title" id="hcResultTitle">Results</div>
+                                    <div class="section-title" id="hcResultTitle">Scorecard</div>
                                     <span class="status-badge" id="hcOverall"></span>
                                 </div>
                                 <div id="hcChecks"></div>
@@ -3653,8 +3654,8 @@
                             <div class="form-section" id="hcRecs" style="display:none; margin-top:16px;">
                                 <div class="form-section-header">
                                     <span class="form-section-icon"><svg class="ic"><use href="#i-wrench"/></svg></span>
-                                    <span class="form-section-title">Recommended fixes</span>
-                                    <span class="form-section-desc">Each one opens the service that closes the gap</span>
+                                    <span class="form-section-title">Remediation guidance</span>
+                                    <span class="form-section-desc">Each gap opens the service that closes it — and raises your score</span>
                                 </div>
                                 <div id="hcRecList"></div>
                             </div>
@@ -3734,7 +3735,7 @@
     <div class="modal" id="alertWizardModal">
         <div class="modal-content" style="max-width: 960px;">
             <div class="modal-header">
-                <h2 class="modal-title">Raise an Alert</h2>
+                <h2 class="modal-title">Add Monitoring</h2>
                 <p class="modal-subtitle" id="wizSubtitle">Two quick choices — then you'll continue in the matching template</p>
             </div>
 
@@ -4683,7 +4684,7 @@
         function launchTemplate() {
             closeWizard();
             const isMicro = wizState.systemType === 'microservice';
-            document.getElementById('tplTitle').textContent = 'Raise an Alert — ' + CATEGORY_LABEL[wizState.category];
+            document.getElementById('tplTitle').textContent = 'Add ' + CATEGORY_LABEL[wizState.category];
             document.getElementById('tplSub').textContent = isMicro
                 ? 'Kubernetes workload alert — watcher created on the elk-stack pipeline once approved.'
                 : 'Host alert, routed per host — DX UIM by default, ELK for OTel-enabled hosts.';
@@ -4728,7 +4729,7 @@
                 addMyRequest({
                     id: 'AL-' + (3000 + Math.floor(Math.random() * 900)),
                     kind: 'alert',
-                    title: `Raise an Alert — ${CATEGORY_LABEL[wizState.category]}`,
+                    title: `Add ${CATEGORY_LABEL[wizState.category]}`,
                     meta: `${isMicro ? getPrefix() : getPrefixes().join(', ')} · ${names.length} watcher${names.length !== 1 ? 's' : ''}`,
                     status: 'pending',
                     statusNote: `Waiting for ${document.getElementById('wApprover').value.trim() || 'your reporting manager'} (checker) — nothing runs until approved`,
@@ -4832,7 +4833,7 @@
             loSubmit();
         }
 
-        // -- hosts (same CMDB-resolved pattern as Raise an Alert, plus agent status) --
+        // -- hosts (same CMDB-resolved pattern as Add Monitoring, plus agent status) --
         function loRenderHosts() {
             if (!loState.hosts.length) loState.hosts = [''];
             document.getElementById('loHostRows').innerHTML = loState.hosts.map((host, i) => `
@@ -5154,7 +5155,7 @@
         let pendingApprovals = [
             {
                 id: 'AL-3092', kind: 'alert', maker: 'jane.tan', role: 'Reporting Manager',
-                title: 'Raise an Alert — CMD Monitoring', time: '2h ago', status: 'pending',
+                title: 'Add CMD Monitoring', time: '2h ago', status: 'pending',
                 summary: ['sgapp0410 · MIDDLEWARE · PROD', 'CPU &gt; 90% for 5 minutes — Critical', 'HPSM 572 / MIDDLEWARE'],
             },
             {
@@ -5166,7 +5167,7 @@
 
         let myRequests = [
             {
-                id: 'AL-2981', kind: 'alert', title: 'Raise an Alert — Process Monitoring',
+                id: 'AL-2981', kind: 'alert', title: 'Add Process Monitoring',
                 meta: 'ulaeiapos0a · 1 watcher', status: 'complete', statusNote: 'Approved by lead-sre · live since Tuesday',
             },
             {
@@ -5251,7 +5252,7 @@
             }
         }
 
-        // ---------- Health Check (on-demand diagnostics) ----------
+        // ---------- Observability Score (Soundcheck-style scorecard) ----------
         // Check results mirror the demo estate: sgapp0410 is missing its
         // ELK agent, ulaeiapos0a has only process watchers (its cdm.json /
         // logmon.json are genuinely empty in the repo), payments has no
@@ -5274,7 +5275,7 @@
                     { t: 'Kubernetes liveness & readiness', s: 'pass', d: '4/4 pods healthy' },
                     { t: 'Log ingestion (OTel → ELK)', s: 'pass', d: 'Last event 9s ago · ~5.4k lines/min' },
                     { t: 'APM reporting (AppDynamics)', s: 'warn', d: 'Error rate 2.1% — above 7-day baseline' },
-                    { t: 'Alert coverage', s: 'fail', d: 'No watchers configured — errors would go unnoticed', fix: { label: 'Raise an Alert', action: "openAlertWizard()" } },
+                    { t: 'Alert coverage', s: 'fail', d: 'No watchers configured — errors would go unnoticed', fix: { label: 'Add Monitoring', action: "openAlertWizard()" } },
                     { t: 'Catalog & dashboard hygiene', s: 'pass', d: 'Owner acbc/payments-sre · Grafana tab linked' },
                 ],
             },
@@ -5284,7 +5285,7 @@
                     { t: 'Host heartbeat', s: 'pass', d: 'Reporting via OTel collector · uptime 41d' },
                     { t: 'ELK agent', s: 'pass', d: 'Installed and shipping' },
                     { t: 'Log ingestion', s: 'pass', d: 'Last event 22s ago' },
-                    { t: 'Alert coverage', s: 'fail', d: 'No watchers configured for this host', fix: { label: 'Raise an Alert', action: "openAlertWizard()" } },
+                    { t: 'Alert coverage', s: 'fail', d: 'No watchers configured for this host', fix: { label: 'Add Monitoring', action: "openAlertWizard()" } },
                     { t: 'CMDB registration', s: 'pass', d: 'PAYMENTS · PROD · ownership current' },
                 ],
             },
@@ -5303,8 +5304,8 @@
                 checks: [
                     { t: 'Host heartbeat (DX UIM robot)', s: 'pass', d: 'Robot responding' },
                     { t: 'Alert coverage — process', s: 'pass', d: '12 process watchers active' },
-                    { t: 'Alert coverage — CMD', s: 'fail', d: 'cdm.json is empty — no CPU/memory/disk thresholds', fix: { label: 'Raise an Alert', action: "openAlertWizard()" } },
-                    { t: 'Alert coverage — logs', s: 'fail', d: 'logmon.json is empty — no log monitoring', fix: { label: 'Raise an Alert', action: "openAlertWizard()" } },
+                    { t: 'Alert coverage — CMD', s: 'fail', d: 'cdm.json is empty — no CPU/memory/disk thresholds', fix: { label: 'Add Monitoring', action: "openAlertWizard()" } },
+                    { t: 'Alert coverage — logs', s: 'fail', d: 'logmon.json is empty — no log monitoring', fix: { label: 'Add Monitoring', action: "openAlertWizard()" } },
                     { t: 'ELK agent', s: 'warn', d: 'Not installed — optional for UAT', fix: { label: 'Onboard Logs', action: "openLogOnboarding()" } },
                     { t: 'CMDB registration', s: 'pass', d: 'MIDDLEWARE · UAT · ownership current' },
                 ],
@@ -5401,9 +5402,9 @@
 
             document.getElementById('hcResults').style.display = '';
             document.getElementById('hcRecs').style.display = 'none';
-            document.getElementById('hcResultTitle').textContent = keys.length > 1 ? `Results — ${keys.length} assets` : `Results — ${keys[0]}`;
+            document.getElementById('hcResultTitle').textContent = keys.length > 1 ? `Scorecard — ${keys.length} assets` : `Scorecard — ${keys[0]}`;
             document.getElementById('hcOverall').className = 'status-badge in-progress';
-            document.getElementById('hcOverall').textContent = 'Running…';
+            document.getElementById('hcOverall').textContent = 'Scoring…';
             document.getElementById('hcResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
             let i = 0;
@@ -5436,13 +5437,25 @@
             `;
         }
 
+        // Soundcheck-style scoring: pass = 1, warn = ½, fail = 0, rolled up
+        // to a percentage and a certification level for the Observability track.
+        function hcScore(checks) {
+            const pts = checks.reduce((s, c) => s + (c.s === 'pass' ? 1 : c.s === 'warn' ? 0.5 : 0), 0);
+            return Math.round((100 * pts) / checks.length);
+        }
+
+        function hcLevel(score) {
+            if (score === 100) return { label: 'Gold · Certified', cls: 'complete' };
+            if (score >= 75) return { label: 'Silver', cls: 'in-progress' };
+            if (score >= 50) return { label: 'Bronze', cls: 'pending' };
+            return { label: 'Not certified', cls: 'rejected' };
+        }
+
         function hcGroupBadge(g) {
-            if (!g.checks.every(c => c.shown === 'final')) return '<span class="status-badge in-progress">Running…</span>';
-            const fails = g.checks.filter(c => c.s === 'fail').length;
-            const warns = g.checks.filter(c => c.s === 'warn').length;
-            if (fails) return `<span class="status-badge rejected">${fails} failed</span>`;
-            if (warns) return `<span class="status-badge pending">${warns} warning${warns > 1 ? 's' : ''}</span>`;
-            return '<span class="status-badge complete">Healthy</span>';
+            if (!g.checks.every(c => c.shown === 'final')) return '<span class="status-badge in-progress">Scoring…</span>';
+            const score = hcScore(g.checks);
+            const level = hcLevel(score);
+            return `<span class="status-badge ${level.cls}">${score}% · ${level.label}</span>`;
         }
 
         function hcRenderChecks(groups) {
@@ -5464,10 +5477,12 @@
             const all = groups.flatMap(g => g.checks);
             const fails = all.filter(c => c.s === 'fail').length;
             const warns = all.filter(c => c.s === 'warn').length;
+            const score = hcScore(all);
+            const level = hcLevel(score);
             const overall = document.getElementById('hcOverall');
-            if (fails) { overall.className = 'status-badge rejected'; overall.textContent = `Attention needed — ${fails} failed`; }
-            else if (warns) { overall.className = 'status-badge pending'; overall.textContent = `Degraded — ${warns} warning${warns > 1 ? 's' : ''}`; }
-            else { overall.className = 'status-badge complete'; overall.textContent = 'Healthy — all checks passed'; }
+            overall.className = 'status-badge ' + level.cls;
+            overall.textContent = `Score ${score}% · ${level.label}` +
+                (fails || warns ? ` — ${[fails ? `${fails} failed` : '', warns ? `${warns} warning${warns > 1 ? 's' : ''}` : ''].filter(Boolean).join(', ')}` : '');
 
             const recs = groups.flatMap(g => g.checks.filter(c => (c.s === 'fail' || c.s === 'warn') && c.fix).map(c => ({ ...c, asset: g.key })));
             const recsBox = document.getElementById('hcRecs');
@@ -5545,7 +5560,7 @@
 
             if (!alerts.length) {
                 document.getElementById('syAlertList').innerHTML =
-                    `<div class="fleet-note warn"><svg class="ic"><use href="#i-bell"/></svg> No alerts configured for this asset — there is nothing to drill yet. <a class="wiz-route-cta" onclick="openAlertWizard()">Raise an Alert first &rarr;</a></div>`;
+                    `<div class="fleet-note warn"><svg class="ic"><use href="#i-bell"/></svg> No alerts configured for this asset — there is nothing to drill yet. <a class="wiz-route-cta" onclick="openAlertWizard()">Add Monitoring first &rarr;</a></div>`;
                 return;
             }
             document.getElementById('syAlertList').innerHTML = alerts.map((a, i) => `
@@ -5765,8 +5780,8 @@
 
             if (/(alert|keyword|watcher)/.test(q)) {
                 aikaBotSay(
-                    "You can create ELK error-keyword watchers with the <b>Microservice Keyword Alert</b> template. You'll need your <span class='mono'>namespace</span>, <span class='mono'>container name</span>, and HPSM service ID — then add keywords like <span class='mono'>400</span>, <span class='mono'>500</span>, or <span class='mono'>timeout</span> with a severity each.",
-                    "Launch the template",
+                    "Use <b>Add Monitoring</b> to turn on monitoring — for error keywords, pick <b>Log Monitoring</b>. You'll need your <span class='mono'>namespace</span>, <span class='mono'>container name</span>, and HPSM code — then add keywords like <span class='mono'>400</span>, <span class='mono'>500</span>, or <span class='mono'>timeout</span> with a severity each.",
+                    "Add Monitoring",
                     "openAlertWizard(); toggleAika();",
                     "launch"
                 );
@@ -5780,7 +5795,7 @@
             } else if (/(degraded|down|slow|unhealthy|why|incident|error)/.test(q)) {
                 aikaBotSay(
                     "Right now <span class='mono'>ms-cbs-account-movement-adapter</span> is <b style='color:var(--status-error)'>Critical</b> — error spike in the last 2 hours with 3 open alerts (2 critical). <span class='mono'>ms-payments-fast-transfer</span> is <b style='color:#c07300'>Degraded</b> with 1 major alert. DX UIM is also reporting degraded platform status, which may add noise.",
-                    "Run full health check",
+                    "View Observability Score",
                     "openHealthCheck();",
                     "activity"
                 );

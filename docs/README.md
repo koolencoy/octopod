@@ -13,6 +13,10 @@ backend slice; ELK, Grafana, and SolarWinds follow the same pattern —
   the front door and yellow pages, a fresh page for how the
   organization consumes observability, and the AI-DLC direction:
   markdown in Bitbucket as the second brain AI tools operate from.
+- `planning/second-brain-use-cases.md` — what that AI chapter
+  concretely enables: use cases in three governance tiers, the
+  Observability Score as a natural-language guidance loop
+  (crawl/walk/run), and the dependencies to line up first.
 - `planning/overview.md` — the executive overview: the problem
   (a decade of ping-the-engineer operations, documentation drift),
   how the Portal resolves it, and the benefits and savings case.
