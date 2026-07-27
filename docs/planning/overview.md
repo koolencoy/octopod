@@ -54,8 +54,25 @@ The only human step left is the one that must stay human: approval.
 
 ## Benefits
 
+Two of these deserve to be called out above the rest. **Manual
+operations always drift.** A human applying configuration by hand
+will, over enough repetitions, make errors — a mistyped threshold, a
+config applied to the wrong host, a step done from memory that the
+runbook says differently. Each error is small; accumulated across
+years they become operational drift: what is actually configured no
+longer matches what anyone believes is configured. **And at
+enterprise scale, manual is not sustainable.** Across an estate of
+thousands of hosts and applications, the error rate scales with the
+volume — more requests mean more hands-on changes mean more drift,
+while the engineers absorbing that volume remain a fixed, small
+team. Automation breaks that scaling law: the approved config is
+applied exactly, identically, every time, whether there are ten
+requests a month or ten thousand.
+
 | Benefit | Mechanism |
 | --- | --- |
+| Human error and operational drift eliminated | Activation is automated and idempotent — the approved config is applied exactly as written, every time; no hand-typed changes, no drift between intent and reality |
+| Sustainable at enterprise scale | Automation cost does not grow with request volume; a fixed platform team can serve thousands of hosts without the error rate scaling up with them |
 | Platform capacity reclaimed | Repetitive configuration work is removed from engineers entirely; they handle approvals and exceptions only |
 | Faster turnaround | Requests complete in minutes after approval, not days on a queue — no waiting on an engineer's availability |
 | Audit & compliance by construction | Every change is a reviewed, merged PR with requester, approver, and diff permanently recorded |
