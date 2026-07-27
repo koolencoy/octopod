@@ -9,11 +9,11 @@ backend slice; ELK, Grafana, and SolarWinds follow the same pattern —
 ## 1. Orientation
 
 - `planning/vision.md` — the vision for senior executives:
-  modernizing decades of observability operations — one portal as
+  modernizing a decade of observability operations — one portal as
   the front door and yellow pages, a fresh page for how the
   organization consumes observability.
 - `planning/overview.md` — the executive overview: the problem
-  (20 years of ping-the-engineer operations, documentation drift),
+  (a decade of ping-the-engineer operations, documentation drift),
   how the Portal resolves it, and the benefits and savings case.
   **Read first.**
 - `../README.md` — repo map and the end-to-end flow in brief.

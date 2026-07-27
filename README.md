@@ -9,7 +9,7 @@ engine).
 
 ## Why it exists
 
-For the past ~20 years, observability has run on heavy, interrupt-
+For the past decade, observability has run on heavy, interrupt-
 driven operations: anyone needing an alert, a dashboard, or an answer
 pings or calls a platform engineer, and documentation drifts because
 it lives apart from the systems it describes. The Portal replaces both

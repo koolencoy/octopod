@@ -5,7 +5,7 @@ overview: problem, resolution, benefits, savings).*
 
 ## The moment we are in
 
-For more than twenty years, observability has run the same way: when
+For more than a decade, observability has run the same way: when
 someone needs an alert, a dashboard, or an answer to "is this system
 monitored?", they find an engineer and ask. The engineer does the
 work by hand, in one of several tools, and moves to the next request.
@@ -42,7 +42,7 @@ instead of by hand.
 
 ## What turns the page
 
-| For decades | From now on |
+| For the past decade | From now on |
 | --- | --- |
 | Ping or call an engineer and wait | Self-service wizard; done in minutes after approval |
 | Inventories and runbooks that drift | A living catalog generated from the same config that drives the tools |
@@ -77,6 +77,6 @@ instead of by hand.
    rather than absorbing that capacity back into the queue the Portal
    is retiring.
 
-Twenty years of operating one way is exactly why this matters: the
+A decade of operating one way is exactly why this matters: the
 cost is so familiar it has become invisible. The Portal makes it
 visible — and then removes it. That is the fresh page.

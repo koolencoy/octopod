@@ -7,7 +7,7 @@ rots.
 
 ## The problem
 
-For roughly twenty years, observability has run on interrupt-driven
+For roughly a decade, observability has run on interrupt-driven
 operations. The pattern is always the same:
 
 - **Every request is a conversation.** Anyone who needs an alert, a
