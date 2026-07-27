@@ -43,6 +43,71 @@ new Ansible roles, without changing the portal's shape.
 
 ## 2. The big picture
 
+### 2.1 The portal shape
+
+The portal is a front door with pluggable **service slices** behind
+it. Every slice has the same anatomy — a wizard in the portal, a
+config repo in Bitbucket, an Ansible role with a translator, and the
+platform service's API. New services are added by filling a new slot,
+never by changing the portal's shape:
+
+```mermaid
+flowchart TB
+    ENG["Engineer, any team"] -->|self-service| PORTAL
+
+    subgraph PORTAL["octopod — the Observability Portal (Backstage)"]
+        direction LR
+        CAT["Catalog<br/>the yellow pages"]
+        WIZ["Wizards<br/>guided requests"]
+        TD["TechDocs<br/>guides and runbooks"]
+        NO["Notifications<br/>outcomes"]
+    end
+
+    PORTAL -->|"every request becomes a PR<br/>merge = approval · git = audit trail"| GATE[("Bitbucket<br/>one config repo per service")]
+
+    GATE --> S1
+    GATE --> S2
+    GATE -.-> S3
+    GATE -.-> S4
+
+    subgraph S1["Raise an Alert · DX UIM — built"]
+        direction TB
+        A1["dxuim_config_sync<br/>role + translator"] --> T1["DX UIM API"]
+    end
+
+    subgraph S2["Raise an Alert · ELK — pattern proven, home pending"]
+        direction TB
+        A2["watcher sync<br/>role + translator"] --> T2["ELK Watcher API"]
+    end
+
+    subgraph S3["Raise an Alert · SolarWinds — planned"]
+        direction TB
+        A3["solarwinds sync<br/>role + translator"] --> T3["Orion API"]
+    end
+
+    subgraph S4["Future service slots<br/>dashboards · maintenance windows · onboarding"]
+        direction TB
+        A4["new role"] --> T4["e.g. Grafana API"]
+    end
+
+    A1 -.->|"outcome, via the shared<br/>notify_requester role"| NO
+    CAT -.->|"links each asset to<br/>its dashboards"| GRAF["Grafana"]
+```
+
+Solid arrows are built and verified; dashed arrows are pending or
+planned. Two things every slice shares: the approval gate (all config
+travels through a Bitbucket PR) and the outcome channel (every slice
+reports success or failure through the same `notify_requester` role —
+drawn once, from the DX UIM slice, to keep the picture readable).
+Grafana appears twice deliberately: as a *future slot* if dashboard
+provisioning becomes self-service, and as the dashboards the Catalog
+already links to today (§6.4).
+
+### 2.2 One service, zoomed in
+
+The request loop inside a single slice — DX UIM shown, but the loop is
+identical for every slice:
+
 ```mermaid
 flowchart LR
     U[User] -->|1. fills wizard| BS[Backstage]
