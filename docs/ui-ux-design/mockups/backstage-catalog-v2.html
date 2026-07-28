@@ -2099,9 +2099,9 @@
             position: fixed;
             right: 24px;
             bottom: 92px;
-            width: 372px;
+            width: 464px;
             max-width: calc(100vw - 32px);
-            height: 540px;
+            height: 660px;
             max-height: calc(100vh - 130px);
             background: var(--card);
             border-radius: 14px;
@@ -2198,7 +2198,51 @@
             background: var(--canvas);
         }
 
-        .msg { display: flex; gap: 8px; max-width: 88%; animation: msgIn 0.25s ease backwards; }
+        .msg { display: flex; gap: 8px; max-width: 90%; animation: msgIn 0.25s ease backwards; }
+
+        /* search results & service menus get the full panel width — lists, not speech */
+        .msg.bot:has(.search-hit), .msg.bot:has(.aika-svc-list) { max-width: 100%; align-self: stretch; }
+        .msg.bot:has(.search-hit) .msg-bubble, .msg.bot:has(.aika-svc-list) .msg-bubble { flex: 1; }
+
+        .aika-svc-list { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+
+        .aika-svc {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 8px 10px;
+            background: var(--canvas);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+            transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+        }
+
+        .aika-svc:hover { border-color: var(--primary); background: var(--primary-soft); transform: translateX(2px); }
+
+        .aika-svc-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .aika-svc-icon .ic { width: 14px; height: 14px; }
+
+        .aika-svc-text { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.35; }
+        .aika-svc-text b { font-size: 12.5px; color: var(--ink); }
+        .aika-svc-text span { font-size: 11px; color: var(--ink-dim); }
+
+        .aika-svc-arrow { width: 13px; height: 13px; color: var(--ink-dim); flex-shrink: 0; }
+        .aika-svc:hover .aika-svc-arrow { color: var(--primary); }
 
         @keyframes msgIn {
             from { opacity: 0; transform: translateY(8px); }
@@ -2287,6 +2331,9 @@
         @keyframes tp { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-4px); opacity: 1; } }
 
         .aika-chips {
+            flex-wrap: nowrap !important;
+            overflow-x: auto;
+            scrollbar-width: none;
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
@@ -2295,7 +2342,10 @@
             flex-shrink: 0;
         }
 
+        .aika-chips::-webkit-scrollbar { display: none; }
+
         .aika-chip {
+            flex-shrink: 0;
             padding: 6px 12px;
             background: var(--card);
             border: 1px solid var(--border-strong);
@@ -2369,6 +2419,125 @@
             background: var(--card);
             flex-shrink: 0;
         }
+
+        /* ============ Global search dropdown (second-brain lookup) ============ */
+        .gsearch-pop {
+            display: none;
+            position: fixed;
+            left: calc(var(--sidebar-width) + 12px);
+            top: 46px;
+            width: 500px;
+            max-width: calc(100vw - var(--sidebar-width) - 32px);
+            max-height: 72vh;
+            overflow-y: auto;
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: var(--shadow-pop), 0 0 0 1px var(--border);
+            padding: 12px 14px;
+            z-index: 960;
+        }
+
+        .gsearch-pop.open { display: block; animation: modalIn 0.18s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        .gsearch-head {
+            font-size: 10.5px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            margin-bottom: 4px;
+        }
+
+        .gsearch-pop .search-hit { margin-top: 8px; }
+
+        .gsearch-empty { font-size: 12.5px; color: var(--ink-dim); padding: 12px 2px; }
+
+        /* the handoff: search escalates to the Brain */
+        .gsearch-ask {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 10px;
+            padding: 9px 10px;
+            background: var(--violet-soft);
+            border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+            transition: border-color 0.15s ease, transform 0.15s ease;
+        }
+
+        .gsearch-ask:hover { border-color: var(--violet); transform: translateX(2px); }
+
+        .gsearch-ask .aika-svc-icon { background: var(--grad-cta); color: #fff; }
+
+        .msg-source-link { color: var(--primary); cursor: pointer; }
+        .msg-source-link:hover { text-decoration: underline; }
+
+        /* ============ Brain full view ============ */
+        .aika-body { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+
+        .brain-page {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            height: calc(100vh - 250px);
+            min-height: 460px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* the same chat body, given room to breathe */
+        .brain-page .aika-messages { padding: 24px 28px; gap: 14px; }
+        .brain-page .msg { max-width: 82%; }
+        .brain-page .msg-bubble { font-size: 13.5px; line-height: 1.55; }
+        .brain-page .aika-chips { padding: 10px 22px; }
+        .brain-page .aika-input-bar { padding: 12px 22px; }
+        .brain-page .aika-input { font-size: 13.5px; }
+
+        .msg-sources {
+            margin-top: 8px;
+            padding-top: 7px;
+            border-top: 1px dashed var(--border-strong);
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink-dim);
+            line-height: 1.6;
+        }
+
+        .search-hit {
+            margin-top: 9px;
+            padding: 9px 11px;
+            background: var(--canvas);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+        }
+
+        .search-hit-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .search-sim {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--status-ok);
+            white-space: nowrap;
+        }
+
+        .search-hit-snippet { font-size: 11.5px; color: var(--ink-secondary); margin-top: 4px; line-height: 1.55; }
+
+        .search-hit-path { font-family: var(--mono); font-size: 10px; color: var(--primary); margin-top: 5px; }
 
         /* ============ Responsive ============ */
         @media (max-width: 1100px) {
@@ -2548,6 +2717,7 @@
             <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4.5 4.5"/></symbol>
             <symbol id="i-message" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
             <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3z"/></symbol>
+            <symbol id="i-brain" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="6.8" opacity="0.85"/><circle cx="16.8" cy="7.2" r="1.7" fill="currentColor" stroke="none"/></symbol>
             <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 17v-5"/><path d="M13 17V8"/><path d="M18 17v-8"/></symbol>
             <symbol id="i-gauge" viewBox="0 0 24 24"><path d="m12 14 3.5-3.5"/><path d="M20.3 18a9 9 0 1 0-16.6 0"/></symbol>
             <symbol id="i-server" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="7" rx="2"/><rect x="2" y="14" width="20" height="7" rx="2"/><path d="M6 6.5h.01"/><path d="M6 17.5h.01"/></symbol>
@@ -2584,7 +2754,7 @@
                 <div class="login-points">
                     <div class="login-point"><svg class="ic"><use href="#i-bell"/></svg> Raise CMD, Log, and Process alerts — routed to ELK or DX UIM automatically</div>
                     <div class="login-point"><svg class="ic"><use href="#i-grid"/></svg> Every service, host, and dashboard in one catalog</div>
-                    <div class="login-point"><svg class="ic"><use href="#i-sparkle"/></svg> OKA, the observability assistant that knows your estate</div>
+                    <div class="login-point"><svg class="ic"><use href="#i-brain"/></svg> The Observability Brain — search and grounded answers over your whole estate</div>
                 </div>
                 <div class="login-brand-foot">Powered by Backstage · ACBC SG</div>
             </div>
@@ -2625,8 +2795,11 @@
 
             <div class="sidebar-search">
                 <span class="s-icon"><svg class="ic ic-sm"><use href="#i-search"/></svg></span>
-                <input type="text" placeholder="Search">
+                <input type="text" id="globalSearchInput" placeholder="Search the second brain"
+                       oninput="renderGlobalSearch()" onfocus="renderGlobalSearch()"
+                       onkeydown="if(event.key==='Escape') closeGlobalSearch()">
             </div>
+            <div class="gsearch-pop" id="gsearchPop"></div>
 
             <div class="side-group">
                 <div class="side-item selected" data-view="home" onclick="switchView('home', this)">
@@ -2659,6 +2832,9 @@
                 </div>
                 <div class="side-item" onclick="openSynthetic()">
                     <svg class="ic"><use href="#i-launch"/></svg> Synthetic Alerting
+                </div>
+                <div class="side-item" onclick="openMaintenance()">
+                    <svg class="ic"><use href="#i-wrench"/></svg> Service Maintenance
                 </div>
             </div>
 
@@ -2753,6 +2929,12 @@
                                     <div class="qc-title">Observability Score</div>
                                     <div class="qc-desc">How observable is your asset? A scored checklist with certification levels and remediation.</div>
                                     <div class="qc-cta">View scorecard <svg class="ic"><use href="#i-arrow-r"/></svg></div>
+                                </div>
+                                <div class="quick-card" style="--qc-accent:#1d9f5f; --qc-soft:rgba(29,159,95,0.09);" onclick="openMaintenance()">
+                                    <div class="qc-icon"><svg class="ic"><use href="#i-wrench"/></svg></div>
+                                    <div class="qc-title">Service Maintenance</div>
+                                    <div class="qc-desc">Suppress alerts for a change window — they resume automatically when it ends.</div>
+                                    <div class="qc-cta">Schedule window <svg class="ic"><use href="#i-arrow-r"/></svg></div>
                                 </div>
                             </div>
                         </div>
@@ -3664,6 +3846,187 @@
                 </div>
             </section>
 
+            <!-- ================= Service Maintenance (alert suppression) =================
+                 Governed suppression: pick assets, define the window and scope,
+                 attach the change reference — a checker approves before anything
+                 is silenced, and suppression always auto-expires. -->
+            <section class="view" id="view-maintenance">
+                <header class="page-header">
+                    <div class="ph-top">
+                        <div>
+                            <div class="ph-eyebrow">Create &middot; Software Template</div>
+                            <h1 class="ph-title">Service Maintenance</h1>
+                            <p class="ph-sub">Suppress alerts for a planned change window. Approval-gated, tied to a change record, and always auto-expiring — a window can never be forgotten open.</p>
+                            <div class="ph-meta">
+                                <span class="ph-chip mono-chip">template:default/service-maintenance</span>
+                                <span class="ph-chip"><svg class="ic"><use href="#i-users"/></svg> acbc/observability</span>
+                            </div>
+                        </div>
+                        <div class="ph-actions">
+                            <button class="btn btn-ghost" onclick="switchView('home')"><svg class="ic ic-sm"><use href="#i-x"/></svg> Cancel</button>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="page-body">
+                    <div class="tpl-layout">
+                        <aside class="tpl-stepper" id="mtStepper">
+                            <div class="tpl-step active" data-step="1" onclick="mtStepClick(1)">
+                                <div class="step-circle">1</div>
+                                <div class="tpl-step-text">
+                                    <div class="step-label">Identify Assets</div>
+                                    <div class="tpl-step-desc">What goes quiet</div>
+                                </div>
+                            </div>
+                            <div class="tpl-step" data-step="2" onclick="mtStepClick(2)">
+                                <div class="step-circle">2</div>
+                                <div class="tpl-step-text">
+                                    <div class="step-label">Window &amp; Scope</div>
+                                    <div class="tpl-step-desc">When, how long, which alerts</div>
+                                </div>
+                            </div>
+                            <div class="tpl-step" data-step="3" onclick="mtStepClick(3)">
+                                <div class="step-circle">3</div>
+                                <div class="tpl-step-text">
+                                    <div class="step-label">Review</div>
+                                    <div class="tpl-step-desc">Confirm and submit</div>
+                                </div>
+                            </div>
+                        </aside>
+
+                        <div class="tpl-panes">
+                            <!-- MT PANE 1: Assets -->
+                            <div class="wiz-pane active" data-pane="1">
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-server"/></svg></span>
+                                        <span class="form-section-title">Identify Assets</span>
+                                        <span class="form-section-desc">Hostnames or service names — resolved from the observability catalog</span>
+                                    </div>
+                                    <div class="form-group compact full-width">
+                                        <label class="form-label required">Hosts / Assets</label>
+                                        <div class="host-rows" id="mtAssetRows"></div>
+                                        <button type="button" class="btn-add-keyword" onclick="mtAddAsset()">
+                                            <svg class="ic"><use href="#i-plus"/></svg> Add Another Asset
+                                        </button>
+                                    </div>
+                                    <div id="mtAssetNote"></div>
+                                </div>
+
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-clipboard"/></svg></span>
+                                        <span class="form-section-title">Active &amp; upcoming windows</span>
+                                        <span class="form-section-desc">Suppression is always visible — never silent</span>
+                                    </div>
+                                    <div class="existing-config-entry">
+                                        <div><b>sgapp0231</b> — Sat 02:00&ndash;04:00 SGT · all alerts · <span class="mono">CHG0038121</span> (OS patching)</div>
+                                        <span class="status-badge approved">Approved</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- MT PANE 2: Window & scope -->
+                            <div class="wiz-pane" data-pane="2">
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-gauge"/></svg></span>
+                                        <span class="form-section-title">Maintenance Window</span>
+                                        <span class="form-section-desc">Suppression ends automatically — extending needs a new request</span>
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="form-group compact">
+                                            <label class="form-label required">Starts</label>
+                                            <input type="datetime-local" class="form-input" id="mtStart">
+                                        </div>
+                                        <div class="form-group compact">
+                                            <label class="form-label required">Duration</label>
+                                            <select class="form-select" id="mtDuration">
+                                                <option value="30">30 minutes</option>
+                                                <option value="60">1 hour</option>
+                                                <option value="120" selected>2 hours</option>
+                                                <option value="240">4 hours</option>
+                                                <option value="480">8 hours (maximum)</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group compact full-width">
+                                            <label class="form-label required">Suppress</label>
+                                            <div class="chip-select" id="mtScopeSelect">
+                                                <div class="chip-option selected" data-value="all" onclick="mtToggleScope('all', this)">All alerts</div>
+                                                <div class="chip-option" data-value="log" onclick="mtToggleScope('log', this)">Log</div>
+                                                <div class="chip-option" data-value="cmd" onclick="mtToggleScope('cmd', this)">CMD</div>
+                                                <div class="chip-option" data-value="process" onclick="mtToggleScope('process', this)">Process</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-clipboard"/></svg></span>
+                                        <span class="form-section-title">Change Reference</span>
+                                        <span class="form-section-desc">Every window ties back to an approved change</span>
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="form-group compact">
+                                            <label class="form-label required">Change Record (HPSM)</label>
+                                            <input type="text" class="form-input" id="mtChg" placeholder="e.g. CHG0041233">
+                                        </div>
+                                        <div class="form-group compact">
+                                            <label class="form-label">Reason</label>
+                                            <input type="text" class="form-input" id="mtReason" placeholder="e.g. OS patching, DB failover test">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- MT PANE 3: Review -->
+                            <div class="wiz-pane" data-pane="3">
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-check-circle"/></svg></span>
+                                        <span class="form-section-title">Review</span>
+                                        <span class="form-section-desc">A checker approves before anything goes quiet</span>
+                                    </div>
+                                    <div class="review-grid" id="mtReviewGrid"></div>
+                                    <div class="fleet-note info" style="margin-top:14px;"><svg class="ic"><use href="#i-bulb"/></svg> Alerts resume <b>automatically</b> when the window ends. Drill and real events during the window are recorded but not ticketed — nothing is lost, only silenced.</div>
+                                </div>
+                            </div>
+
+                            <div class="tpl-footer">
+                                <button class="btn btn-secondary" id="mtBackBtn" onclick="mtBack()">Cancel</button>
+                                <button class="btn btn-primary" id="mtNextBtn" onclick="mtNext()">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= Observability Brain — full view =================
+                 The same conversation as the bubble, given a whole page: the
+                 chat body node is adopted here on expand and returned to the
+                 bubble on collapse. For long answers, comparisons, digests. -->
+            <section class="view" id="view-brain">
+                <header class="page-header">
+                    <div class="ph-top">
+                        <div>
+                            <div class="ph-eyebrow">Second Brain</div>
+                            <h1 class="ph-title">Observability Brain</h1>
+                            <p class="ph-sub">The same conversation as the bubble — with room to read. Grounded in your config, docs, and git history; every answer cites its sources.</p>
+                            <div class="ph-meta">
+                                <span class="ph-chip"><svg class="ic"><use href="#i-shield"/></svg> AI proposes · humans approve · git records</span>
+                            </div>
+                        </div>
+                        <div class="ph-actions">
+                            <button class="btn btn-ghost" onclick="closeBrainFull()"><svg class="ic ic-sm"><use href="#i-x"/></svg> Collapse to bubble</button>
+                        </div>
+                    </div>
+                </header>
+                <div class="page-body">
+                    <div class="brain-page" id="brainPageMount"></div>
+                </div>
+            </section>
+
             <!-- ================= My Actions (maker-checker workflow) =================
                  Maker and checker are different workflows: makers track the
                  requests they raised; checkers get an approval queue. A user
@@ -3817,40 +4180,48 @@
         </div>
     </div>
 
-    <!-- ================= OKA — Observability Assistant ================= -->
-    <button class="aika-fab" id="aikaFab" onclick="toggleAika()" title="Ask OKA">
-        <svg class="ic"><use href="#i-sparkle"/></svg>
+    <!-- ================= Observability Brain =================
+         The assistant half of the second brain (see
+         docs/planning/second-brain-use-cases.md). Lookup lives in the
+         sidebar's global search bar; this bubble is grounded Tier-1
+         conversational Q&A that always cites its sources. The two hand
+         off both ways: search results end with "Ask the Brain", and
+         Brain citations open in search.
+         AI proposes, humans approve, git records. -->
+    <button class="aika-fab" id="aikaFab" onclick="toggleAika()" title="Observability Brain">
+        <svg class="ic"><use href="#i-brain"/></svg>
         <span class="badge"></span>
     </button>
 
     <div class="aika-panel" id="aikaPanel">
         <div class="aika-header">
-            <div class="aika-avatar"><svg class="ic"><use href="#i-sparkle"/></svg></div>
+            <div class="aika-avatar"><svg class="ic"><use href="#i-brain"/></svg></div>
             <div>
-                <div class="aika-title">OKA — Observability Assistant</div>
-                <div class="aika-status">Online · knows your catalog</div>
+                <div class="aika-title">Observability Brain</div>
+                <div class="aika-status">Grounded in your config, docs &amp; git history</div>
             </div>
             <div class="aika-header-actions">
+                <button class="aika-hbtn" onclick="openBrainFull()" title="Open full view"><svg class="ic"><use href="#i-launch"/></svg></button>
                 <button class="aika-hbtn" onclick="resetAika()" title="New chat"><svg class="ic"><use href="#i-refresh"/></svg></button>
                 <button class="aika-hbtn" onclick="toggleAika()" title="Close"><svg class="ic"><use href="#i-x"/></svg></button>
             </div>
         </div>
 
-        <div class="aika-messages" id="aikaMessages"></div>
+        <!-- The conversation body is one DOM node, adopted by either the
+             bubble (here) or the full-view page — never duplicated, so the
+             transcript can't drift between the two. -->
+        <div class="aika-body" id="aikaBody">
+            <div class="aika-messages" id="aikaMessages"></div>
 
-        <div class="aika-chips" id="aikaChips">
-            <button class="aika-chip" onclick="aikaAsk('How do I create an error keyword alert?')"><svg class="ic"><use href="#i-bell"/></svg> Create an alert</button>
-            <button class="aika-chip" onclick="aikaAsk('How do I onboard my logs?')"><svg class="ic"><use href="#i-download"/></svg> Onboard logs</button>
-            <button class="aika-chip" onclick="aikaAsk('Why is my app degraded?')"><svg class="ic"><use href="#i-activity"/></svg> Why degraded?</button>
-            <button class="aika-chip" onclick="aikaAsk('How do I request Kibana access?')"><svg class="ic"><use href="#i-shield"/></svg> Request access</button>
-        </div>
+            <div class="aika-chips" id="aikaChips"></div>
 
-        <div class="aika-input-bar">
-            <input type="text" class="aika-input" id="aikaInput" placeholder="Ask about alerts, logs, access…"
-                   onkeydown="if(event.key==='Enter') aikaSend()">
-            <button class="aika-send" onclick="aikaSend()" title="Send"><svg class="ic"><use href="#i-send"/></svg></button>
+            <div class="aika-input-bar">
+                <input type="text" class="aika-input" id="aikaInput" placeholder="Ask about your estate — answers cite their sources…"
+                       onkeydown="if(event.key==='Enter') aikaSend()">
+                <button class="aika-send" onclick="aikaSend()" title="Send"><svg class="ic"><use href="#i-send"/></svg></button>
+            </div>
+            <div class="aika-foot" id="aikaFoot">Answers cite their sources. AI proposes — humans approve, git records.</div>
         </div>
-        <div class="aika-foot">OKA can make mistakes. Verify critical runbook steps.</div>
     </div>
 
     <script>
@@ -3889,6 +4260,9 @@
             if (target) target.classList.add('selected');
 
             if (view === 'myactions') renderMyActions();
+            // Leaving the full view via the sidebar re-docks the chat into
+            // the bubble — the Brain must never become unreachable.
+            if (view !== 'brain' && brainFull) dockBrain();
         }
 
         function comingSoon(name) {
@@ -5140,10 +5514,180 @@
             `).join('');
         }
 
+        // ---------- Service Maintenance (alert suppression) ----------
+        // Suppression changes alerting state, so unlike the diagnostics it
+        // is maker-checker governed: submit -> pending approval in My
+        // Actions. Windows always auto-expire and always tie to a change
+        // record — visible, approved, temporary.
+        let mtState = { step: 1, assets: [''], scope: ['all'] };
+
+        function openMaintenance() {
+            mtState = { step: 1, assets: [''], scope: ['all'] };
+            document.getElementById('mtChg').value = '';
+            document.getElementById('mtReason').value = '';
+            document.querySelectorAll('#mtScopeSelect .chip-option').forEach(ch => ch.classList.toggle('selected', ch.dataset.value === 'all'));
+            mtRenderRows();
+            mtGoStep(1);
+            switchView('maintenance');
+        }
+
+        function mtGoStep(step) {
+            mtState.step = step;
+            document.querySelectorAll('#view-maintenance .wiz-pane').forEach(p => p.classList.toggle('active', Number(p.dataset.pane) === step));
+            document.querySelectorAll('#mtStepper .tpl-step').forEach(s => {
+                const n = Number(s.dataset.step);
+                s.classList.toggle('active', n === step);
+                s.classList.toggle('done', n < step);
+            });
+            if (step === 3) mtRenderReview();
+            document.getElementById('mtBackBtn').textContent = step === 1 ? 'Cancel' : 'Back';
+            document.getElementById('mtNextBtn').textContent = step === 3 ? 'Submit for Approval' : 'Next';
+            document.querySelector('#view-maintenance .page-body').scrollTop = 0;
+        }
+
+        function mtStepClick(step) { if (step < mtState.step) mtGoStep(step); }
+
+        function mtBack() {
+            if (mtState.step === 1) { switchView('home'); return; }
+            mtGoStep(mtState.step - 1);
+        }
+
+        function mtResolvedKeys() {
+            return [...new Set(mtState.assets.map(hcResolveAsset).filter(Boolean).map(r => r.key))];
+        }
+
+        function mtNext() {
+            if (mtState.step === 1) {
+                if (!mtResolvedKeys().length) { alert('Add at least one asset from the catalog.'); return; }
+                mtGoStep(2);
+                return;
+            }
+            if (mtState.step === 2) {
+                if (!document.getElementById('mtStart').value) { alert('Set when the window starts.'); return; }
+                if (!document.getElementById('mtChg').value.trim()) { alert('A change record (HPSM CHG number) is required — every window ties back to an approved change.'); return; }
+                mtGoStep(3);
+                return;
+            }
+            mtSubmit();
+        }
+
+        function mtRenderRows() {
+            if (!mtState.assets.length) mtState.assets = [''];
+            document.getElementById('mtAssetRows').innerHTML = mtState.assets.map((a, i) => `
+                <div class="host-item">
+                    <div class="host-row">
+                        <input type="text" class="form-input" value="${a}" placeholder="e.g. sgapp0410 or ms-payments-fast-transfer" oninput="mtUpdateAsset(${i}, this.value)">
+                        <button type="button" class="keyword-remove" onclick="mtRemoveAsset(${i})" title="Remove asset" ${mtState.assets.length <= 1 ? 'style="visibility:hidden;"' : ''}>&times;</button>
+                    </div>
+                    <div class="host-cmdb" id="mtCmdb${i}"></div>
+                </div>
+            `).join('');
+            mtState.assets.forEach((_, i) => mtUpdateCmdb(i));
+            mtUpdateNote();
+        }
+
+        function mtAddAsset() { mtState.assets.push(''); mtRenderRows(); }
+
+        function mtRemoveAsset(i) {
+            if (mtState.assets.length <= 1) return;
+            mtState.assets.splice(i, 1);
+            mtRenderRows();
+        }
+
+        function mtUpdateAsset(i, value) {
+            mtState.assets[i] = value;
+            mtUpdateCmdb(i);
+            mtUpdateNote();
+        }
+
+        function mtUpdateCmdb(i) {
+            const line = document.getElementById('mtCmdb' + i);
+            if (!line) return;
+            const resolved = hcResolveAsset(mtState.assets[i]);
+            if (resolved === null) { line.className = 'host-cmdb'; line.innerHTML = ''; return; }
+            if (resolved === undefined) {
+                line.className = 'host-cmdb missing';
+                line.innerHTML = `<svg class="ic"><use href="#i-package"/></svg> Not in the observability catalog — <a class="wiz-route-cta" style="margin-left:4px;" onclick="comingSoon('Asset Registry')">register this asset &rarr;</a>`;
+                return;
+            }
+            line.className = 'host-cmdb resolved';
+            line.innerHTML =
+                `<span class="cmdb-chip app">${resolved.type}</span>` +
+                resolved.sub.split(' · ').map(p => `<span class="cmdb-chip">${p}</span>`).join('') +
+                `<span class="cmdb-src">from catalog</span>`;
+        }
+
+        function mtUpdateNote() {
+            const unknown = mtState.assets.filter(a => hcResolveAsset(a) === undefined);
+            document.getElementById('mtAssetNote').innerHTML = unknown.length
+                ? `<div class="fleet-note warn"><svg class="ic"><use href="#i-package"/></svg> ${unknown.length} asset${unknown.length > 1 ? 's' : ''} not found in the catalog — only registered assets can be suppressed.</div>`
+                : '';
+        }
+
+        // 'All alerts' is exclusive; category chips combine.
+        function mtToggleScope(value, el) {
+            const chips = document.querySelectorAll('#mtScopeSelect .chip-option');
+            if (value === 'all') {
+                mtState.scope = ['all'];
+                chips.forEach(ch => ch.classList.toggle('selected', ch.dataset.value === 'all'));
+                return;
+            }
+            mtState.scope = mtState.scope.filter(s => s !== 'all');
+            if (mtState.scope.includes(value)) mtState.scope = mtState.scope.filter(s => s !== value);
+            else mtState.scope.push(value);
+            if (!mtState.scope.length) mtState.scope = ['all'];
+            chips.forEach(ch => ch.classList.toggle('selected', mtState.scope.includes(ch.dataset.value)));
+        }
+
+        function mtWindowLabel() {
+            const startVal = document.getElementById('mtStart').value;
+            const mins = Number(document.getElementById('mtDuration').value);
+            if (!startVal) return '—';
+            const start = new Date(startVal);
+            const end = new Date(start.getTime() + mins * 60000);
+            const fmt = d => d.toLocaleString('en-SG', { weekday: 'short', hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' });
+            return `${fmt(start)} &rarr; ${fmt(end)} (${mins >= 60 ? (mins / 60) + 'h' : mins + 'm'})`;
+        }
+
+        function mtScopeLabel() {
+            return mtState.scope.includes('all') ? 'All alerts' : mtState.scope.map(s => CATEGORY_LABEL[s]).join(', ');
+        }
+
+        function mtRenderReview() {
+            const keys = mtResolvedKeys();
+            const envs = [...new Set(keys.map(k => (HOST_REGISTRY[k.toLowerCase()] || {}).env).filter(Boolean))];
+            const rows = [
+                ['Assets', keys.join(', ') || '—'],
+                ['Environment(s)', envs.join(', ') || '—'],
+                ['Suppressing', mtScopeLabel()],
+                ['Window', mtWindowLabel()],
+                ['Change Record', document.getElementById('mtChg').value.trim() || '—'],
+                ['Reason', document.getElementById('mtReason').value.trim() || '—'],
+            ];
+            document.getElementById('mtReviewGrid').innerHTML = rows.map(([l, v]) =>
+                `<div class="review-item"><div class="l">${l}</div><div class="v">${v}</div></div>`
+            ).join('');
+        }
+
+        function mtSubmit() {
+            const keys = mtResolvedKeys();
+            addMyRequest({
+                id: 'MW-' + (1000 + Math.floor(Math.random() * 9000)),
+                kind: 'maintenance',
+                title: 'Service Maintenance — ' + mtScopeLabel(),
+                meta: `${keys.join(', ')} · ${mtWindowLabel().replace('&rarr;', '→')} · ${document.getElementById('mtChg').value.trim()}`,
+                status: 'pending',
+                statusNote: 'Waiting for checker approval — nothing is suppressed until approved',
+            });
+            switchView('myactions');
+        }
+
         // ---------- My Actions (maker-checker workflow) ----------
         // Two distinct workflows: the checker queue (other makers' requests,
         // with approve/reject — rejection requires a reason) and the maker
         // list (your own requests, tracked read-only until a checker acts).
+        const MA_KIND_ICON = { alert: 'bell', logonboard: 'download', maintenance: 'wrench' };
+
         const MA_STATUS_LABEL = {
             pending: 'Pending approval',
             'in-progress': 'In progress',
@@ -5157,6 +5701,11 @@
                 id: 'AL-3092', kind: 'alert', maker: 'jane.tan', role: 'Reporting Manager',
                 title: 'Add CMD Monitoring', time: '2h ago', status: 'pending',
                 summary: ['sgapp0410 · MIDDLEWARE · PROD', 'CPU &gt; 90% for 5 minutes — Critical', 'HPSM 572 / MIDDLEWARE'],
+            },
+            {
+                id: 'MW-1042', kind: 'maintenance', maker: 'alex.lim', role: 'Reporting Manager',
+                title: 'Service Maintenance — All alerts', time: '3h ago', status: 'pending',
+                summary: ['sgapp0410 · MIDDLEWARE · PROD', 'Sat 02:00&ndash;04:00 SGT · auto-resumes at window end', '<span class="mono">CHG0041233</span> — OS patching'],
             },
             {
                 id: 'LO-2214', kind: 'logonboard', maker: 'raj.kumar', role: 'ELK Engineer',
@@ -5205,7 +5754,7 @@
                 apprList.innerHTML = pendingApprovals.map(a => `
                     <div class="appr-card ${a.status !== 'pending' ? 'actioned' : ''}">
                         <div class="appr-head">
-                            <span class="appr-icon"><svg class="ic"><use href="#i-${a.kind === 'alert' ? 'bell' : 'download'}"/></svg></span>
+                            <span class="appr-icon"><svg class="ic"><use href="#i-${MA_KIND_ICON[a.kind] || 'bell'}"/></svg></span>
                             <div class="appr-head-main">
                                 <div class="appr-title">${a.title} <span class="appr-id">${a.id}</span></div>
                                 <div class="appr-sub">by <b>${a.maker}</b> (maker) · ${a.time} · your role: <b>${a.role}</b> (checker)</div>
@@ -5227,7 +5776,7 @@
             if (reqList) {
                 reqList.innerHTML = myRequests.map(r => `
                     <div class="req-row">
-                        <span class="appr-icon sm"><svg class="ic"><use href="#i-${r.kind === 'alert' ? 'bell' : 'download'}"/></svg></span>
+                        <span class="appr-icon sm"><svg class="ic"><use href="#i-${MA_KIND_ICON[r.kind] || 'bell'}"/></svg></span>
                         <div class="req-main">
                             <div class="appr-title">${r.title} <span class="appr-id">${r.id}</span></div>
                             <div class="appr-sub">${r.meta || ''}${r.statusNote ? ' · ' + r.statusNote : ''}</div>
@@ -5705,8 +6254,40 @@
             if (e.target === this) closeWizard();
         });
 
-        // ---------- OKA assistant ----------
+        // ---------- Observability Brain ----------
         let aikaOpened = false;
+
+        // ---------- Full view: the bubble's escape hatch for long reads ----------
+        // The chat body is a single DOM node adopted by whichever surface is
+        // active — transcript, input, and chips move together, never copied.
+        let brainFull = false;
+
+        function openBrainFull() {
+            brainFull = true;
+            document.getElementById('aikaPanel').classList.remove('open');
+            document.getElementById('aikaFab').style.display = 'none';
+            document.getElementById('brainPageMount').appendChild(document.getElementById('aikaBody'));
+            if (!aikaOpened) { aikaGreet(); aikaOpened = true; }
+            switchView('brain');
+            const wrap = document.getElementById('aikaMessages');
+            wrap.scrollTop = wrap.scrollHeight;
+            document.getElementById('aikaInput').focus();
+        }
+
+        function dockBrain() {
+            brainFull = false;
+            document.getElementById('aikaFab').style.display = '';
+            document.getElementById('aikaPanel').appendChild(document.getElementById('aikaBody'));
+        }
+
+        function closeBrainFull() {
+            dockBrain();
+            switchView('home');
+            document.getElementById('aikaPanel').classList.add('open');
+            const wrap = document.getElementById('aikaMessages');
+            wrap.scrollTop = wrap.scrollHeight;
+            document.getElementById('aikaInput').focus();
+        }
 
         const icon = (name) => `<svg class="ic"><use href="#i-${name}"/></svg>`;
 
@@ -5724,15 +6305,172 @@
             aikaGreet();
         }
 
-        function aikaGreet() {
-            aikaBotSay("Hi Coy, I'm <b>OKA</b>, your observability assistant. I can help you enable alerts, onboard logs, request access, register assets, or check your app's health. What do you need?");
+        // ---------- Observability Brain (assistant only) ----------
+        // Recommendation-1 split: lookup lives in the global search bar
+        // (vector search over the second brain, results dropdown); this
+        // bubble is the Brain only — grounded Tier-1 Q&A that cites its
+        // sources (docs/planning/second-brain-use-cases.md). The two hand
+        // off to each other: search results end with "Ask the Brain",
+        // Brain citations open in search.
+        const AIKA_CHIPS = [
+            { icon: 'grid', label: 'Templates', q: 'Show me the service templates' },
+            { icon: 'server', label: 'ulaeiapos0a config', q: 'What monitoring does ulaeiapos0a have?' },
+            { icon: 'users', label: 'Who approved?', q: 'Who approved the CPU threshold on sgapp0410?' },
+            { icon: 'layers', label: 'Coverage gaps', q: 'Which PROD assets have coverage gaps?' },
+            { icon: 'bell', label: 'Create alert', q: 'How do I create an error keyword alert?' },
+            { icon: 'activity', label: 'Why degraded?', q: 'Why is my app degraded?' },
+        ];
+
+        function aikaRenderChips() {
+            document.getElementById('aikaChips').innerHTML = AIKA_CHIPS.map(c =>
+                `<button class="aika-chip" onclick="aikaAsk('${c.q.replace(/'/g, "\\'")}')"><svg class="ic"><use href="#i-${c.icon}"/></svg> ${c.label}</button>`
+            ).join('');
         }
+
+        // ---------- Tier-1 guided use cases (second-brain-use-cases.md §2) ----------
+        // Estate Q&A, provenance answers, and coverage/gap analysis — all
+        // read-only, all answered from the same data the mock's services
+        // use, all cited. "The config *is* the documentation."
+        const AIKA_ASSET_NOTES = {
+            'ulaeiapos0a': { note: "Its <span class='mono'>cdm.json</span> and <span class='mono'>logmon.json</span> are still <b>empty placeholders</b> — CMD and log coverage are the gaps costing its score (58% · Bronze).", sources: ['dxuim-config/UAT/ulaeiapos0a/processes.json', 'docs/planning/backlog.md'] },
+            'sgapp0410': { note: "All three categories are covered via <b>DX UIM</b>, but there is <b>no ELK agent</b> — logs are only searchable on the host itself.", sources: ['CMDB (host registry)', 'dxuim-config (MIDDLEWARE · PROD)'] },
+            'sgapp0231': { note: "The host is <b>OTel-enabled</b> and shipping to ELK, but <b>no watchers are configured</b> — ingestion without alerting.", sources: ['CMDB (host registry)', 'elk-stack (no watcher entries)'] },
+            'ms-cbs-account-movement-adapter': { note: "Fully covered — this is the estate's <b>100% · Gold</b> reference asset.", sources: ['elk-stack watcher config', 'catalog-info.yaml'] },
+            'ms-payments-fast-transfer': { note: "<b>No watchers configured</b> — combined with its elevated error rate, this is the estate's most urgent gap.", sources: ['elk-stack (no watcher entries)', 'AppDynamics baseline'] },
+        };
+
+        function aikaEstateAnswer(key) {
+            const cfgKey = SY_CONFIG_KEY[key] || key;
+            const cfg = EXISTING_CONFIG[cfgKey.toLowerCase()] || EXISTING_CONFIG[cfgKey] || {};
+            const parts = [];
+            if (cfg.log && cfg.log.length) parts.push(`<b>${cfg.log.length}</b> log watcher${cfg.log.length > 1 ? 's' : ''}`);
+            if (cfg.cmd && cfg.cmd.length) parts.push(`<b>${cfg.cmd.length}</b> CMD watcher${cfg.cmd.length > 1 ? 's' : ''}`);
+            if (cfg.process && cfg.process.length) parts.push(`<b>${cfg.process.length}</b> process watcher${cfg.process.length > 1 ? 's' : ''}`);
+            const summary = parts.length ? parts.join(', ') : '<b>no watchers</b>';
+            const extra = AIKA_ASSET_NOTES[key];
+            aikaBotSay(
+                `<span class='mono'>${key}</span> currently has ${summary} configured. ${extra ? extra.note : ''}`,
+                'View Observability Score',
+                'openHealthCheck(); toggleAika();',
+                'chart',
+                extra ? extra.sources : ['config repos (Bitbucket)']
+            );
+        }
+
+        // Predefined service templates, launchable straight from the chat.
+        const AIKA_SERVICES = [
+            { icon: 'bell', label: 'Add Monitoring', desc: 'CMD, Log & Process alerts — ELK or DX UIM', action: 'openAlertWizard(); toggleAika();' },
+            { icon: 'download', label: 'Log Onboarding', desc: 'Agents, Kafka topic, parsers, indices', action: 'openLogOnboarding(); toggleAika();' },
+            { icon: 'chart', label: 'Observability Score', desc: 'Scorecard with remediation', action: 'openHealthCheck(); toggleAika();' },
+            { icon: 'launch', label: 'Synthetic Alerting', desc: 'Fire-drill an alert end to end', action: 'openSynthetic(); toggleAika();' },
+            { icon: 'wrench', label: 'Service Maintenance', desc: 'Suppress alerts for a change window', action: 'openMaintenance(); toggleAika();' },
+            { icon: 'shield', label: 'Request Access', desc: 'Kibana, Grafana, index permissions', action: "comingSoon('Access Granting');" },
+            { icon: 'package', label: 'Register Asset', desc: 'Add your asset to the catalog', action: "comingSoon('Asset Registry');" },
+        ];
+
+        function aikaServiceMenuHtml() {
+            return `<div class="aika-svc-list">` + AIKA_SERVICES.map(s => `
+                <button class="aika-svc" onclick="${s.action}">
+                    <span class="aika-svc-icon">${icon(s.icon)}</span>
+                    <span class="aika-svc-text"><b>${s.label}</b><span>${s.desc}</span></span>
+                    <svg class="ic aika-svc-arrow"><use href="#i-arrow-r"/></svg>
+                </button>`).join('') + `</div>`;
+        }
+
+        function aikaGreet() {
+            aikaBotSay("Ask about your estate — what an asset has configured, who approved a change, where the gaps are. Every answer cites its sources. Looking for a document instead? Use the search bar on the left. Or launch a service directly:" + aikaServiceMenuHtml());
+        }
+
+        // ---------- Global search (the second brain's lookup surface) ----------
+        // Demo stand-in for the vector index over Bitbucket (the "AI read
+        // surface" dependency in second-brain-use-cases.md §4). Keyword
+        // overlap plays the role of cosine similarity. Lives in the sidebar
+        // search bar — lookup is navigation, not conversation.
+        const SEARCH_INDEX = [
+            { path: 'dxuim-config/guide.md', title: 'DX UIM probe config & API', keywords: ['dxuim', 'api', 'endpoint', 'uimapi', 'probe', 'config', 'curl', 'metadata', 'robot', 'hub'], snippet: 'PUT <b>/uimapi/probes/{domain}/{hub}/{robot}/{probe}/config</b> — metadata (requestedBy / approvedBy) is stripped before the config is sent to the probe.' },
+            { path: 'docs/ui-ux-design/branching-strategy.md', title: 'Branching & approval model', keywords: ['branch', 'branching', 'strategy', 'staging', 'pr', 'approval', 'main', 'git', 'merge'], snippet: '<b>main</b> is truth, <b>staging/&lt;name&gt;</b> per request, the PR is the approval gate — Ansible only ever reads, it never commits.' },
+            { path: 'docs/spec/raise-an-alert-domain-model.md', title: 'Alert domain data model', keywords: ['domain', 'model', 'schema', 'severity', 'keyword', 'matchtype', 'hpsm', 'envelope', 'spec'], snippet: 'One document shape for Log / CMD / Process across both asset types — <b>schemaVersion</b>, provenance metadata, category-specific payload.' },
+            { path: 'docs/planning/backlog.md', title: 'Backlog — hardening & gaps', keywords: ['backlog', 'gap', 'empty', 'cdm.json', 'cdm', 'logmon', 'placeholder', 'pagination', 'changerecordid'], snippet: '<b>cdm.json</b> and <b>logmon.json</b> for ulaeiapos0a are still empty placeholders — only Process monitoring is configured for the one real robot.' },
+            { path: 'docs/planning/second-brain-use-cases.md', title: 'The Second Brain — AI use cases', keywords: ['ai', 'second', 'brain', 'score', 'guidance', 'tier', 'narrate', 'observability'], snippet: '<b>AI proposes, humans approve, git records.</b> Scores are math, guidance is language — the AI narrates and always cites its facts.' },
+            { path: 'docs/architecture/architecture.md', title: 'Portal architecture', keywords: ['architecture', 'portal', 'backstage', 'scaffolder', 'ansible', 'pattern', 'template'], snippet: 'The portal pattern: Scaffolder templates commit domain documents to Bitbucket; Ansible reads and applies them; Backstage is the front door.' },
+            { path: 'ansible/roles/dxuim_config_sync/', title: 'DX UIM config sync role', keywords: ['ansible', 'sync', 'bitbucket', 'poll', 'commit', 'role', 'activation'], snippet: 'Reads probe config from Bitbucket (poll, single-file, or commit-range mode) and PUTs each file to the DX UIM API.' },
+            { path: 'grafana/alerting-overview-dashboard.json', title: 'Alerting overview dashboard', keywords: ['grafana', 'dashboard', 'panels', 'overview', 'datasource'], snippet: 'Estate-wide alerting overview — the DX UIM panels are explicit TODOs pending a confirmed data source.' },
+        ];
+
+        function searchBrainIndex(q) {
+            const terms = q.toLowerCase().split(/\W+/).filter(t => t.length > 2);
+            return SEARCH_INDEX.map(doc => {
+                const score = terms.reduce((s, t) => s + (doc.keywords.some(k => k.includes(t) || t.includes(k)) ? 1 : 0)
+                    + (doc.title.toLowerCase().includes(t) ? 1 : 0), 0);
+                return { doc, score };
+            }).filter(h => h.score > 0).sort((a, b) => b.score - a.score).slice(0, 4);
+        }
+
+        function renderGlobalSearch() {
+            const q = document.getElementById('globalSearchInput').value.trim();
+            const pop = document.getElementById('gsearchPop');
+            if (q.length < 2) { pop.classList.remove('open'); pop.innerHTML = ''; return; }
+            renderGsearchPop(searchBrainIndex(q), q);
+        }
+
+        function renderGsearchPop(hits, q) {
+            const pop = document.getElementById('gsearchPop');
+            const max = hits.length ? hits[0].score : 1;
+            const rows = hits.map(h => {
+                const sim = Math.min(97, 58 + Math.round((h.score / max) * 34));
+                return `
+                    <div class="search-hit">
+                        <div class="search-hit-head"><b>${h.doc.title}</b><span class="search-sim">${sim}% match</span></div>
+                        <div class="search-hit-snippet">${h.doc.snippet}</div>
+                        <div class="search-hit-path">${h.doc.path}</div>
+                    </div>`;
+            }).join('');
+            const body = hits.length ? rows : `<div class="gsearch-empty">No matches in the second brain — try different terms, or ask the Brain below.</div>`;
+            pop.innerHTML = `
+                <div class="gsearch-head">${hits.length} match${hits.length === 1 ? '' : 'es'} · vector search over ${SEARCH_INDEX.length} sources</div>
+                ${body}
+                <button type="button" class="gsearch-ask" onclick="askBrainFromSearch()">
+                    <span class="aika-svc-icon">${icon('brain')}</span>
+                    <span class="aika-svc-text"><b>Ask the Brain</b><span>&ldquo;${q.replace(/</g, '&lt;')}&rdquo; — grounded answer with citations</span></span>
+                    <svg class="ic aika-svc-arrow"><use href="#i-arrow-r"/></svg>
+                </button>`;
+            pop.classList.add('open');
+        }
+
+        function closeGlobalSearch() {
+            document.getElementById('gsearchPop').classList.remove('open');
+        }
+
+        function askBrainFromSearch() {
+            const input = document.getElementById('globalSearchInput');
+            const q = input.value.trim();
+            if (!q) return;
+            closeGlobalSearch();
+            input.value = '';
+            const panel = document.getElementById('aikaPanel');
+            if (!panel.classList.contains('open')) toggleAika();
+            setTimeout(() => aikaAsk(q), 250);
+        }
+
+        // Brain citations open in search — the reverse handoff.
+        function openSourceInSearch(path) {
+            const doc = SEARCH_INDEX.find(d => d.path === path);
+            if (!doc) return;
+            const input = document.getElementById('globalSearchInput');
+            input.value = doc.title;
+            renderGsearchPop([{ doc, score: 1 }], doc.title);
+            input.focus();
+        }
+
+        document.addEventListener('click', e => {
+            if (!e.target.closest('.sidebar-search') && !e.target.closest('#gsearchPop') && !e.target.closest('.msg-source-link')) closeGlobalSearch();
+        });
 
         function aikaAddMsg(who, html) {
             const wrap = document.getElementById('aikaMessages');
             const div = document.createElement('div');
             div.className = 'msg ' + who;
-            const avatar = who === 'bot' ? icon('sparkle') : 'CO';
+            const avatar = who === 'bot' ? icon('brain') : 'CO';
             div.innerHTML = `
                 <div class="msg-avatar">${avatar}</div>
                 <div class="msg-bubble">${html}</div>
@@ -5742,11 +6480,11 @@
             return div;
         }
 
-        function aikaBotSay(html, actionLabel, actionFn, actionIcon) {
+        function aikaBotSay(html, actionLabel, actionFn, actionIcon, sources) {
             const wrap = document.getElementById('aikaMessages');
             const t = document.createElement('div');
             t.className = 'msg bot';
-            t.innerHTML = `<div class="msg-avatar">${icon('sparkle')}</div><div class="msg-bubble"><div class="typing"><i></i><i></i><i></i></div></div>`;
+            t.innerHTML = `<div class="msg-avatar">${icon('brain')}</div><div class="msg-bubble"><div class="typing"><i></i><i></i><i></i></div></div>`;
             wrap.appendChild(t);
             wrap.scrollTop = wrap.scrollHeight;
 
@@ -5755,6 +6493,13 @@
                 if (actionLabel) {
                     const ai = actionIcon ? icon(actionIcon) : '';
                     body += `<br><button class="msg-action" onclick="${actionFn}">${ai}${actionLabel}</button>`;
+                }
+                if (sources && sources.length) {
+                    const linked = sources.map(s => {
+                        const doc = SEARCH_INDEX.find(d => d.path === s);
+                        return doc ? `<a class="msg-source-link" onclick="openSourceInSearch('${doc.path}')">${s}</a>` : s;
+                    });
+                    body += `<div class="msg-sources">Sources: ${linked.join(' · ')}</div>`;
                 }
                 t.querySelector('.msg-bubble').innerHTML = body;
                 wrap.scrollTop = wrap.scrollHeight;
@@ -5778,59 +6523,98 @@
         function aikaRespond(text) {
             const q = text.toLowerCase();
 
+            // Tier-1 guided use cases first — most specific wins.
+            const assetMatch = q.match(/ulaeiapos0a|sgapp0410|sgapp0231|ms-cbs-account-movement-adapter|ms-payments-fast-transfer/);
+            if (assetMatch && /(monitor|config|watcher|coverage|score|have|set ?up)/.test(q)) {
+                aikaEstateAnswer(assetMatch[0]);
+                return;
+            }
+            if (/(who|when|history|provenance).*(approv|chang|threshold|merg)|approved by/.test(q)) {
+                aikaBotSay(
+                    "The CPU watcher on <span class='mono'>sgapp0410</span> (<b>CPU &gt; 90% for 5m, Critical</b>) was merged on <b>14 Jun 2026</b> via <b>PR #142</b> — requested by <b>jane.tan</b>, approved by <b>lead-sre</b>, replacing the previous 85%/5m threshold. Git records every request, approval, and diff — nothing changes without that trail.",
+                    'View PR in Bitbucket',
+                    "comingSoon('Bitbucket');",
+                    'file',
+                    ['git log — dxuim-config (MIDDLEWARE)', 'PR #142 (staging/sgapp0410-cpu)']
+                );
+                return;
+            }
+            if (/(templates?|services?|menu|options|what can you do|help me|get started)/.test(q) && !/(monitor|watcher|onboard|access|score|drill)/.test(q)) {
+                aikaBotSay("Pick a service template — I'll take you straight there:" + aikaServiceMenuHtml());
+                return;
+            }
+            if (/(gap|coverage|missing|unmonitored|placeholder|no (process|log|cmd) monitoring)/.test(q)) {
+                aikaBotSay(
+                    "Cross-referencing the CMDB against the config repos: <b>2 PROD assets have no watchers at all</b> — <span class='mono'>sgapp0231</span> and <span class='mono'>ms-payments-fast-transfer</span> (the latter also has an elevated error rate). In UAT, <span class='mono'>ulaeiapos0a</span> has <b>placeholder configs</b>: cdm.json and logmon.json exist but are empty. Every gap has a one-click fix via Add Monitoring.",
+                    'View Observability Score',
+                    'openHealthCheck(); toggleAika();',
+                    'chart',
+                    ['CMDB × config repos cross-reference', 'docs/planning/backlog.md']
+                );
+                return;
+            }
+
             if (/(alert|keyword|watcher)/.test(q)) {
                 aikaBotSay(
                     "Use <b>Add Monitoring</b> to turn on monitoring — for error keywords, pick <b>Log Monitoring</b>. You'll need your <span class='mono'>namespace</span>, <span class='mono'>container name</span>, and HPSM code — then add keywords like <span class='mono'>400</span>, <span class='mono'>500</span>, or <span class='mono'>timeout</span> with a severity each.",
                     "Add Monitoring",
                     "openAlertWizard(); toggleAika();",
-                    "launch"
+                    "launch",
+                    ["docs/spec/raise-an-alert-domain-model.md", "dxuim-config/guide.md"]
                 );
             } else if (/(onboard|logstash|kafka|otel|ship|log)/.test(q)) {
                 aikaBotSay(
-                    "Log onboarding ships your app logs into the platform via <b>Kafka</b> or the <b>OTel collector</b>. You'll register your index pattern, pick a retention tier (hot local / cold S3), and validate the pipeline. The self-service flow is coming to this portal — for now the SRE runbook covers it.",
-                    "View onboarding guide",
-                    "openLogOnboarding();",
-                    "download"
+                    "<b>Log Onboarding</b> is one guided request: agents installed where missing, then Kafka topic, Logstash parsers, and indices generated from your parse spec — one engineer review, live progress the whole way. No Confluence page needed.",
+                    "Onboard logs",
+                    "openLogOnboarding(); toggleAika();",
+                    "download",
+                    ["docs/ui-ux-design/branching-strategy.md", "ansible/roles/dxuim_config_sync/"]
                 );
             } else if (/(degraded|down|slow|unhealthy|why|incident|error)/.test(q)) {
                 aikaBotSay(
                     "Right now <span class='mono'>ms-cbs-account-movement-adapter</span> is <b style='color:var(--status-error)'>Critical</b> — error spike in the last 2 hours with 3 open alerts (2 critical). <span class='mono'>ms-payments-fast-transfer</span> is <b style='color:#c07300'>Degraded</b> with 1 major alert. DX UIM is also reporting degraded platform status, which may add noise.",
                     "View Observability Score",
                     "openHealthCheck();",
-                    "activity"
+                    "activity",
+                    ["grafana/alerting-overview-dashboard.json", "live alert feed (last 2h)"]
                 );
             } else if (/(synthetic|drill|fire.?drill|test.*alert)/.test(q)) {
                 aikaBotSay(
                     "<b>Synthetic Alerting</b> fire-drills an alert end to end: a synthetic event at the source, every hop traced, and a real HPSM ticket tagged <span class='mono'>[DRILL]</span> at the destination — auto-closed after verification. Run one before go-live or after any pipeline change.",
                     "Run a drill",
                     "openSynthetic(); toggleAika();",
-                    "launch"
+                    "launch",
+                    ["docs/spec/raise-an-alert-domain-model.md", "dxuim-config/UAT/ulaeiapos0a/processes.json"]
                 );
             } else if (/(access|kibana|grafana|permission|grant|role)/.test(q)) {
                 aikaBotSay(
                     "Access requests cover <b>Kibana spaces</b>, <b>Grafana folders</b>, and index-level permissions. Requests route to your team lead for approval — typical turnaround is under a day. Tip: request the <span class='mono'>read-only</span> role first; it auto-approves.",
                     "Request access",
                     "comingSoon('Access Granting');",
-                    "shield"
+                    "shield",
+                    ["docs/architecture/architecture.md"]
                 );
             } else if (/(asset|register|registry|dashboard|catalog)/.test(q)) {
                 aikaBotSay(
                     "The <b>asset registry</b> tracks services, dashboards, and indices so nothing becomes an orphan in the data swamp. Registering takes ~2 minutes: name, owner team, system, and lifecycle. Everything registered shows up in the Catalog.",
                     "Register an asset",
                     "comingSoon('Asset Registry');",
-                    "package"
+                    "package",
+                    ["docs/planning/backlog.md", "docs/architecture/architecture.md"]
                 );
             } else if (/(hi|hello|hey|thanks|thank)/.test(q)) {
-                aikaBotSay("Happy to help! Ask me about <b>alerts</b>, <b>log onboarding</b>, <b>access</b>, <b>asset registry</b>, or your <b>app health</b>.");
+                aikaBotSay("Happy to help! Ask me what an asset <b>has configured</b>, <b>who approved</b> a change, where the <b>coverage gaps</b> are — or about <b>alerts</b>, <b>log onboarding</b>, <b>drills</b>, and <b>access</b>.");
             } else {
                 aikaBotSay(
-                    "I'm not sure about that one yet — in this prototype I know about <b>alerts</b>, <b>log onboarding</b>, <b>access granting</b>, <b>asset registry</b>, and <b>app health</b>. Try one of the suggestions below, or check the Catalog.",
-                    "Open Catalog",
-                    "switchView('catalog'); toggleAika();",
+                    "I'm not sure about that one yet. Try asking what an asset has configured (<i>“What monitoring does sgapp0410 have?”</i>), who approved a change, or where the coverage gaps are — or use the search bar on the left for a direct document lookup.",
+                    "Show templates",
+                    "aikaAsk('Show me the service templates');",
                     "grid"
                 );
             }
         }
+
+        aikaRenderChips();
     </script>
 </body>
 </html>
