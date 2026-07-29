@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Observability Portal — ACBC</title>
+    <title>Observability Portal — OCBC</title>
     <link rel="icon" type="image/svg+xml" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="%230278d5"/><stop offset="1" stop-color="%236938f2"/></linearGradient></defs><rect width="24" height="24" rx="6" fill="url(%23g)"/><g fill="none" stroke="white" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="1.9" fill="white" stroke="none"/><circle cx="12" cy="12" r="4.9" opacity="0.85"/><circle cx="12" cy="12" r="7.9" opacity="0.5"/></g></svg>'>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
-           ACBC Observability Portal — Harness IDP-style template
+           OCBC Observability Portal — Harness IDP-style template
            Deep navy surfaces · Harness blue → violet accents · Inter
            Stroke-line SVG icon system (no emoji)
            ============================================================ */
@@ -1575,7 +1575,7 @@
 
         .form-textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
 
-        /* ============ Log Onboarding — stage preview + progress track ============ */
+        /* ============ ELK Log Onboarding — stage preview + progress track ============ */
         .lo-preview-row {
             display: flex;
             align-items: center;
@@ -2476,6 +2476,41 @@
         .msg-source-link { color: var(--primary); cursor: pointer; }
         .msg-source-link:hover { text-decoration: underline; }
 
+        /* ============ Reports (reconciliation) ============ */
+        .rp-meta { font-size: 12px; color: var(--ink-dim); margin: 2px 0 14px; }
+
+        .rp-table { width: 100%; border-collapse: collapse; }
+
+        .rp-table th {
+            text-align: left;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: var(--ink-dim);
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-strong);
+            white-space: nowrap;
+        }
+
+        .rp-table td {
+            font-size: 12.5px;
+            color: var(--ink-secondary);
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .rp-table tr:last-child td { border-bottom: none; }
+
+        .rp-table .mono-name { font-family: var(--mono); font-size: 12px; color: var(--ink); font-weight: 600; white-space: nowrap; }
+
+        .rp-table tr.rp-attention td { background: rgba(245, 147, 0, 0.03); }
+
+        .rp-fix { padding: 5px 11px; font-size: 11.5px; white-space: nowrap; }
+
+        .rp-none { color: var(--border-strong); }
+
         /* ============ Brain full view ============ */
         .aika-body { display: flex; flex-direction: column; flex: 1; min-height: 0; }
 
@@ -2748,7 +2783,7 @@
             <div class="login-brand">
                 <div class="login-brand-logo">
                     <div class="logo-mark"><svg class="ic ic-lg" style="stroke-width:2.1"><use href="#i-halo"/></svg></div>
-                    <div class="logo-text">Observability<span>ACBC · Portal</span></div>
+                    <div class="logo-text">Observability<span>OCBC · Portal</span></div>
                 </div>
                 <div class="login-tagline">Your front door to alerts, logs, and app health.</div>
                 <div class="login-points">
@@ -2756,7 +2791,7 @@
                     <div class="login-point"><svg class="ic"><use href="#i-grid"/></svg> Every service, host, and dashboard in one catalog</div>
                     <div class="login-point"><svg class="ic"><use href="#i-brain"/></svg> The Observability Brain — search and grounded answers over your whole estate</div>
                 </div>
-                <div class="login-brand-foot">Powered by Backstage · ACBC SG</div>
+                <div class="login-brand-foot">Powered by Backstage · OCBC SG</div>
             </div>
 
             <div class="login-form">
@@ -2779,7 +2814,7 @@
 
                 <div class="login-foot">
                     <button type="button" class="login-guest" onclick="portalSignIn('guest')">Explore as guest <svg class="ic ic-sm" style="vertical-align:-2px;"><use href="#i-arrow-r"/></svg></button><br>
-                    Authorized ACBC personnel only. Sessions are logged and monitored.
+                    Authorized OCBC personnel only. Sessions are logged and monitored.
                 </div>
             </div>
         </div>
@@ -2790,7 +2825,7 @@
         <nav class="sidebar">
             <div class="sidebar-logo">
                 <div class="logo-mark"><svg class="ic ic-lg" style="stroke-width:2.1"><use href="#i-halo"/></svg></div>
-                <div class="logo-text">Observability<span>ACBC · Portal</span></div>
+                <div class="logo-text">Observability<span>OCBC · Portal</span></div>
             </div>
 
             <div class="sidebar-search">
@@ -2819,12 +2854,12 @@
                     <svg class="ic"><use href="#i-bell"/></svg> Add Monitoring
                 </div>
                 <div class="side-item" onclick="openLogOnboarding()">
-                    <svg class="ic"><use href="#i-download"/></svg> Log Onboarding
+                    <svg class="ic"><use href="#i-download"/></svg> ELK Log Onboarding
                 </div>
-                <div class="side-item" onclick="comingSoon('Access Granting')">
-                    <svg class="ic"><use href="#i-shield"/></svg> Access
+                <div class="side-item" onclick="openRequestAccess()">
+                    <svg class="ic"><use href="#i-shield"/></svg> Log Access
                 </div>
-                <div class="side-item" onclick="comingSoon('Asset Registry')">
+                <div class="side-item" onclick="openRegisterAsset()">
                     <svg class="ic"><use href="#i-package"/></svg> Asset Registry
                 </div>
                 <div class="side-item" onclick="openHealthCheck()">
@@ -2834,7 +2869,19 @@
                     <svg class="ic"><use href="#i-launch"/></svg> Synthetic Alerting
                 </div>
                 <div class="side-item" onclick="openMaintenance()">
-                    <svg class="ic"><use href="#i-wrench"/></svg> Service Maintenance
+                    <svg class="ic"><use href="#i-wrench"/></svg> Alert Suppression
+                </div>
+                <div class="side-item" onclick="openReports()">
+                    <svg class="ic"><use href="#i-clipboard"/></svg> Reports
+                </div>
+                <div class="side-item" onclick="openInstallAgent()">
+                    <svg class="ic"><use href="#i-layers"/></svg> Install Agent
+                </div>
+                <div class="side-item" onclick="openDashInventory()">
+                    <svg class="ic"><use href="#i-book"/></svg> Dashboard Inventory
+                </div>
+                <div class="side-item" onclick="openDataDict()">
+                    <svg class="ic"><use href="#i-file"/></svg> Data Dictionary
                 </div>
             </div>
 
@@ -2855,7 +2902,7 @@
                     <div class="avatar">CO</div>
                     <div>
                         <div class="u-name">Coy</div>
-                        <div class="u-team">acbc/sre</div>
+                        <div class="u-team">ocbc/sre</div>
                     </div>
                 </div>
             </div>
@@ -2871,10 +2918,10 @@
                         <div>
                             <div class="ph-eyebrow">Observability Portal</div>
                             <h1 class="ph-title" id="phGreeting">Good morning, Coy</h1>
-                            <p class="ph-sub">Your one-stop shop for alerts, log onboarding, access, asset registry, and application health across ACBC SG.</p>
+                            <p class="ph-sub">Your one-stop shop for alerts, log onboarding, access, asset registry, and application health across OCBC SG.</p>
                             <div class="ph-meta">
                                 <span class="ph-chip"><span class="dot-ok"></span> All ingest pipelines nominal</span>
-                                <span class="ph-chip"><svg class="ic"><use href="#i-users"/></svg> acbc/sre</span>
+                                <span class="ph-chip"><svg class="ic"><use href="#i-users"/></svg> ocbc/sre</span>
                                 <span class="ph-chip"><svg class="ic"><use href="#i-globe"/></svg> SG · PROD</span>
                             </div>
                         </div>
@@ -2902,21 +2949,39 @@
                                 </div>
                                 <div class="quick-card" style="--qc-accent:#0278d5;" onclick="openLogOnboarding()">
                                     <div class="qc-icon"><svg class="ic"><use href="#i-download"/></svg></div>
-                                    <div class="qc-title">Log Onboarding</div>
+                                    <div class="qc-title">ELK Log Onboarding</div>
                                     <div class="qc-desc">One guided request — agents, Kafka topic, parsers, and indices, with live progress.</div>
                                     <div class="qc-cta">Start onboarding <svg class="ic"><use href="#i-arrow-r"/></svg></div>
                                 </div>
-                                <div class="quick-card" style="--qc-accent:#6938f2; --qc-soft:rgba(105,56,242,0.07);" onclick="comingSoon('Access Granting')">
-                                    <div class="qc-icon"><svg class="ic"><use href="#i-shield"/></svg></div>
-                                    <div class="qc-title">Request Access</div>
-                                    <div class="qc-desc">Kibana spaces, Grafana folders, and index-level permissions.</div>
-                                    <div class="qc-cta">Request access <svg class="ic"><use href="#i-arrow-r"/></svg></div>
+                                <div class="quick-card" style="--qc-accent:#0e8074; --qc-soft:rgba(14,128,116,0.08);" onclick="openInstallAgent()">
+                                    <div class="qc-icon"><svg class="ic"><use href="#i-layers"/></svg></div>
+                                    <div class="qc-title">Install Agent</div>
+                                    <div class="qc-desc">Get the right agents onto your hosts — ELK Agent, DX UIM Robot, OTel Collector — only what's missing.</div>
+                                    <div class="qc-cta">Install agents <svg class="ic"><use href="#i-arrow-r"/></svg></div>
                                 </div>
-                                <div class="quick-card" style="--qc-accent:#00ade4; --qc-soft:rgba(0,173,228,0.08);" onclick="comingSoon('Asset Registry')">
+                                <div class="quick-card" style="--qc-accent:#6938f2; --qc-soft:rgba(105,56,242,0.07);" onclick="openRequestAccess()">
+                                    <div class="qc-icon"><svg class="ic"><use href="#i-shield"/></svg></div>
+                                    <div class="qc-title">Request Log Access</div>
+                                    <div class="qc-desc">Read-only ELK index access — see what each index holds, check what you have, request the rest.</div>
+                                    <div class="qc-cta">Request log access <svg class="ic"><use href="#i-arrow-r"/></svg></div>
+                                </div>
+                                <div class="quick-card" style="--qc-accent:#00ade4; --qc-soft:rgba(0,173,228,0.08);" onclick="openRegisterAsset()">
                                     <div class="qc-icon"><svg class="ic"><use href="#i-package"/></svg></div>
                                     <div class="qc-title">Register Asset</div>
-                                    <div class="qc-desc">Add your service, dashboard, or index to the asset registry.</div>
+                                    <div class="qc-desc">Ad-hoc registrations — dashboard links, new servers. Platform owners triage every exception.</div>
                                     <div class="qc-cta">Register now <svg class="ic"><use href="#i-arrow-r"/></svg></div>
+                                </div>
+                                <div class="quick-card" style="--qc-accent:#4f46e5; --qc-soft:rgba(79,70,229,0.08);" onclick="openDataDict()">
+                                    <div class="qc-icon"><svg class="ic"><use href="#i-file"/></svg></div>
+                                    <div class="qc-title">Data Dictionary</div>
+                                    <div class="qc-desc">What lives in ELK — every index and its function: logs, metrics, traces, OTel, statistical data.</div>
+                                    <div class="qc-cta">Browse the dictionary <svg class="ic"><use href="#i-arrow-r"/></svg></div>
+                                </div>
+                                <div class="quick-card" style="--qc-accent:#b45309; --qc-soft:rgba(180,83,9,0.08);" onclick="openDashInventory()">
+                                    <div class="qc-icon"><svg class="ic"><use href="#i-book"/></svg></div>
+                                    <div class="qc-title">Dashboard Inventory</div>
+                                    <div class="qc-desc">Every dashboard, described and linked — Grafana for metrics, ELK for logs. One page, always current.</div>
+                                    <div class="qc-cta">Browse dashboards <svg class="ic"><use href="#i-arrow-r"/></svg></div>
                                 </div>
                                 <div class="quick-card" style="--qc-accent:#cf2e8d; --qc-soft:rgba(207,46,141,0.08);" onclick="openSynthetic()">
                                     <div class="qc-icon"><svg class="ic"><use href="#i-launch"/></svg></div>
@@ -2932,9 +2997,15 @@
                                 </div>
                                 <div class="quick-card" style="--qc-accent:#1d9f5f; --qc-soft:rgba(29,159,95,0.09);" onclick="openMaintenance()">
                                     <div class="qc-icon"><svg class="ic"><use href="#i-wrench"/></svg></div>
-                                    <div class="qc-title">Service Maintenance</div>
+                                    <div class="qc-title">Alert Suppression</div>
                                     <div class="qc-desc">Suppress alerts for a change window — they resume automatically when it ends.</div>
                                     <div class="qc-cta">Schedule window <svg class="ic"><use href="#i-arrow-r"/></svg></div>
+                                </div>
+                                <div class="quick-card" style="--qc-accent:#00b8a9; --qc-soft:rgba(0,184,169,0.09);" onclick="openReports()">
+                                    <div class="qc-icon"><svg class="ic"><use href="#i-clipboard"/></svg></div>
+                                    <div class="qc-title">Reports</div>
+                                    <div class="qc-desc">Reconciliation reports — assets missing from ELK, unmonitored, or drifted.</div>
+                                    <div class="qc-cta">View reports <svg class="ic"><use href="#i-arrow-r"/></svg></div>
                                 </div>
                             </div>
                         </div>
@@ -3020,7 +3091,7 @@
 
                                 <!-- Coverage -->
                                 <div class="card card-pad" style="margin-top: 24px;">
-                                    <div class="section-title" style="margin-bottom: 16px;">Observability coverage — acbc/sre</div>
+                                    <div class="section-title" style="margin-bottom: 16px;">Observability coverage — ocbc/sre</div>
                                     <div class="cov-row">
                                         <div class="cov-top"><span class="l"><svg class="ic"><use href="#i-download"/></svg> Logs onboarded</span><span class="r">18 / 20 services</span></div>
                                         <div class="cov-bar"><div class="cov-fill" style="width: 90%; animation-delay: 0.1s;"></div></div>
@@ -3123,9 +3194,9 @@
                 <header class="page-header" style="padding-bottom: 20px;">
                     <div class="ph-top">
                         <div>
-                            <div class="ph-eyebrow">ACBC SG</div>
+                            <div class="ph-eyebrow">OCBC SG</div>
                             <h1 class="ph-title">Observability Catalog</h1>
-                            <p class="ph-sub">Discover, manage, and create services across the ACBC platform.</p>
+                            <p class="ph-sub">Discover, manage, and create services across the OCBC platform.</p>
                         </div>
                         <div class="ph-actions">
                             <button class="btn btn-cta" onclick="openAlertWizard()"><svg class="ic ic-sm"><use href="#i-plus"/></svg> Create</button>
@@ -3147,7 +3218,7 @@
                             </div>
 
                             <div class="section-head">
-                                <div class="section-title">All components (7)</div>
+                                <div class="section-title">All components (8)</div>
                             </div>
                             <div class="card">
                                 <table>
@@ -3166,7 +3237,7 @@
                                         <tr>
                                             <td><span class="app-name"><svg class="ic"><use href="#i-file"/></svg>error-keyword-document</span></td>
                                             <td><span class="kind-chip"><svg class="ic"><use href="#i-wrench"/></svg> api</span></td>
-                                            <td><a href="#" class="owner-link"><svg class="ic"><use href="#i-users"/></svg>acbc/sre</a></td>
+                                            <td><a href="#" class="owner-link"><svg class="ic"><use href="#i-users"/></svg>ocbc/sre</a></td>
                                             <td>document</td>
                                             <td><span class="lifecycle-badge lifecycle-experimental">experimental</span></td>
                                             <td>Error Keywords</td>
@@ -3180,7 +3251,7 @@
                                         <tr>
                                             <td><span class="app-name" onclick="openAlertWizard(event)"><svg class="ic"><use href="#i-key"/></svg>add-monitoring</span></td>
                                             <td><span class="kind-chip"><svg class="ic"><use href="#i-wrench"/></svg> idp</span></td>
-                                            <td><a href="#" class="owner-link"><svg class="ic"><use href="#i-users"/></svg>acbc/sre</a></td>
+                                            <td><a href="#" class="owner-link"><svg class="ic"><use href="#i-users"/></svg>ocbc/sre</a></td>
                                             <td>template</td>
                                             <td><span class="lifecycle-badge lifecycle-production">production</span></td>
                                             <td>Add Monitoring template — CMD, Log, and Process monitoring; Microservice via ELK, Open System via DX UIM</td>
@@ -3192,9 +3263,23 @@
                                             </td>
                                         </tr>
                                         <tr>
+                                            <td><span class="app-name" onclick="openInstallAgent()"><svg class="ic"><use href="#i-layers"/></svg>install-agent</span></td>
+                                            <td><span class="kind-chip"><svg class="ic"><use href="#i-wrench"/></svg> idp</span></td>
+                                            <td><a href="#" class="owner-link"><svg class="ic"><use href="#i-users"/></svg>ocbc/sre</a></td>
+                                            <td>template</td>
+                                            <td><span class="lifecycle-badge lifecycle-production">production</span></td>
+                                            <td>Install Agent template — ELK Agent, DX UIM Robot, OTel Collector, AppDynamics; CMDB-aware, installs only what's missing</td>
+                                            <td>
+                                                <div class="actions">
+                                                    <div class="action-icon" onclick="openInstallAgent()" title="Launch template"><svg class="ic"><use href="#i-launch"/></svg></div>
+                                                    <div class="action-icon"><svg class="ic"><use href="#i-star"/></svg></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td><span class="app-name"><svg class="ic"><use href="#i-chart"/></svg>elk-stack</span></td>
                                             <td><span class="kind-chip"><svg class="ic"><use href="#i-wrench"/></svg> observability</span></td>
-                                            <td><a href="#" class="owner-link"><svg class="ic"><use href="#i-users"/></svg>acbc/elk-admin</a></td>
+                                            <td><a href="#" class="owner-link"><svg class="ic"><use href="#i-users"/></svg>ocbc/elk-admin</a></td>
                                             <td>service</td>
                                             <td><span class="lifecycle-badge lifecycle-production">production</span></td>
                                             <td>Elasticsearch, Logstash, Kibana stack for log aggregation</td>
@@ -3208,7 +3293,7 @@
                                         <tr>
                                             <td><span class="app-name"><svg class="ic"><use href="#i-server"/></svg>dxuim-monitoring</span></td>
                                             <td><span class="kind-chip"><svg class="ic"><use href="#i-wrench"/></svg> observability</span></td>
-                                            <td><a href="#" class="owner-link"><svg class="ic"><use href="#i-users"/></svg>acbc/sre</a></td>
+                                            <td><a href="#" class="owner-link"><svg class="ic"><use href="#i-users"/></svg>ocbc/sre</a></td>
                                             <td>service</td>
                                             <td><span class="lifecycle-badge lifecycle-production">production</span></td>
                                             <td>CA Unified Infrastructure Management platform</td>
@@ -3222,7 +3307,7 @@
                                         <tr>
                                             <td><span class="app-name"><svg class="ic"><use href="#i-globe"/></svg>observability-portal</span></td>
                                             <td><span class="kind-chip"><svg class="ic"><use href="#i-wrench"/></svg> portal</span></td>
-                                            <td><a href="#" class="owner-link"><svg class="ic"><use href="#i-users"/></svg>acbc/platform</a></td>
+                                            <td><a href="#" class="owner-link"><svg class="ic"><use href="#i-users"/></svg>ocbc/platform</a></td>
                                             <td>website</td>
                                             <td><span class="lifecycle-badge lifecycle-production">production</span></td>
                                             <td>Internal developer portal for observability tools</td>
@@ -3236,7 +3321,7 @@
                                         <tr>
                                             <td><span class="app-name"><svg class="ic"><use href="#i-gauge"/></svg>appdynamics-apm</span></td>
                                             <td><span class="kind-chip"><svg class="ic"><use href="#i-wrench"/></svg> observability</span></td>
-                                            <td><a href="#" class="owner-link"><svg class="ic"><use href="#i-users"/></svg>acbc/sre</a></td>
+                                            <td><a href="#" class="owner-link"><svg class="ic"><use href="#i-users"/></svg>ocbc/sre</a></td>
                                             <td>service</td>
                                             <td><span class="lifecycle-badge lifecycle-production">production</span></td>
                                             <td>Application Performance Monitoring platform</td>
@@ -3250,7 +3335,7 @@
                                         <tr>
                                             <td><span class="app-name"><svg class="ic"><use href="#i-bot"/></svg>moogsoft-aiops</span></td>
                                             <td><span class="kind-chip"><svg class="ic"><use href="#i-wrench"/></svg> observability</span></td>
-                                            <td><a href="#" class="owner-link"><svg class="ic"><use href="#i-users"/></svg>acbc/sre</a></td>
+                                            <td><a href="#" class="owner-link"><svg class="ic"><use href="#i-users"/></svg>ocbc/sre</a></td>
                                             <td>service</td>
                                             <td><span class="lifecycle-badge lifecycle-production">production</span></td>
                                             <td>AIOps platform for event correlation and incident management</td>
@@ -3282,7 +3367,7 @@
                             <p class="ph-sub" id="tplSub"></p>
                             <div class="ph-meta">
                                 <span class="ph-chip mono-chip" id="tplRef"></span>
-                                <span class="ph-chip"><svg class="ic"><use href="#i-users"/></svg> acbc/observability</span>
+                                <span class="ph-chip"><svg class="ic"><use href="#i-users"/></svg> ocbc/observability</span>
                             </div>
                         </div>
                         <div class="ph-actions">
@@ -3557,7 +3642,7 @@
                 </div>
             </section>
 
-            <!-- ================= Log Onboarding template (full Scaffolder template) =================
+            <!-- ================= ELK Log Onboarding template (full Scaffolder template) =================
                  Replaces the manual flow: Confluence requirements page, a separate
                  agent-install request, then engineer-created Kafka topic, Logstash
                  pipeline, and indices. The form captures everything up front; the
@@ -3570,8 +3655,8 @@
                             <h1 class="ph-title">Onboard Application Logs</h1>
                             <p class="ph-sub">Ship host logs to the platform — Kafka topic, Logstash parsers, and indices are generated from this request. One engineer review, no Confluence page.</p>
                             <div class="ph-meta">
-                                <span class="ph-chip mono-chip">template:default/log-onboarding</span>
-                                <span class="ph-chip"><svg class="ic"><use href="#i-users"/></svg> acbc/observability</span>
+                                <span class="ph-chip mono-chip">template:default/elk-log-onboarding</span>
+                                <span class="ph-chip"><svg class="ic"><use href="#i-users"/></svg> ocbc/observability</span>
                             </div>
                         </div>
                         <div class="ph-actions">
@@ -3785,7 +3870,7 @@
                  about an asset — heartbeat, agents, log ingestion, alert
                  coverage, catalog hygiene — rolled into a score and a
                  certification level, with remediation deep links into the
-                 fixing service (Add Monitoring, Log Onboarding, Asset Registry). -->
+                 fixing service (Add Monitoring, ELK Log Onboarding, Asset Registry). -->
             <section class="view" id="view-healthcheck">
                 <header class="page-header">
                     <div class="ph-top">
@@ -3846,7 +3931,7 @@
                 </div>
             </section>
 
-            <!-- ================= Service Maintenance (alert suppression) =================
+            <!-- ================= Alert Suppression (maintenance windows) =================
                  Governed suppression: pick assets, define the window and scope,
                  attach the change reference — a checker approves before anything
                  is silenced, and suppression always auto-expires. -->
@@ -3855,11 +3940,11 @@
                     <div class="ph-top">
                         <div>
                             <div class="ph-eyebrow">Create &middot; Software Template</div>
-                            <h1 class="ph-title">Service Maintenance</h1>
+                            <h1 class="ph-title">Alert Suppression</h1>
                             <p class="ph-sub">Suppress alerts for a planned change window. Approval-gated, tied to a change record, and always auto-expiring — a window can never be forgotten open.</p>
                             <div class="ph-meta">
-                                <span class="ph-chip mono-chip">template:default/service-maintenance</span>
-                                <span class="ph-chip"><svg class="ic"><use href="#i-users"/></svg> acbc/observability</span>
+                                <span class="ph-chip mono-chip">template:default/alert-suppression</span>
+                                <span class="ph-chip"><svg class="ic"><use href="#i-users"/></svg> ocbc/observability</span>
                             </div>
                         </div>
                         <div class="ph-actions">
@@ -4002,6 +4087,606 @@
                 </div>
             </section>
 
+            <!-- ================= Install Agent (agent provisioning) =================
+                 The foundational service: nothing can be observed until the
+                 right agent is on the host. Hosts resolve from CMDB, the
+                 portal shows exactly which agents are present vs missing,
+                 and only the gaps are installed — via Ansible, after
+                 checker approval. Idempotent: already-installed agents are
+                 skipped, so re-requesting is always safe. -->
+            <section class="view" id="view-installagent">
+                <header class="page-header">
+                    <div class="ph-top">
+                        <div>
+                            <div class="ph-eyebrow">Create &middot; Software Template</div>
+                            <h1 class="ph-title">Install Agent</h1>
+                            <p class="ph-sub">Get the right agents onto your hosts — ELK Agent, DX UIM Robot, OTel Collector, AppDynamics. The portal knows what's already installed and installs only what's missing.</p>
+                            <div class="ph-meta">
+                                <span class="ph-chip mono-chip">template:default/install-agent</span>
+                                <span class="ph-chip"><svg class="ic"><use href="#i-users"/></svg> ocbc/observability</span>
+                            </div>
+                        </div>
+                        <div class="ph-actions">
+                            <button class="btn btn-ghost" onclick="switchView('home')"><svg class="ic ic-sm"><use href="#i-x"/></svg> Cancel</button>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="page-body">
+                    <div class="tpl-layout">
+                        <aside class="tpl-stepper" id="iaStepper">
+                            <div class="tpl-step active" data-step="1" onclick="iaStepClick(1)">
+                                <div class="step-circle">1</div>
+                                <div class="tpl-step-text">
+                                    <div class="step-label">Identify Hosts</div>
+                                    <div class="tpl-step-desc">Agent status resolves from CMDB</div>
+                                </div>
+                            </div>
+                            <div class="tpl-step" data-step="2" onclick="iaStepClick(2)">
+                                <div class="step-circle">2</div>
+                                <div class="tpl-step-text">
+                                    <div class="step-label">Select Agents</div>
+                                    <div class="tpl-step-desc">Only the gaps get installed</div>
+                                </div>
+                            </div>
+                            <div class="tpl-step" data-step="3" onclick="iaStepClick(3)">
+                                <div class="step-circle">3</div>
+                                <div class="tpl-step-text">
+                                    <div class="step-label">Review</div>
+                                    <div class="tpl-step-desc">Confirm and submit</div>
+                                </div>
+                            </div>
+                        </aside>
+
+                        <div class="tpl-panes">
+                            <!-- IA PANE 1: Hosts -->
+                            <div class="wiz-pane active" data-pane="1">
+                                <div class="prefill-hint">
+                                    <svg class="ic"><use href="#i-bulb"/></svg>
+                                    <span>New to this? Load a sample request to see how it works.</span>
+                                    <button type="button" onclick="iaLoadSample()">Load Sample</button>
+                                </div>
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-server"/></svg></span>
+                                        <span class="form-section-title">Identify Hosts</span>
+                                        <span class="form-section-desc">Hostnames only — OS, environment, and current agent state resolve from CMDB. Agents apply to hosts; microservices ship via the platform collectors.</span>
+                                    </div>
+                                    <div class="form-group compact full-width">
+                                        <label class="form-label required">Hosts</label>
+                                        <div class="host-rows" id="iaHostRows"></div>
+                                        <button type="button" class="btn-add-keyword" onclick="iaAddHost()">
+                                            <svg class="ic"><use href="#i-plus"/></svg> Add Another Host
+                                        </button>
+                                    </div>
+                                    <div id="iaHostNote"></div>
+                                </div>
+                            </div>
+
+                            <!-- IA PANE 2: Agents -->
+                            <div class="wiz-pane" data-pane="2">
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-layers"/></svg></span>
+                                        <span class="form-section-title">Select Agents</span>
+                                        <span class="form-section-desc">Pre-selected from the gaps found on your hosts — already-installed agents are skipped automatically</span>
+                                    </div>
+                                    <div class="form-group compact full-width">
+                                        <label class="form-label required">Agents to install</label>
+                                        <div class="chip-select" id="iaAgentSelect"></div>
+                                    </div>
+                                    <div class="form-group compact full-width" style="margin-top:14px;">
+                                        <label class="form-label">Current state per host</label>
+                                        <div class="card" style="overflow-x:auto;">
+                                            <table id="iaMatrix"></table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-clipboard"/></svg></span>
+                                        <span class="form-section-title">Change Reference</span>
+                                        <span class="form-section-desc">Required when any target host is PROD</span>
+                                    </div>
+                                    <div class="form-group compact full-width">
+                                        <label class="form-label" id="iaChgLabel">Change Record (HPSM)</label>
+                                        <input type="text" class="form-input" id="iaChg" placeholder="e.g. CHG0041560">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- IA PANE 3: Review -->
+                            <div class="wiz-pane" data-pane="3">
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-check-circle"/></svg></span>
+                                        <span class="form-section-title">Review</span>
+                                        <span class="form-section-desc">A checker approves before anything is installed</span>
+                                    </div>
+                                    <div class="review-grid" id="iaReviewGrid"></div>
+                                    <div class="fleet-note info" style="margin-top:14px;"><svg class="ic"><use href="#i-bulb"/></svg> Installation runs via <b>Ansible</b> after approval and is <b>idempotent</b> — hosts that already have an agent are skipped, so re-requesting is always safe. Once agents are on, the natural next step is <b>Add Monitoring</b> or <b>ELK Log Onboarding</b>.</div>
+                                </div>
+                            </div>
+
+                            <div class="tpl-footer">
+                                <button class="btn btn-secondary" id="iaBackBtn" onclick="iaBack()">Cancel</button>
+                                <button class="btn btn-primary" id="iaNextBtn" onclick="iaNext()">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= Request Log Access (ELK log access) =================
+                 Self-service access-as-code, mainly for ELK logs: the
+                 requester picks a Kibana space (indices resolve from it),
+                 the level and duration, and their reporting manager
+                 approves — only then is the grant pushed to main in the
+                 access repo, where Ansible applies it to Elasticsearch
+                 role mappings and Kibana. Access is time-bound and
+                 auto-expires; extending is a new request. -->
+            <section class="view" id="view-requestaccess">
+                <header class="page-header">
+                    <div class="ph-top">
+                        <div>
+                            <div class="ph-eyebrow">Create &middot; Software Template</div>
+                            <h1 class="ph-title">Request Log Access</h1>
+                            <p class="ph-sub">Self-service ELK log access — browse the indices, see what each one holds, check what you already have, and request <b>read-only</b> access. Your reporting manager approves; the grant is pushed to main and applied automatically. Time-bound, always.</p>
+                            <div class="ph-meta">
+                                <span class="ph-chip mono-chip">template:default/request-log-access</span>
+                                <span class="ph-chip"><svg class="ic"><use href="#i-users"/></svg> ocbc/observability</span>
+                            </div>
+                        </div>
+                        <div class="ph-actions">
+                            <button class="btn btn-ghost" onclick="switchView('home')"><svg class="ic ic-sm"><use href="#i-x"/></svg> Cancel</button>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="page-body">
+                    <div class="tpl-layout">
+                        <aside class="tpl-stepper" id="raStepper">
+                            <div class="tpl-step active" data-step="1" onclick="raStepClick(1)">
+                                <div class="step-circle">1</div>
+                                <div class="tpl-step-text">
+                                    <div class="step-label">Select Index</div>
+                                    <div class="tpl-step-desc">What each index holds — and what you already have</div>
+                                </div>
+                            </div>
+                            <div class="tpl-step" data-step="2" onclick="raStepClick(2)">
+                                <div class="step-circle">2</div>
+                                <div class="tpl-step-text">
+                                    <div class="step-label">Duration</div>
+                                    <div class="tpl-step-desc">Read-only, time-bound</div>
+                                </div>
+                            </div>
+                            <div class="tpl-step" data-step="3" onclick="raStepClick(3)">
+                                <div class="step-circle">3</div>
+                                <div class="tpl-step-text">
+                                    <div class="step-label">Approval &amp; Review</div>
+                                    <div class="tpl-step-desc">Manager sign-off, then main</div>
+                                </div>
+                            </div>
+                        </aside>
+
+                        <div class="tpl-panes">
+                            <!-- RA PANE 1: Scope -->
+                            <div class="wiz-pane active" data-pane="1">
+                                <div class="prefill-hint">
+                                    <svg class="ic"><use href="#i-bulb"/></svg>
+                                    <span>New to this? Load a sample request to see how it works.</span>
+                                    <button type="button" onclick="raLoadSample()">Load Sample</button>
+                                </div>
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-shield"/></svg></span>
+                                        <span class="form-section-title">Your current access</span>
+                                        <span class="form-section-desc">The simple check first — what you can already read, and until when</span>
+                                    </div>
+                                    <div id="raMyAccess"></div>
+                                </div>
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-file"/></svg></span>
+                                        <span class="form-section-title">Select Index</span>
+                                        <span class="form-section-desc">All access is <b>read-only</b> — pick the index; the function column tells you what's in it</span>
+                                    </div>
+                                    <div class="card" style="overflow-x:auto;">
+                                        <table id="raIndexList"></table>
+                                    </div>
+                                    <div id="raIndexNote"></div>
+                                    <div class="fleet-note info" style="margin-top:12px;"><svg class="ic"><use href="#i-users"/></svg> Requesting for <b>yourself</b> — the signed-in identity is the grantee. Access for someone else must be raised by that person; grants are personal, never shared.</div>
+                                </div>
+                            </div>
+
+                            <!-- RA PANE 2: Duration -->
+                            <div class="wiz-pane" data-pane="2">
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-gauge"/></svg></span>
+                                        <span class="form-section-title">Duration</span>
+                                        <span class="form-section-desc">Access auto-expires — extending is a new request, never a standing grant</span>
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="form-group compact">
+                                            <label class="form-label required">Valid for</label>
+                                            <select class="form-select" id="raDuration">
+                                                <option value="30">30 days</option>
+                                                <option value="90" selected>90 days</option>
+                                                <option value="180">180 days (maximum)</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group compact">
+                                            <label class="form-label required">Business Justification</label>
+                                            <input type="text" class="form-input" id="raReason" placeholder="e.g. L2 support for PAYMENTS PROD incidents">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- RA PANE 3: Approval & review -->
+                            <div class="wiz-pane" data-pane="3">
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-users"/></svg></span>
+                                        <span class="form-section-title">Select Approver</span>
+                                        <span class="form-section-desc">Routes to your reporting manager for sign-off</span>
+                                    </div>
+                                    <div class="form-group compact full-width">
+                                        <label class="form-label required">Reporting Manager</label>
+                                        <input type="text" class="form-input" id="raApprover" placeholder="e.g. lead-sre (resolved via Active Directory)">
+                                    </div>
+                                </div>
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-check-circle"/></svg></span>
+                                        <span class="form-section-title">Review</span>
+                                        <span class="form-section-desc">Nothing is granted until your manager approves</span>
+                                    </div>
+                                    <div class="review-grid" id="raReviewGrid"></div>
+                                    <div class="fleet-note info" style="margin-top:14px;"><svg class="ic"><use href="#i-bulb"/></svg> On approval the grant is <b>pushed to main</b> in the <span class="mono">elk-access</span> repo — the merge <i>is</i> the approval — and <b>Ansible applies it</b> to Elasticsearch role mappings and the Kibana space. Git records who asked, who approved, and until when. Access <b>auto-expires</b> at the end of the duration.</div>
+                                </div>
+                            </div>
+
+                            <div class="tpl-footer">
+                                <button class="btn btn-secondary" id="raBackBtn" onclick="raBack()">Cancel</button>
+                                <button class="btn btn-primary" id="raNextBtn" onclick="raNext()">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= Dashboard Inventory (TechDocs reference page) =================
+                 Not a wizard — a living reference page: every dashboard,
+                 what it shows, and a deep link to Grafana (metrics) or
+                 ELK/Kibana (logs). Generated from asset-registry
+                 registrations (catalog-info.yaml annotations), so it can't
+                 drift: register a dashboard and it appears here. -->
+            <section class="view" id="view-dashinventory">
+                <header class="page-header">
+                    <div class="ph-top">
+                        <div>
+                            <div class="ph-eyebrow">TechDocs &middot; Reference</div>
+                            <h1 class="ph-title">Dashboard Inventory</h1>
+                            <p class="ph-sub">Every dashboard in one place — what it shows and where it lives. Grafana for metrics, ELK (Kibana) for logs. Generated from the asset registry, so it is always current.</p>
+                            <div class="ph-meta">
+                                <span class="ph-chip mono-chip">techdocs:default/dashboard-inventory</span>
+                                <span class="ph-chip"><svg class="ic"><use href="#i-users"/></svg> ocbc/observability</span>
+                            </div>
+                        </div>
+                        <div class="ph-actions">
+                            <button class="btn btn-ghost" onclick="switchView('home')"><svg class="ic ic-sm"><use href="#i-x"/></svg> Close</button>
+                        </div>
+                    </div>
+                </header>
+                <div class="page-body">
+                    <div class="board">
+                        <div>
+                            <div class="section-head">
+                                <div class="section-title" id="diCount">Dashboards</div>
+                                <div class="chip-select" id="diFilter">
+                                    <div class="chip-option selected" data-value="all" onclick="diSetFilter('all', this)">All</div>
+                                    <div class="chip-option" data-value="Grafana" onclick="diSetFilter('Grafana', this)">Grafana</div>
+                                    <div class="chip-option" data-value="ELK" onclick="diSetFilter('ELK', this)">ELK</div>
+                                </div>
+                            </div>
+                            <div class="card" style="overflow-x:auto;">
+                                <table id="diTable"></table>
+                            </div>
+                            <div class="fleet-note info" style="margin-top:14px;"><svg class="ic"><use href="#i-bulb"/></svg> This page is <b>generated from the asset registry</b> — register your dashboard via <a class="wiz-route-cta" onclick="openRegisterAsset('dashboard')">Register Asset</a> and it appears here automatically, with its owner and description. Nothing is maintained by hand, so the inventory cannot drift.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= Reports (reconciliation) =================
+                 The reality-drift surface (second-brain-use-cases.md §3):
+                 what the CMDB says should be observable versus what the
+                 platforms actually report. Every gap row carries the
+                 service action that closes it. -->
+            <section class="view" id="view-reports">
+                <header class="page-header">
+                    <div class="ph-top">
+                        <div>
+                            <div class="ph-eyebrow">Self-service &middot; Reports</div>
+                            <h1 class="ph-title">Reconciliation Reports</h1>
+                            <p class="ph-sub">What the CMDB says should be observable, versus what the platforms actually report — every gap and drift with the action that closes it.</p>
+                            <div class="ph-meta">
+                                <span class="ph-chip"><svg class="ic"><use href="#i-refresh"/></svg> Reconciled daily · last run today 06:00</span>
+                            </div>
+                        </div>
+                        <div class="ph-actions">
+                            <button class="btn btn-ghost" onclick="switchView('home')"><svg class="ic ic-sm"><use href="#i-x"/></svg> Close</button>
+                        </div>
+                    </div>
+                </header>
+                <div class="page-body">
+                    <div class="board">
+                        <div class="pick-grid">
+                            <div class="pick-card selected" id="rpTabLogs" onclick="rpShow('logs', this)">
+                                <div class="pick-check"><svg class="ic ic-sm"><use href="#i-check-circle"/></svg></div>
+                                <div class="pick-icon"><svg class="ic"><use href="#i-download"/></svg></div>
+                                <div class="pick-title">Log Reconciliation</div>
+                                <div class="pick-desc">CMDB &times; ELK — assets whose logs are missing, stale, or stopped.</div>
+                                <div class="pick-tag">source: elk-stack indices</div>
+                            </div>
+                            <div class="pick-card" id="rpTabMon" onclick="rpShow('mon', this)">
+                                <div class="pick-check"><svg class="ic ic-sm"><use href="#i-check-circle"/></svg></div>
+                                <div class="pick-icon"><svg class="ic"><use href="#i-server"/></svg></div>
+                                <div class="pick-title">Monitoring Reconciliation</div>
+                                <div class="pick-desc">CMDB &times; DX UIM &times; SolarWinds — assets unmonitored or drifted.</div>
+                                <div class="pick-tag">sources: dxuim-monitoring · solarwinds-npm</div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 20px 24px;">
+                            <div class="hc-result-head">
+                                <div class="section-title" id="rpTitle"></div>
+                                <div id="rpSummary" style="display:flex; gap:6px; flex-wrap:wrap;"></div>
+                            </div>
+                            <div class="rp-meta" id="rpMeta"></div>
+                            <div style="overflow-x:auto;">
+                                <table class="rp-table">
+                                    <thead id="rpHead"></thead>
+                                    <tbody id="rpBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= Data Dictionary (ELK data reference) =================
+                 The other half of the reference pair (with Dashboard
+                 Inventory): what lives in ELK. Every index pattern, its
+                 signal type — logs, metrics, traces, statistical — its
+                 function, source, and retention. OTel-shipped streams are
+                 tagged. Generated from the index templates and data-stream
+                 config in git, so it cannot drift. -->
+            <section class="view" id="view-datadict">
+                <header class="page-header">
+                    <div class="ph-top">
+                        <div>
+                            <div class="ph-eyebrow">TechDocs &middot; Reference</div>
+                            <h1 class="ph-title">Data Dictionary — ELK</h1>
+                            <p class="ph-sub">What lives in the platform: every index, its signal type — logs, metrics, traces, statistical — what it holds, where it comes from, and how long it stays. OTel-shipped streams are tagged.</p>
+                            <div class="ph-meta">
+                                <span class="ph-chip mono-chip">techdocs:default/elk-data-dictionary</span>
+                                <span class="ph-chip"><svg class="ic"><use href="#i-users"/></svg> ocbc/observability</span>
+                            </div>
+                        </div>
+                        <div class="ph-actions">
+                            <button class="btn btn-ghost" onclick="switchView('home')"><svg class="ic ic-sm"><use href="#i-x"/></svg> Close</button>
+                        </div>
+                    </div>
+                </header>
+                <div class="page-body">
+                    <div class="board">
+                        <div>
+                            <div class="section-head">
+                                <div class="section-title" id="ddCount">Indices</div>
+                                <div class="chip-select" id="ddFilter">
+                                    <div class="chip-option selected" data-value="all" onclick="ddSetFilter('all', this)">All</div>
+                                    <div class="chip-option" data-value="Logs" onclick="ddSetFilter('Logs', this)">Logs</div>
+                                    <div class="chip-option" data-value="Metrics" onclick="ddSetFilter('Metrics', this)">Metrics</div>
+                                    <div class="chip-option" data-value="Traces" onclick="ddSetFilter('Traces', this)">Traces</div>
+                                    <div class="chip-option" data-value="otel" onclick="ddSetFilter('otel', this)">OTel</div>
+                                    <div class="chip-option" data-value="Statistical" onclick="ddSetFilter('Statistical', this)">Statistical</div>
+                                </div>
+                            </div>
+                            <div class="card" style="overflow-x:auto;">
+                                <table id="ddTable"></table>
+                            </div>
+                            <div class="fleet-note info" style="margin-top:14px;"><svg class="ic"><use href="#i-bulb"/></svg> Generated from the <b>index templates and data-stream config in git</b> — the dictionary cannot drift from what's actually in the cluster. Need to read one of these? Log indices are self-service via <a class="wiz-route-cta" onclick="openRequestAccess()">Request Log Access</a>; the dashboards built on them are in the <a class="wiz-route-cta" onclick="openDashInventory()">Dashboard Inventory</a>.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= Register Asset (ad-hoc registrations, platform-owner triage) =================
+                 The exceptions path: most assets arrive via CMDB discovery
+                 or the Scaffolder templates; anything else — a dashboard
+                 link, a new server not yet in CMDB — is registered here
+                 ad hoc. Every registration is triaged by the platform
+                 owners before it enters the registry; approved dashboards
+                 flow straight into the Dashboard Inventory. -->
+            <section class="view" id="view-registerasset">
+                <header class="page-header">
+                    <div class="ph-top">
+                        <div>
+                            <div class="ph-eyebrow">Create &middot; Software Template</div>
+                            <h1 class="ph-title">Register Asset</h1>
+                            <p class="ph-sub">Ad-hoc registrations — a dashboard link, a new server for onboarding — for anything not discovered automatically. Platform owners triage every registration; approved dashboards appear in the Dashboard Inventory.</p>
+                            <div class="ph-meta">
+                                <span class="ph-chip mono-chip">template:default/register-asset</span>
+                                <span class="ph-chip"><svg class="ic"><use href="#i-users"/></svg> ocbc/observability</span>
+                            </div>
+                        </div>
+                        <div class="ph-actions">
+                            <button class="btn btn-ghost" onclick="switchView('home')"><svg class="ic ic-sm"><use href="#i-x"/></svg> Cancel</button>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="page-body">
+                    <div class="tpl-layout">
+                        <aside class="tpl-stepper" id="rgStepper">
+                            <div class="tpl-step active" data-step="1" onclick="rgStepClick(1)">
+                                <div class="step-circle">1</div>
+                                <div class="tpl-step-text">
+                                    <div class="step-label">Asset Type</div>
+                                    <div class="tpl-step-desc">Dashboard link or new server</div>
+                                </div>
+                            </div>
+                            <div class="tpl-step" data-step="2" onclick="rgStepClick(2)">
+                                <div class="step-circle">2</div>
+                                <div class="tpl-step-text">
+                                    <div class="step-label">Details</div>
+                                    <div class="tpl-step-desc">Owner and description included</div>
+                                </div>
+                            </div>
+                            <div class="tpl-step" data-step="3" onclick="rgStepClick(3)">
+                                <div class="step-circle">3</div>
+                                <div class="tpl-step-text">
+                                    <div class="step-label">Review</div>
+                                    <div class="tpl-step-desc">Submit for triage</div>
+                                </div>
+                            </div>
+                        </aside>
+
+                        <div class="tpl-panes">
+                            <!-- RG PANE 1: Type -->
+                            <div class="wiz-pane active" data-pane="1">
+                                <div class="prefill-hint">
+                                    <svg class="ic"><use href="#i-bulb"/></svg>
+                                    <span>New to this? Load a sample registration to see how it works.</span>
+                                    <button type="button" onclick="rgLoadSample()">Load Sample</button>
+                                </div>
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-package"/></svg></span>
+                                        <span class="form-section-title">What are you registering?</span>
+                                        <span class="form-section-desc">The exceptions path — for anything not discovered via CMDB or created by a template</span>
+                                    </div>
+                                    <div class="pick-grid">
+                                        <div class="pick-card" data-value="dashboard" onclick="rgSelectType('dashboard', this)">
+                                            <div class="pick-check"><svg class="ic ic-sm"><use href="#i-check-circle"/></svg></div>
+                                            <div class="pick-icon"><svg class="ic"><use href="#i-book"/></svg></div>
+                                            <div class="pick-title">Dashboard</div>
+                                            <div class="pick-desc">A Grafana or ELK dashboard link — appears in the Dashboard Inventory once approved.</div>
+                                            <div class="pick-tag">feeds dashboard-inventory</div>
+                                        </div>
+                                        <div class="pick-card" data-value="server" onclick="rgSelectType('server', this)">
+                                            <div class="pick-check"><svg class="ic ic-sm"><use href="#i-check-circle"/></svg></div>
+                                            <div class="pick-icon"><svg class="ic"><use href="#i-server"/></svg></div>
+                                            <div class="pick-title">Server</div>
+                                            <div class="pick-desc">A new host not yet in the CMDB — registering it unlocks Install Agent and Add Monitoring.</div>
+                                            <div class="pick-tag">ad-hoc onboarding</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- RG PANE 2: Details -->
+                            <div class="wiz-pane" data-pane="2">
+                                <div class="form-section" id="rgFieldsDashboard">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-book"/></svg></span>
+                                        <span class="form-section-title">Dashboard Details</span>
+                                        <span class="form-section-desc">The description becomes the "what it shows" column in the inventory — write it for the next reader</span>
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="form-group compact">
+                                            <label class="form-label required">Dashboard Name</label>
+                                            <input type="text" class="form-input" id="rgDashName" placeholder="e.g. payments-slo-drilldown">
+                                        </div>
+                                        <div class="form-group compact">
+                                            <label class="form-label required">Platform</label>
+                                            <div class="chip-select" id="rgPlatformSelect">
+                                                <div class="chip-option selected" data-value="Grafana" onclick="rgSetPlatform('Grafana', this)">Grafana · metrics</div>
+                                                <div class="chip-option" data-value="ELK" onclick="rgSetPlatform('ELK', this)">ELK · logs</div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group compact full-width">
+                                            <label class="form-label required">Dashboard URL</label>
+                                            <input type="text" class="form-input" id="rgDashUrl" placeholder="e.g. https://grafana.ocbc.internal/d/pay-slo-dd">
+                                        </div>
+                                        <div class="form-group compact full-width">
+                                            <label class="form-label required">What it shows</label>
+                                            <input type="text" class="form-input" id="rgDashDesc" placeholder="e.g. Per-corridor SLO drilldown for fast transfer — latency and error budget">
+                                        </div>
+                                        <div class="form-group compact">
+                                            <label class="form-label required">Owning App / Team</label>
+                                            <input type="text" class="form-input" id="rgDashOwner" placeholder="e.g. PAYMENTS · payments-sg">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-section" id="rgFieldsServer" style="display:none;">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-server"/></svg></span>
+                                        <span class="form-section-title">Server Details</span>
+                                        <span class="form-section-desc">For hosts the CMDB doesn't know yet — registration is what makes every other service available</span>
+                                    </div>
+                                    <div class="form-grid">
+                                        <div class="form-group compact">
+                                            <label class="form-label required">Hostname</label>
+                                            <input type="text" class="form-input" id="rgSrvHost" placeholder="e.g. sgapp0533">
+                                        </div>
+                                        <div class="form-group compact">
+                                            <label class="form-label required">OS</label>
+                                            <select class="form-select" id="rgSrvOs">
+                                                <option value="Linux">Linux</option>
+                                                <option value="Windows">Windows</option>
+                                                <option value="AIX">AIX</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group compact">
+                                            <label class="form-label required">Environment</label>
+                                            <select class="form-select" id="rgSrvEnv">
+                                                <option value="">Select environment</option>
+                                                <option value="SIT">SIT</option>
+                                                <option value="UAT">UAT</option>
+                                                <option value="PROD">Production</option>
+                                                <option value="DR">DR</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group compact">
+                                            <label class="form-label required">Application</label>
+                                            <input type="text" class="form-input" id="rgSrvApp" placeholder="e.g. PAYMENTS">
+                                        </div>
+                                        <div class="form-group compact full-width">
+                                            <label class="form-label required">Context for triage</label>
+                                            <input type="text" class="form-input" id="rgSrvWhy" placeholder="e.g. New settlement batch host — go-live 15 Aug, needs agents + monitoring">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- RG PANE 3: Review -->
+                            <div class="wiz-pane" data-pane="3">
+                                <div class="form-section">
+                                    <div class="form-section-header">
+                                        <span class="form-section-icon"><svg class="ic"><use href="#i-check-circle"/></svg></span>
+                                        <span class="form-section-title">Review</span>
+                                        <span class="form-section-desc">Registrations are the exceptions queue — a platform owner triages before anything enters the registry</span>
+                                    </div>
+                                    <div class="review-grid" id="rgReviewGrid"></div>
+                                    <div class="fleet-note info" style="margin-top:14px;" id="rgReviewNote"></div>
+                                </div>
+                            </div>
+
+                            <div class="tpl-footer">
+                                <button class="btn btn-secondary" id="rgBackBtn" onclick="rgBack()">Cancel</button>
+                                <button class="btn btn-primary" id="rgNextBtn" onclick="rgNext()">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- ================= Observability Brain — full view =================
                  The same conversation as the bubble, given a whole page: the
                  chat body node is adopted here on expand and returned to the
@@ -4064,13 +4749,13 @@
                 </div>
             </section>
 
-            <!-- ================= Log Onboarding progress tracker ================= -->
+            <!-- ================= ELK Log Onboarding progress tracker ================= -->
             <section class="view" id="view-logprogress">
                 <header class="page-header">
                     <div class="ph-top">
                         <div>
                             <div class="ph-eyebrow">Self-service &middot; Request</div>
-                            <h1 class="ph-title" id="loReqTitle">Log Onboarding</h1>
+                            <h1 class="ph-title" id="loReqTitle">ELK Log Onboarding</h1>
                             <p class="ph-sub" id="loReqSub"></p>
                             <div class="ph-meta">
                                 <span class="ph-chip" id="loReqStatus"><span class="dot-ok"></span> In progress</span>
@@ -4297,10 +4982,15 @@
         // CMDB attributes each host resolves to — they're never typed by
         // the requester, only verified. HPSM is deliberately NOT here:
         // it's an attribute of the alert (infra vs app), not of the host.
+        // `agents` is the per-host install state read by Install Agent —
+        // additive detail; `agent`/`otel` above it stay the routing flags.
         const HOST_REGISTRY = {
-            'sgapp0231': { otel: true, agent: true, os: 'Linux', env: 'PROD', app: 'PAYMENTS' },       // migrated — routes to ELK
-            'sgapp0410': { otel: false, agent: false, os: 'Linux', env: 'PROD', app: 'MIDDLEWARE' },   // not yet migrated — still DX UIM
-            'ulaeiapos0a': { otel: false, agent: false, os: 'Linux', env: 'UAT', app: 'MIDDLEWARE' },  // real robot in dxuim-config/UAT — still DX UIM
+            'sgapp0231': { otel: true, agent: true, os: 'Linux', env: 'PROD', app: 'PAYMENTS',
+                agents: { elk: true, dxuim: false, otel: true, appd: false } },                        // migrated — routes to ELK
+            'sgapp0410': { otel: false, agent: false, os: 'Linux', env: 'PROD', app: 'MIDDLEWARE',
+                agents: { elk: false, dxuim: true, otel: false, appd: false } },                       // not yet migrated — still DX UIM
+            'ulaeiapos0a': { otel: false, agent: false, os: 'Linux', env: 'UAT', app: 'MIDDLEWARE',
+                agents: { elk: false, dxuim: true, otel: false, appd: false } },                       // real robot in dxuim-config/UAT — still DX UIM
         };
 
         // Demo stand-in for a live Asset Registry / Bitbucket "existing
@@ -4556,7 +5246,7 @@
             const entry = HOST_REGISTRY[hostname.toLowerCase()];
             if (!entry) {
                 line.className = 'host-cmdb missing';
-                line.innerHTML = `<svg class="ic"><use href="#i-package"/></svg> Not in CMDB — <a class="wiz-route-cta" style="margin-left:4px;" onclick="comingSoon('Asset Registry')">register this asset &rarr;</a>`;
+                line.innerHTML = `<svg class="ic"><use href="#i-package"/></svg> Not in CMDB — <a class="wiz-route-cta" style="margin-left:4px;" onclick="openRegisterAsset('server')">register this asset &rarr;</a>`;
                 return;
             }
             line.className = 'host-cmdb resolved';
@@ -4687,7 +5377,7 @@
                     banner.innerHTML =
                         `<svg class="ic"><use href="#i-package"/></svg> ${hostLabel} ${plural ? "aren't" : "isn't"} registered — defaulting to ` +
                         `<b>DX UIM</b> <span class="mono">dxuim-monitoring</span> as a <b>${catLabel}</b> alert` +
-                        (plural ? '' : `<a class="wiz-route-cta" onclick="comingSoon('Asset Registry')">Register this host &rarr;</a>`);
+                        (plural ? '' : `<a class="wiz-route-cta" onclick="openRegisterAsset('server')">Register this host &rarr;</a>`);
                 }
                 return;
             }
@@ -5144,7 +5834,7 @@
             if (catCard && !catCard.classList.contains('disabled')) catCard.classList.add('selected');
         }
 
-        // ---------- Log Onboarding (template + progress tracker) ----------
+        // ---------- ELK Log Onboarding (template + progress tracker) ----------
         // Replaces six manual touchpoints (Confluence page, agent-install
         // request, engineer-created topic/pipeline/indices) with one form,
         // one engineer review, and automation for everything derivable.
@@ -5245,7 +5935,7 @@
             const entry = HOST_REGISTRY[hostname.toLowerCase()];
             if (!entry) {
                 line.className = 'host-cmdb missing';
-                line.innerHTML = `<svg class="ic"><use href="#i-package"/></svg> Not in CMDB — <a class="wiz-route-cta" style="margin-left:4px;" onclick="comingSoon('Asset Registry')">register this asset &rarr;</a>`;
+                line.innerHTML = `<svg class="ic"><use href="#i-package"/></svg> Not in CMDB — <a class="wiz-route-cta" style="margin-left:4px;" onclick="openRegisterAsset('server')">register this asset &rarr;</a>`;
                 return;
             }
             line.className = 'host-cmdb resolved';
@@ -5426,13 +6116,13 @@
             loRun.stages = loBuildStages(req).map(s => ({ ...s, status: 'pending' }));
             if (loRun.timer) clearTimeout(loRun.timer);
 
-            document.getElementById('loReqTitle').textContent = `Log Onboarding — ${req.id}`;
+            document.getElementById('loReqTitle').textContent = `ELK Log Onboarding — ${req.id}`;
             document.getElementById('loReqSub').textContent =
                 `${req.hosts.length} host${req.hosts.length > 1 ? 's' : ''} · ${req.apps.join(', ') || '—'} · ${req.envs[0] || '—'} · submitted just now`;
             addMyRequest({
                 id: req.id,
                 kind: 'logonboard',
-                title: `Log Onboarding — ${req.apps.join(', ') || '—'}`,
+                title: `ELK Log Onboarding — ${req.apps.join(', ') || '—'}`,
                 meta: `${req.hosts.length} host${req.hosts.length > 1 ? 's' : ''} · ${req.paths.length} log file${req.paths.length > 1 ? 's' : ''}`,
                 status: 'in-progress',
                 statusNote: 'Automation running — ELK Engineer review is the one manual gate',
@@ -5514,7 +6204,7 @@
             `).join('');
         }
 
-        // ---------- Service Maintenance (alert suppression) ----------
+        // ---------- Alert Suppression (maintenance windows) ----------
         // Suppression changes alerting state, so unlike the diagnostics it
         // is maker-checker governed: submit -> pending approval in My
         // Actions. Windows always auto-expire and always tie to a change
@@ -5607,7 +6297,7 @@
             if (resolved === null) { line.className = 'host-cmdb'; line.innerHTML = ''; return; }
             if (resolved === undefined) {
                 line.className = 'host-cmdb missing';
-                line.innerHTML = `<svg class="ic"><use href="#i-package"/></svg> Not in the observability catalog — <a class="wiz-route-cta" style="margin-left:4px;" onclick="comingSoon('Asset Registry')">register this asset &rarr;</a>`;
+                line.innerHTML = `<svg class="ic"><use href="#i-package"/></svg> Not in the observability catalog — <a class="wiz-route-cta" style="margin-left:4px;" onclick="openRegisterAsset('server')">register this asset &rarr;</a>`;
                 return;
             }
             line.className = 'host-cmdb resolved';
@@ -5674,10 +6364,696 @@
             addMyRequest({
                 id: 'MW-' + (1000 + Math.floor(Math.random() * 9000)),
                 kind: 'maintenance',
-                title: 'Service Maintenance — ' + mtScopeLabel(),
+                title: 'Alert Suppression — ' + mtScopeLabel(),
                 meta: `${keys.join(', ')} · ${mtWindowLabel().replace('&rarr;', '→')} · ${document.getElementById('mtChg').value.trim()}`,
                 status: 'pending',
                 statusNote: 'Waiting for checker approval — nothing is suppressed until approved',
+            });
+            switchView('myactions');
+        }
+
+        // ---------- Install Agent (agent provisioning) ----------
+        // The foundational service: agent state resolves from CMDB
+        // (HOST_REGISTRY.agents), the requester picks from the gaps, and
+        // only missing agents install — via Ansible, post-approval,
+        // idempotent. Same maker-checker path as every other service.
+        const IA_AGENTS = {
+            elk:   { label: 'ELK Agent',         desc: 'Ships host logs to the ELK stack' },
+            dxuim: { label: 'DX UIM Robot',      desc: 'Infra monitoring — process, CMD & log probes' },
+            otel:  { label: 'OTel Collector',    desc: 'Metrics & traces on the OTel path' },
+            appd:  { label: 'AppDynamics Agent', desc: 'APM instrumentation' },
+        };
+
+        let iaState = { step: 1, hosts: [''], selected: [] };
+
+        function openInstallAgent() {
+            iaState = { step: 1, hosts: [''], selected: [] };
+            document.getElementById('iaChg').value = '';
+            iaRenderRows();
+            iaGoStep(1);
+            switchView('installagent');
+        }
+
+        function iaLoadSample() {
+            iaState.hosts = ['sgapp0410', 'ulaeiapos0a'];
+            iaRenderRows();
+        }
+
+        function iaGoStep(step) {
+            iaState.step = step;
+            document.querySelectorAll('#view-installagent .wiz-pane').forEach(p => p.classList.toggle('active', Number(p.dataset.pane) === step));
+            document.querySelectorAll('#iaStepper .tpl-step').forEach(s => {
+                const n = Number(s.dataset.step);
+                s.classList.toggle('active', n === step);
+                s.classList.toggle('done', n < step);
+            });
+            if (step === 2) { iaRenderAgentSelect(); iaRenderMatrix(); iaUpdateChgLabel(); }
+            if (step === 3) iaRenderReview();
+            document.getElementById('iaBackBtn').textContent = step === 1 ? 'Cancel' : 'Back';
+            document.getElementById('iaNextBtn').textContent = step === 3 ? 'Submit for Approval' : 'Next';
+            document.querySelector('#view-installagent .page-body').scrollTop = 0;
+        }
+
+        function iaStepClick(step) { if (step < iaState.step) iaGoStep(step); }
+
+        function iaBack() {
+            if (iaState.step === 1) { switchView('home'); return; }
+            iaGoStep(iaState.step - 1);
+        }
+
+        function iaResolvedHosts() {
+            return [...new Set(iaState.hosts.map(h => h.trim().toLowerCase()).filter(h => HOST_REGISTRY[h]))];
+        }
+
+        function iaHostsNeedChg() {
+            return iaResolvedHosts().some(h => HOST_REGISTRY[h].env === 'PROD');
+        }
+
+        // Every agent any resolved host is missing — the recommended set.
+        function iaMissingAgents() {
+            const missing = new Set();
+            iaResolvedHosts().forEach(h => {
+                const state = HOST_REGISTRY[h].agents || {};
+                Object.keys(IA_AGENTS).forEach(a => { if (!state[a]) missing.add(a); });
+            });
+            return [...missing];
+        }
+
+        function iaNext() {
+            if (iaState.step === 1) {
+                if (!iaResolvedHosts().length) { alert('Add at least one host known to the CMDB.'); return; }
+                iaState.selected = iaMissingAgents();   // pre-select the gaps
+                iaGoStep(2);
+                return;
+            }
+            if (iaState.step === 2) {
+                if (!iaState.selected.length) { alert('Select at least one agent to install.'); return; }
+                if (iaHostsNeedChg() && !document.getElementById('iaChg').value.trim()) {
+                    alert('A change record (HPSM CHG number) is required — at least one target host is PROD.');
+                    return;
+                }
+                iaGoStep(3);
+                return;
+            }
+            iaSubmit();
+        }
+
+        function iaRenderRows() {
+            if (!iaState.hosts.length) iaState.hosts = [''];
+            document.getElementById('iaHostRows').innerHTML = iaState.hosts.map((h, i) => `
+                <div class="host-item">
+                    <div class="host-row">
+                        <input type="text" class="form-input" value="${h}" placeholder="e.g. sgapp0410" oninput="iaUpdateHost(${i}, this.value)">
+                        <button type="button" class="keyword-remove" onclick="iaRemoveHost(${i})" title="Remove host" ${iaState.hosts.length <= 1 ? 'style="visibility:hidden;"' : ''}>&times;</button>
+                    </div>
+                    <div class="host-cmdb" id="iaCmdb${i}"></div>
+                </div>
+            `).join('');
+            iaState.hosts.forEach((_, i) => iaUpdateCmdb(i));
+            iaUpdateNote();
+        }
+
+        function iaAddHost() { iaState.hosts.push(''); iaRenderRows(); }
+
+        function iaRemoveHost(i) {
+            if (iaState.hosts.length <= 1) return;
+            iaState.hosts.splice(i, 1);
+            iaRenderRows();
+        }
+
+        function iaUpdateHost(i, value) {
+            iaState.hosts[i] = value;
+            iaUpdateCmdb(i);
+            iaUpdateNote();
+        }
+
+        function iaUpdateCmdb(i) {
+            const line = document.getElementById('iaCmdb' + i);
+            if (!line) return;
+            const hostname = (iaState.hosts[i] || '').trim();
+            if (!hostname) { line.className = 'host-cmdb'; line.innerHTML = ''; return; }
+            const entry = HOST_REGISTRY[hostname.toLowerCase()];
+            if (!entry) {
+                line.className = 'host-cmdb missing';
+                line.innerHTML = `<svg class="ic"><use href="#i-package"/></svg> Not in CMDB — <a class="wiz-route-cta" style="margin-left:4px;" onclick="openRegisterAsset('server')">register this host &rarr;</a>`;
+                return;
+            }
+            const state = entry.agents || {};
+            const have = Object.keys(IA_AGENTS).filter(a => state[a]).map(a => IA_AGENTS[a].label);
+            const need = Object.keys(IA_AGENTS).filter(a => !state[a]).length;
+            line.className = 'host-cmdb resolved';
+            line.innerHTML =
+                `<span class="cmdb-chip app">${entry.app}</span>` +
+                `<span class="cmdb-chip">${entry.os}</span><span class="cmdb-chip">${entry.env}</span>` +
+                `<span class="cmdb-chip">${have.length ? 'has: ' + have.join(', ') : 'no agents installed'}</span>` +
+                `<span class="cmdb-src">${need} agent${need === 1 ? '' : 's'} available · from CMDB</span>`;
+        }
+
+        function iaUpdateNote() {
+            const unknown = iaState.hosts.filter(h => h.trim() && !HOST_REGISTRY[h.trim().toLowerCase()]);
+            document.getElementById('iaHostNote').innerHTML = unknown.length
+                ? `<div class="fleet-note warn"><svg class="ic"><use href="#i-package"/></svg> ${unknown.length} host${unknown.length > 1 ? 's' : ''} not found in the CMDB — agents can only be installed on registered hosts.</div>`
+                : '';
+        }
+
+        function iaRenderAgentSelect() {
+            const missing = iaMissingAgents();
+            document.getElementById('iaAgentSelect').innerHTML = Object.keys(IA_AGENTS).map(a => {
+                const gap = missing.includes(a);
+                const sel = iaState.selected.includes(a);
+                return `<div class="chip-option ${sel ? 'selected' : ''}" data-value="${a}" onclick="iaToggleAgent('${a}', this)"
+                             title="${IA_AGENTS[a].desc}${gap ? '' : ' — already installed on every selected host'}">
+                            ${IA_AGENTS[a].label}${gap ? '' : ' ✓'}</div>`;
+            }).join('');
+        }
+
+        function iaToggleAgent(value, el) {
+            if (iaState.selected.includes(value)) iaState.selected = iaState.selected.filter(a => a !== value);
+            else iaState.selected.push(value);
+            el.classList.toggle('selected', iaState.selected.includes(value));
+        }
+
+        function iaRenderMatrix() {
+            const hosts = iaResolvedHosts();
+            const head = `<thead><tr><th>Host</th>${Object.values(IA_AGENTS).map(a => `<th>${a.label}</th>`).join('')}</tr></thead>`;
+            const rows = hosts.map(h => {
+                const state = HOST_REGISTRY[h].agents || {};
+                return `<tr><td><span class="app-name">${h}</span><div class="app-sub">${HOST_REGISTRY[h].app} · ${HOST_REGISTRY[h].env}</div></td>` +
+                    Object.keys(IA_AGENTS).map(a =>
+                        `<td>${state[a] ? '<span class="status ok">Installed</span>' : '<span class="status warn">Missing</span>'}</td>`
+                    ).join('') + '</tr>';
+            }).join('');
+            document.getElementById('iaMatrix').innerHTML = head + `<tbody>${rows}</tbody>`;
+        }
+
+        function iaUpdateChgLabel() {
+            document.getElementById('iaChgLabel').className = iaHostsNeedChg() ? 'form-label required' : 'form-label';
+        }
+
+        // Only (host, agent) pairs actually missing — what Ansible will do.
+        function iaWorkList() {
+            const work = [];
+            iaResolvedHosts().forEach(h => {
+                const state = HOST_REGISTRY[h].agents || {};
+                iaState.selected.forEach(a => { if (!state[a]) work.push({ host: h, agent: a }); });
+            });
+            return work;
+        }
+
+        function iaRenderReview() {
+            const hosts = iaResolvedHosts();
+            const envs = [...new Set(hosts.map(h => HOST_REGISTRY[h].env))];
+            const work = iaWorkList();
+            const perAgent = iaState.selected
+                .map(a => ({ a, n: work.filter(w => w.agent === a).length }))
+                .filter(x => x.n)
+                .map(x => `${IA_AGENTS[x.a].label} (${x.n} host${x.n === 1 ? '' : 's'})`);
+            const skipped = hosts.length * iaState.selected.length - work.length;
+            const rows = [
+                ['Hosts', hosts.join(', ') || '—'],
+                ['Environment(s)', envs.join(', ') || '—'],
+                ['Installing', perAgent.join(' · ') || 'Nothing — all selected agents already installed'],
+                ['Skipped (already installed)', String(skipped)],
+                ['Change Record', document.getElementById('iaChg').value.trim() || (iaHostsNeedChg() ? '—' : 'Not required (no PROD hosts)')],
+            ];
+            document.getElementById('iaReviewGrid').innerHTML = rows.map(([l, v]) =>
+                `<div class="review-item"><div class="l">${l}</div><div class="v">${v}</div></div>`
+            ).join('');
+        }
+
+        function iaSubmit() {
+            const work = iaWorkList();
+            const agents = [...new Set(work.map(w => IA_AGENTS[w.agent].label))];
+            addMyRequest({
+                id: 'AG-' + (1000 + Math.floor(Math.random() * 9000)),
+                kind: 'agentinstall',
+                title: 'Install Agent — ' + (agents.join(' + ') || 'no-op'),
+                meta: `${iaResolvedHosts().join(', ')} · ${work.length} install${work.length === 1 ? '' : 's'}${document.getElementById('iaChg').value.trim() ? ' · ' + document.getElementById('iaChg').value.trim() : ''}`,
+                status: 'pending',
+                statusNote: 'Waiting for checker approval — Ansible installs after sign-off, already-installed agents skipped',
+            });
+            switchView('myactions');
+        }
+
+        // ---------- Request Log Access (ELK log access) ----------
+        // Access-as-code, index-scoped and read-only by policy: the picker
+        // is the catalog of indices (what each one holds) AND the access
+        // check (what you already have). The reporting manager approves;
+        // only then is the grant pushed to main (elk-access repo) and
+        // applied by Ansible. Grants are personal and always time-bound.
+        const RA_INDICES = [
+            { index: 'logs-payments-sg-*',        app: 'PAYMENTS',   env: 'PROD', fn: 'Payments application logs — fast transfer, gateway, settlement' },
+            { index: 'logs-deposit-adapter-sg-*', app: 'CBS',        env: 'PROD', fn: 'Core banking deposit adapter — account movement, batch settlement' },
+            { index: 'logs-channels-sg-*',        app: 'CHANNELS',   env: 'PROD', fn: 'Mobile & web gateway logs — sessions, API traffic' },
+            { index: 'logs-esb-sg-*',             app: 'MIDDLEWARE', env: 'PROD', fn: 'ESB router — integration flows between systems' },
+            { index: 'logs-infra-syslog-*',       app: 'INFRA',      env: 'PROD', fn: 'OS syslog from Open System hosts — kernel, auth, cron' },
+            { index: 'logs-audit-*',              app: 'SECURITY',   env: 'PROD', fn: 'Security audit trail', restricted: true },
+        ];
+
+        // Demo stand-in for the signed-in user's grants read back from the
+        // elk-access repo — the same source of truth the sync applies from.
+        const RA_MY_ACCESS = {
+            'logs-channels-sg-*': { level: 'Read-only', expires: '12 Sep 2026' },
+        };
+
+        let raState = { step: 1, index: '' };
+
+        function openRequestAccess() {
+            raState = { step: 1, index: '' };
+            document.getElementById('raReason').value = '';
+            document.getElementById('raApprover').value = '';
+            document.getElementById('raDuration').value = '90';
+            raRenderMyAccess();
+            raRenderIndexList();
+            document.getElementById('raIndexNote').innerHTML = '';
+            raGoStep(1);
+            switchView('requestaccess');
+        }
+
+        function raLoadSample() {
+            raSelectIndex('logs-payments-sg-*');
+            document.getElementById('raReason').value = 'L2 support for PAYMENTS PROD incidents';
+            document.getElementById('raApprover').value = 'lead-sre';
+        }
+
+        function raRenderMyAccess() {
+            const grants = Object.entries(RA_MY_ACCESS);
+            document.getElementById('raMyAccess').innerHTML = grants.length
+                ? grants.map(([idx, g]) => `
+                    <div class="existing-config-entry">
+                        <div><span class="mono">${idx}</span> — ${g.level} · expires <b>${g.expires}</b></div>
+                        <span class="status-badge approved">Active</span>
+                    </div>`).join('')
+                : `<div class="fleet-note info"><svg class="ic"><use href="#i-shield"/></svg> You have no index access yet — pick one below to raise your first request.</div>`;
+        }
+
+        function raRenderIndexList() {
+            const head = `<thead><tr><th></th><th>Index</th><th>Function</th><th>App · Env</th><th>Your access</th></tr></thead>`;
+            const rows = RA_INDICES.map(x => {
+                const mine = RA_MY_ACCESS[x.index];
+                const sel = raState.index === x.index;
+                const yours = mine
+                    ? `<span class="status ok">Active · to ${mine.expires}</span>`
+                    : (x.restricted ? `<span class="status warn">Restricted</span>` : `<span class="status">None</span>`);
+                return `
+                    <tr onclick="raSelectIndex('${x.index}')" style="cursor:pointer;${sel ? 'background:var(--primary-soft, rgba(2,120,213,0.07));' : ''}">
+                        <td style="width:34px;"><svg class="ic" style="${sel ? '' : 'opacity:0.15;'}"><use href="#i-check-circle"/></svg></td>
+                        <td><span class="app-name mono">${x.index}</span></td>
+                        <td>${x.fn}</td>
+                        <td><span class="cmdb-chip app">${x.app}</span> <span class="cmdb-chip">${x.env}</span></td>
+                        <td>${yours}</td>
+                    </tr>`;
+            }).join('');
+            document.getElementById('raIndexList').innerHTML = head + `<tbody>${rows}</tbody>`;
+        }
+
+        function raSelectIndex(index) {
+            const entry = RA_INDICES.find(x => x.index === index);
+            const note = document.getElementById('raIndexNote');
+            if (RA_MY_ACCESS[index]) {
+                raState.index = '';
+                raRenderIndexList();
+                note.innerHTML = `<div class="fleet-note info"><svg class="ic"><use href="#i-check-circle"/></svg> You <b>already have read-only access</b> to <span class="mono">${index}</span> (expires ${RA_MY_ACCESS[index].expires}) — no request needed. Raise a new request when it nears expiry.</div>`;
+                return;
+            }
+            if (entry && entry.restricted) {
+                raState.index = '';
+                raRenderIndexList();
+                note.innerHTML = `<div class="fleet-note warn"><svg class="ic"><use href="#i-shield"/></svg> <span class="mono">${index}</span> is <b>restricted</b> — it is not self-service; contact the security team.</div>`;
+                return;
+            }
+            raState.index = index;
+            note.innerHTML = '';
+            raRenderIndexList();
+        }
+
+        function raGoStep(step) {
+            raState.step = step;
+            document.querySelectorAll('#view-requestaccess .wiz-pane').forEach(p => p.classList.toggle('active', Number(p.dataset.pane) === step));
+            document.querySelectorAll('#raStepper .tpl-step').forEach(s => {
+                const n = Number(s.dataset.step);
+                s.classList.toggle('active', n === step);
+                s.classList.toggle('done', n < step);
+            });
+            if (step === 3) raRenderReview();
+            document.getElementById('raBackBtn').textContent = step === 1 ? 'Cancel' : 'Back';
+            document.getElementById('raNextBtn').textContent = step === 3 ? 'Submit for Approval' : 'Next';
+            document.querySelector('#view-requestaccess .page-body').scrollTop = 0;
+        }
+
+        function raStepClick(step) { if (step < raState.step) raGoStep(step); }
+
+        function raBack() {
+            if (raState.step === 1) { switchView('home'); return; }
+            raGoStep(raState.step - 1);
+        }
+
+        function raNext() {
+            if (raState.step === 1) {
+                if (!raState.index) { alert('Select an index — the "Your access" column shows where you already have access.'); return; }
+                raGoStep(2);
+                return;
+            }
+            if (raState.step === 2) {
+                if (!document.getElementById('raReason').value.trim()) { alert('A business justification is required — the approver and the audit trail both read it.'); return; }
+                raGoStep(3);
+                return;
+            }
+            if (!document.getElementById('raApprover').value.trim()) { alert('Name your reporting manager — nothing is granted without sign-off.'); return; }
+            raSubmit();
+        }
+
+        function raRenderReview() {
+            const entry = RA_INDICES.find(x => x.index === raState.index) || {};
+            const days = document.getElementById('raDuration').value;
+            const expires = new Date(Date.now() + Number(days) * 86400000)
+                .toLocaleDateString('en-SG', { day: 'numeric', month: 'short', year: 'numeric' });
+            const rows = [
+                ['Grantee', 'You (signed-in identity)'],
+                ['Index', raState.index || '—'],
+                ['Function', entry.fn || '—'],
+                ['Level', 'Read-only (fixed — all self-service access is read-only)'],
+                ['Valid for', `${days} days — expires ${expires}`],
+                ['Justification', document.getElementById('raReason').value.trim() || '—'],
+                ['Approver', document.getElementById('raApprover').value.trim() || '—'],
+            ];
+            document.getElementById('raReviewGrid').innerHTML = rows.map(([l, v]) =>
+                `<div class="review-item"><div class="l">${l}</div><div class="v">${v}</div></div>`
+            ).join('');
+        }
+
+        function raSubmit() {
+            const days = document.getElementById('raDuration').value;
+            addMyRequest({
+                id: 'AC-' + (1000 + Math.floor(Math.random() * 9000)),
+                kind: 'access',
+                title: 'Request Log Access — Read-only',
+                meta: `${raState.index} · ${days} days · approver: ${document.getElementById('raApprover').value.trim()}`,
+                status: 'pending',
+                statusNote: 'Waiting for manager approval — the grant is pushed to main and applied by Ansible only after sign-off',
+            });
+            switchView('myactions');
+        }
+
+        // ---------- Dashboard Inventory (TechDocs reference) ----------
+        // Read-only reference generated from asset-registry registrations:
+        // dashboard, what it shows, platform (Grafana = metrics, ELK =
+        // logs), owning app, deep link. No wizard, no approval — it's docs.
+        const DASH_INVENTORY = [
+            { name: 'fast-transfer-slo',        fn: 'SLO overview for PAYMENTS fast transfer — latency, error budget, burn rate', platform: 'Grafana', app: 'PAYMENTS' },
+            { name: 'alerting-overview',        fn: 'Estate-wide alerting — open alerts, noise, per-platform breakdown', platform: 'Grafana', app: 'SRE' },
+            { name: 'alerting-entity',          fn: 'Per-asset alerting — one asset\'s alerts, history, and suppression windows', platform: 'Grafana', app: 'SRE' },
+            { name: 'infra-host-health',        fn: 'Host CDM metrics — CPU, memory, disk per Open System host', platform: 'Grafana', app: 'INFRA' },
+            { name: 'payments-log-explorer',    fn: 'Log search & saved views over logs-payments-sg-* — errors, gateways, settlement', platform: 'ELK', app: 'PAYMENTS' },
+            { name: 'channels-session-analytics', fn: 'Mobile & web gateway sessions — logins, API traffic, geo split', platform: 'ELK', app: 'CHANNELS' },
+            { name: 'esb-integration-flows',    fn: 'ESB message flows — throughput, failures, retries per integration', platform: 'ELK', app: 'MIDDLEWARE' },
+            { name: 'cbs-batch-monitoring',     fn: 'Core banking batch runs — settlement job timeline and failures', platform: 'ELK', app: 'CBS' },
+        ];
+
+        let diFilterValue = 'all';
+
+        function openDashInventory() {
+            diFilterValue = 'all';
+            document.querySelectorAll('#diFilter .chip-option').forEach(ch => ch.classList.toggle('selected', ch.dataset.value === 'all'));
+            diRender();
+            switchView('dashinventory');
+        }
+
+        function diSetFilter(value, el) {
+            diFilterValue = value;
+            document.querySelectorAll('#diFilter .chip-option').forEach(ch => ch.classList.toggle('selected', ch.dataset.value === value));
+            diRender();
+        }
+
+        function diRender() {
+            const rows = DASH_INVENTORY.filter(d => diFilterValue === 'all' || d.platform === diFilterValue);
+            document.getElementById('diCount').textContent = `Dashboards (${rows.length})`;
+            const head = `<thead><tr><th>Dashboard</th><th>What it shows</th><th>Platform</th><th>App</th><th>Open</th></tr></thead>`;
+            const body = rows.map(d => `
+                <tr>
+                    <td><span class="app-name mono">${d.name}</span></td>
+                    <td>${d.fn}</td>
+                    <td><span class="cmdb-chip">${d.platform === 'Grafana' ? 'Grafana · metrics' : 'ELK · logs'}</span></td>
+                    <td><span class="cmdb-chip app">${d.app}</span></td>
+                    <td>
+                        <button class="btn btn-ghost" style="padding:4px 10px; font-size:12px;" onclick="comingSoon('${d.platform === 'Grafana' ? 'Grafana' : 'Kibana'}')">
+                            Open in ${d.platform === 'Grafana' ? 'Grafana' : 'Kibana'} <svg class="ic ic-sm"><use href="#i-launch"/></svg>
+                        </button>
+                    </td>
+                </tr>`).join('');
+            document.getElementById('diTable').innerHTML = head + `<tbody>${body}</tbody>`;
+        }
+
+        // ---------- Reports (reconciliation) ----------
+        // Reality drift made visible: expected state (CMDB, config repos)
+        // cross-referenced against what each platform actually reports.
+        // Rows are demo data consistent with the estate story; every
+        // non-green row deep-links the service that fixes it.
+        const RP_REPORTS = {
+            logs: {
+                title: 'Log Reconciliation — ELK',
+                meta: 'Expected: every PROD asset ships logs. Source of truth: CMDB × elk-stack indices · last reconciled today 06:00.',
+                head: ['Asset', 'Environment', 'Onboarded', 'Last event in ELK', 'Status', 'Action'],
+                rows: [
+                    { c: ['ms-cbs-account-movement-adapter', 'PROD', 'Yes · OTel', '14s ago'], s: 'ok', label: 'Active' },
+                    { c: ['ms-payments-fast-transfer', 'PROD', 'Yes · OTel', '9s ago'], s: 'ok', label: 'Active' },
+                    { c: ['sgapp0231', 'PROD', 'Yes · OTel', '22s ago'], s: 'ok', label: 'Active' },
+                    { c: ['ms-channels-mobile-gateway', 'PROD', 'Yes · OTel', '3h ago'], s: 'warn', label: 'Stale', fix: { label: 'View score', action: 'openHealthCheck()' } },
+                    { c: ['ms-middleware-esb-router', 'PROD', 'Yes · Kafka', '2 days ago'], s: 'fail', label: 'Stopped', fix: { label: 'View score', action: 'openHealthCheck()' } },
+                    { c: ['sgapp0410', 'PROD', 'No — no ELK agent', 'Never'], s: 'fail', label: 'Not in ELK', fix: { label: 'Onboard Logs', action: 'openLogOnboarding()' } },
+                    { c: ['ulaeiapos0a', 'UAT', 'No', 'Never'], s: 'fail', label: 'Not in ELK', fix: { label: 'Onboard Logs', action: 'openLogOnboarding()' } },
+                ],
+            },
+            mon: {
+                title: 'Monitoring Reconciliation — DX UIM · SolarWinds',
+                meta: 'Expected: every CMDB asset is monitored somewhere. Source of truth: CMDB × dxuim-monitoring × solarwinds-npm · last reconciled today 06:00.',
+                head: ['Asset', 'Platform', 'In CMDB', 'Coverage', 'Status', 'Action'],
+                rows: [
+                    { c: ['sgapp0410', 'DX UIM', 'Yes', '18 log · 3 CMD · 10 process'], s: 'ok', label: 'Monitored' },
+                    { c: ['sgapp0231', 'ELK (OTel)', 'Yes', 'Migrated — no DX UIM robot expected'], s: 'ok', label: 'Monitored' },
+                    { c: ['sgnet-fw01', 'SolarWinds', 'Yes', 'Node + 12 interfaces · polled 2m ago'], s: 'ok', label: 'Monitored' },
+                    { c: ['sgnet-sw02', 'SolarWinds', 'Yes', 'Node + 46 interfaces · polled 2m ago'], s: 'ok', label: 'Monitored' },
+                    { c: ['ulaeiapos0a', 'DX UIM', 'Yes', '12 process only — cdm.json &amp; logmon.json empty'], s: 'warn', label: 'Drifted', fix: { label: 'Add Monitoring', action: 'openAlertWizard()' } },
+                    { c: ['sgnet-rt03', 'SolarWinds', 'Yes', 'Node not polled for 6 days'], s: 'warn', label: 'Drifted', fix: { label: 'Run drill', action: 'openSynthetic()' } },
+                    { c: ['sgapp0512', '—', 'Yes', 'No platform reports this asset'], s: 'fail', label: 'Unmonitored', fix: { label: 'Add Monitoring', action: 'openAlertWizard()' } },
+                ],
+            },
+        };
+
+        const RP_STATUS_CLS = { ok: 'complete', warn: 'pending', fail: 'rejected' };
+
+        function openReports() {
+            switchView('reports');
+            rpShow('logs', document.getElementById('rpTabLogs'));
+        }
+
+        function rpShow(kind, el) {
+            document.querySelectorAll('#view-reports .pick-card').forEach(card => card.classList.remove('selected'));
+            if (el) el.classList.add('selected');
+            const r = RP_REPORTS[kind];
+            document.getElementById('rpTitle').textContent = r.title;
+            document.getElementById('rpMeta').textContent = r.meta.replace(/&times;/g, '×');
+            const ok = r.rows.filter(x => x.s === 'ok').length;
+            const warn = r.rows.filter(x => x.s === 'warn').length;
+            const fail = r.rows.filter(x => x.s === 'fail').length;
+            document.getElementById('rpSummary').innerHTML =
+                `<span class="status-badge complete">${ok} reconciled</span>` +
+                (warn ? `<span class="status-badge pending">${warn} drifted</span>` : '') +
+                (fail ? `<span class="status-badge rejected">${fail} need action</span>` : '');
+            document.getElementById('rpHead').innerHTML = '<tr>' + r.head.map(h => `<th>${h}</th>`).join('') + '</tr>';
+            document.getElementById('rpBody').innerHTML = r.rows.map(row => `
+                <tr class="${row.s !== 'ok' ? 'rp-attention' : ''}">
+                    <td class="mono-name">${row.c[0]}</td>
+                    <td>${row.c[1]}</td>
+                    <td>${row.c[2]}</td>
+                    <td>${row.c[3]}</td>
+                    <td><span class="status-badge ${RP_STATUS_CLS[row.s]}">${row.label}</span></td>
+                    <td>${row.fix ? `<button class="btn btn-secondary rp-fix" onclick="${row.fix.action}">${row.fix.label} &rarr;</button>` : '<span class="rp-none">—</span>'}</td>
+                </tr>
+            `).join('');
+        }
+
+        // ---------- Data Dictionary (ELK data reference) ----------
+        // Read-only reference generated from index templates / data-stream
+        // config: index pattern, signal type, function, source, retention.
+        // `otel: true` tags streams shipped by the OTel collector.
+        const DATA_DICT = [
+            { index: 'logs-payments-sg-*',        signal: 'Logs',        fn: 'Payments application logs — fast transfer, gateway, settlement', source: 'Logstash pipeline', retention: '90d' },
+            { index: 'logs-deposit-adapter-sg-*', signal: 'Logs',        fn: 'Core banking deposit adapter logs — account movement, batch settlement', source: 'Logstash pipeline', retention: '90d' },
+            { index: 'logs-channels-sg-*',        signal: 'Logs',        fn: 'Mobile & web gateway logs — sessions, API traffic', source: 'OTel collector', retention: '90d', otel: true },
+            { index: 'logs-esb-sg-*',             signal: 'Logs',        fn: 'ESB router logs — integration flows between systems', source: 'Logstash pipeline', retention: '90d' },
+            { index: 'logs-infra-syslog-*',       signal: 'Logs',        fn: 'OS syslog from Open System hosts — kernel, auth, cron', source: 'Logstash pipeline', retention: '30d' },
+            { index: 'logs-audit-*',              signal: 'Logs',        fn: 'Security audit trail — restricted access', source: 'Logstash pipeline', retention: '365d' },
+            { index: 'metrics-otel-hosts-*',      signal: 'Metrics',     fn: 'Host metrics from OTel-migrated servers — CPU, memory, disk, network', source: 'OTel collector', retention: '30d', otel: true },
+            { index: 'metrics-appd-*',            signal: 'Metrics',     fn: 'AppDynamics APM metrics mirrored into ELK for correlation', source: 'AppD integration', retention: '30d' },
+            { index: 'traces-otel-apm-*',         signal: 'Traces',      fn: 'Distributed traces from OTel-instrumented microservices', source: 'OTel collector', retention: '14d', otel: true },
+            { index: 'stats-alert-volume-*',      signal: 'Statistical', fn: 'Daily alert volume rollups — feeds reporting and the Observability Score', source: 'Transform (rollup)', retention: '730d' },
+            { index: 'stats-ingest-usage-*',      signal: 'Statistical', fn: 'Per-app ingest GB/day rollups — capacity and chargeback', source: 'Transform (rollup)', retention: '730d' },
+            { index: 'ml-anomaly-*',              signal: 'Statistical', fn: 'Kibana ML anomaly results — error-rate and volume outliers', source: 'Kibana ML jobs', retention: '180d' },
+        ];
+
+        let ddFilterValue = 'all';
+
+        function openDataDict() {
+            ddFilterValue = 'all';
+            document.querySelectorAll('#ddFilter .chip-option').forEach(ch => ch.classList.toggle('selected', ch.dataset.value === 'all'));
+            ddRender();
+            switchView('datadict');
+        }
+
+        function ddSetFilter(value, el) {
+            ddFilterValue = value;
+            document.querySelectorAll('#ddFilter .chip-option').forEach(ch => ch.classList.toggle('selected', ch.dataset.value === value));
+            ddRender();
+        }
+
+        function ddRender() {
+            const rows = DATA_DICT.filter(d =>
+                ddFilterValue === 'all' ? true :
+                ddFilterValue === 'otel' ? d.otel :
+                d.signal === ddFilterValue);
+            document.getElementById('ddCount').textContent = `Indices (${rows.length})`;
+            const head = `<thead><tr><th>Index</th><th>Signal</th><th>Function</th><th>Source</th><th>Retention</th></tr></thead>`;
+            const body = rows.map(d => `
+                <tr>
+                    <td><span class="app-name mono">${d.index}</span></td>
+                    <td><span class="cmdb-chip app">${d.signal}</span>${d.otel ? ' <span class="cmdb-chip">OTel</span>' : ''}</td>
+                    <td>${d.fn}</td>
+                    <td><span class="cmdb-chip">${d.source}</span></td>
+                    <td><span class="mono">${d.retention}</span></td>
+                </tr>`).join('');
+            document.getElementById('ddTable').innerHTML = head + `<tbody>${body}</tbody>`;
+        }
+
+        // ---------- Register Asset (ad-hoc registrations, platform-owner triage) ----------
+        // The exceptions path: dashboards and new servers the pipeline
+        // doesn't discover on its own. Platform owners triage every
+        // registration; approved dashboards flow into DASH_INVENTORY,
+        // approved servers into the CMDB/host registry.
+        let rgState = { step: 1, type: '', platform: 'Grafana' };
+
+        function openRegisterAsset(type) {
+            rgState = { step: 1, type: type || '', platform: 'Grafana' };
+            ['rgDashName', 'rgDashUrl', 'rgDashDesc', 'rgDashOwner', 'rgSrvHost', 'rgSrvApp', 'rgSrvWhy'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('rgSrvEnv').value = '';
+            document.getElementById('rgSrvOs').value = 'Linux';
+            document.querySelectorAll('#rgPlatformSelect .chip-option').forEach(ch => ch.classList.toggle('selected', ch.dataset.value === 'Grafana'));
+            document.querySelectorAll('#view-registerasset .pick-card').forEach(c => c.classList.toggle('selected', c.dataset.value === rgState.type));
+            rgGoStep(1);
+            switchView('registerasset');
+        }
+
+        function rgSelectType(type, el) {
+            rgState.type = type;
+            document.querySelectorAll('#view-registerasset .pick-card').forEach(c => c.classList.toggle('selected', c === el));
+        }
+
+        function rgSetPlatform(value, el) {
+            rgState.platform = value;
+            document.querySelectorAll('#rgPlatformSelect .chip-option').forEach(ch => ch.classList.toggle('selected', ch.dataset.value === value));
+        }
+
+        function rgLoadSample() {
+            rgState.type = 'dashboard';
+            document.querySelectorAll('#view-registerasset .pick-card').forEach(c => c.classList.toggle('selected', c.dataset.value === 'dashboard'));
+            document.getElementById('rgDashName').value = 'payments-slo-drilldown';
+            document.getElementById('rgDashUrl').value = 'https://grafana.ocbc.internal/d/pay-slo-dd';
+            document.getElementById('rgDashDesc').value = 'Per-corridor SLO drilldown for fast transfer — latency and error budget';
+            document.getElementById('rgDashOwner').value = 'PAYMENTS · payments-sg';
+        }
+
+        function rgGoStep(step) {
+            rgState.step = step;
+            document.querySelectorAll('#view-registerasset .wiz-pane').forEach(p => p.classList.toggle('active', Number(p.dataset.pane) === step));
+            document.querySelectorAll('#rgStepper .tpl-step').forEach(s => {
+                const n = Number(s.dataset.step);
+                s.classList.toggle('active', n === step);
+                s.classList.toggle('done', n < step);
+            });
+            if (step === 2) {
+                document.getElementById('rgFieldsDashboard').style.display = rgState.type === 'dashboard' ? '' : 'none';
+                document.getElementById('rgFieldsServer').style.display = rgState.type === 'server' ? '' : 'none';
+            }
+            if (step === 3) rgRenderReview();
+            document.getElementById('rgBackBtn').textContent = step === 1 ? 'Cancel' : 'Back';
+            document.getElementById('rgNextBtn').textContent = step === 3 ? 'Submit for Triage' : 'Next';
+            document.querySelector('#view-registerasset .page-body').scrollTop = 0;
+        }
+
+        function rgStepClick(step) { if (step < rgState.step) rgGoStep(step); }
+
+        function rgBack() {
+            if (rgState.step === 1) { switchView('home'); return; }
+            rgGoStep(rgState.step - 1);
+        }
+
+        function rgNext() {
+            if (rgState.step === 1) {
+                if (!rgState.type) { alert('Pick what you are registering — a dashboard link or a new server.'); return; }
+                rgGoStep(2);
+                return;
+            }
+            if (rgState.step === 2) {
+                if (rgState.type === 'dashboard') {
+                    if (!document.getElementById('rgDashName').value.trim() || !document.getElementById('rgDashUrl').value.trim() ||
+                        !document.getElementById('rgDashDesc').value.trim() || !document.getElementById('rgDashOwner').value.trim()) {
+                        alert('Fill in every dashboard field — the description becomes the inventory\'s "what it shows" column.');
+                        return;
+                    }
+                } else {
+                    if (!document.getElementById('rgSrvHost').value.trim() || !document.getElementById('rgSrvEnv').value ||
+                        !document.getElementById('rgSrvApp').value.trim() || !document.getElementById('rgSrvWhy').value.trim()) {
+                        alert('Fill in every server field — the context line is what the platform owner triages on.');
+                        return;
+                    }
+                }
+                rgGoStep(3);
+                return;
+            }
+            rgSubmit();
+        }
+
+        function rgRenderReview() {
+            let rows;
+            if (rgState.type === 'dashboard') {
+                rows = [
+                    ['Type', 'Dashboard'],
+                    ['Name', document.getElementById('rgDashName').value.trim() || '—'],
+                    ['Platform', rgState.platform === 'Grafana' ? 'Grafana · metrics' : 'ELK · logs'],
+                    ['URL', document.getElementById('rgDashUrl').value.trim() || '—'],
+                    ['What it shows', document.getElementById('rgDashDesc').value.trim() || '—'],
+                    ['Owner', document.getElementById('rgDashOwner').value.trim() || '—'],
+                ];
+                document.getElementById('rgReviewNote').innerHTML =
+                    `<svg class="ic"><use href="#i-book"/></svg> Once a <b>platform owner</b> approves, this dashboard appears in the <a class="wiz-route-cta" onclick="openDashInventory()">Dashboard Inventory</a> automatically — same link, same description, no separate upkeep.`;
+            } else {
+                rows = [
+                    ['Type', 'Server (ad-hoc onboarding)'],
+                    ['Hostname', document.getElementById('rgSrvHost').value.trim() || '—'],
+                    ['OS', document.getElementById('rgSrvOs').value],
+                    ['Environment', document.getElementById('rgSrvEnv').value || '—'],
+                    ['Application', document.getElementById('rgSrvApp').value.trim() || '—'],
+                    ['Context', document.getElementById('rgSrvWhy').value.trim() || '—'],
+                ];
+                document.getElementById('rgReviewNote').innerHTML =
+                    `<svg class="ic"><use href="#i-server"/></svg> Once a <b>platform owner</b> approves, the host enters the registry — and <b>Install Agent</b> and <b>Add Monitoring</b> unlock for it. Registration is step zero of onboarding.`;
+            }
+            document.getElementById('rgReviewGrid').innerHTML = rows.map(([l, v]) =>
+                `<div class="review-item"><div class="l">${l}</div><div class="v">${v}</div></div>`
+            ).join('');
+        }
+
+        function rgSubmit() {
+            const isDash = rgState.type === 'dashboard';
+            addMyRequest({
+                id: 'RG-' + (1000 + Math.floor(Math.random() * 9000)),
+                kind: 'asset',
+                title: 'Register Asset — ' + (isDash ? 'Dashboard' : 'Server'),
+                meta: isDash
+                    ? `${document.getElementById('rgDashName').value.trim()} · ${rgState.platform} · ${document.getElementById('rgDashOwner').value.trim()}`
+                    : `${document.getElementById('rgSrvHost').value.trim()} · ${document.getElementById('rgSrvApp').value.trim()} · ${document.getElementById('rgSrvEnv').value}`,
+                status: 'pending',
+                statusNote: 'Waiting for platform-owner triage — exceptions are reviewed before entering the registry',
             });
             switchView('myactions');
         }
@@ -5686,7 +7062,7 @@
         // Two distinct workflows: the checker queue (other makers' requests,
         // with approve/reject — rejection requires a reason) and the maker
         // list (your own requests, tracked read-only until a checker acts).
-        const MA_KIND_ICON = { alert: 'bell', logonboard: 'download', maintenance: 'wrench' };
+        const MA_KIND_ICON = { alert: 'bell', logonboard: 'download', maintenance: 'wrench', agentinstall: 'layers', access: 'shield', asset: 'package' };
 
         const MA_STATUS_LABEL = {
             pending: 'Pending approval',
@@ -5704,13 +7080,18 @@
             },
             {
                 id: 'MW-1042', kind: 'maintenance', maker: 'alex.lim', role: 'Reporting Manager',
-                title: 'Service Maintenance — All alerts', time: '3h ago', status: 'pending',
+                title: 'Alert Suppression — All alerts', time: '3h ago', status: 'pending',
                 summary: ['sgapp0410 · MIDDLEWARE · PROD', 'Sat 02:00&ndash;04:00 SGT · auto-resumes at window end', '<span class="mono">CHG0041233</span> — OS patching'],
             },
             {
                 id: 'LO-2214', kind: 'logonboard', maker: 'raj.kumar', role: 'ELK Engineer',
-                title: 'Log Onboarding — PAYMENTS', time: 'Yesterday', status: 'pending',
+                title: 'ELK Log Onboarding — PAYMENTS', time: 'Yesterday', status: 'pending',
                 summary: ['sgapp0231 · PROD', '2 log files · 4 parse fields · sample lines attached', 'Will create <span class="mono">logs.payments.prod</span> + pipeline + indices'],
+            },
+            {
+                id: 'RG-3117', kind: 'asset', maker: 'mei.lin', role: 'Platform Owner',
+                title: 'Register Asset — Dashboard', time: '4h ago', status: 'pending',
+                summary: ['payments-slo-drilldown · Grafana · PAYMENTS', 'Ad-hoc registration — not CMDB-discovered, needs triage', 'On approval: appears in the Dashboard Inventory'],
             },
         ];
 
@@ -5720,7 +7101,7 @@
                 meta: 'ulaeiapos0a · 1 watcher', status: 'complete', statusNote: 'Approved by lead-sre · live since Tuesday',
             },
             {
-                id: 'LO-2103', kind: 'logonboard', title: 'Log Onboarding — CHANNELS',
+                id: 'LO-2103', kind: 'logonboard', title: 'ELK Log Onboarding — CHANNELS',
                 meta: 'sgapp0233 · 3 log files', status: 'rejected', statusNote: 'Rejected by ELK Engineering — sample lines missing the multiline stack traces',
             },
         ];
@@ -5815,7 +7196,7 @@
                     { t: 'Log ingestion (OTel → ELK)', s: 'pass', d: 'Last event 14s ago · ~2.1k lines/min' },
                     { t: 'APM reporting (AppDynamics)', s: 'pass', d: 'Baseline normal · no open violations' },
                     { t: 'Alert coverage', s: 'pass', d: '2 log watchers · 3 CMD watchers active' },
-                    { t: 'Catalog & dashboard hygiene', s: 'pass', d: 'Owner acbc/sre · Grafana tab linked' },
+                    { t: 'Catalog & dashboard hygiene', s: 'pass', d: 'Owner ocbc/sre · Grafana tab linked' },
                 ],
             },
             'ms-payments-fast-transfer': {
@@ -5825,7 +7206,7 @@
                     { t: 'Log ingestion (OTel → ELK)', s: 'pass', d: 'Last event 9s ago · ~5.4k lines/min' },
                     { t: 'APM reporting (AppDynamics)', s: 'warn', d: 'Error rate 2.1% — above 7-day baseline' },
                     { t: 'Alert coverage', s: 'fail', d: 'No watchers configured — errors would go unnoticed', fix: { label: 'Add Monitoring', action: "openAlertWizard()" } },
-                    { t: 'Catalog & dashboard hygiene', s: 'pass', d: 'Owner acbc/payments-sre · Grafana tab linked' },
+                    { t: 'Catalog & dashboard hygiene', s: 'pass', d: 'Owner ocbc/payments-sre · Grafana tab linked' },
                 ],
             },
             'sgapp0231': {
@@ -5915,7 +7296,7 @@
             if (resolved === null) { line.className = 'host-cmdb'; line.innerHTML = ''; return; }
             if (resolved === undefined) {
                 line.className = 'host-cmdb missing';
-                line.innerHTML = `<svg class="ic"><use href="#i-package"/></svg> Not in the observability catalog — <a class="wiz-route-cta" style="margin-left:4px;" onclick="comingSoon('Asset Registry')">register this asset &rarr;</a>`;
+                line.innerHTML = `<svg class="ic"><use href="#i-package"/></svg> Not in the observability catalog — <a class="wiz-route-cta" style="margin-left:4px;" onclick="openRegisterAsset('server')">register this asset &rarr;</a>`;
                 return;
             }
             line.className = 'host-cmdb resolved';
@@ -6083,7 +7464,7 @@
             }
             if (resolved === undefined) {
                 line.className = 'host-cmdb missing';
-                line.innerHTML = `<svg class="ic"><use href="#i-package"/></svg> Not in the observability catalog — <a class="wiz-route-cta" style="margin-left:4px;" onclick="comingSoon('Asset Registry')">register this asset &rarr;</a>`;
+                line.innerHTML = `<svg class="ic"><use href="#i-package"/></svg> Not in the observability catalog — <a class="wiz-route-cta" style="margin-left:4px;" onclick="openRegisterAsset('server')">register this asset &rarr;</a>`;
                 document.getElementById('syAlertSection').style.display = 'none';
                 return;
             }
@@ -6360,12 +7741,16 @@
         // Predefined service templates, launchable straight from the chat.
         const AIKA_SERVICES = [
             { icon: 'bell', label: 'Add Monitoring', desc: 'CMD, Log & Process alerts — ELK or DX UIM', action: 'openAlertWizard(); toggleAika();' },
-            { icon: 'download', label: 'Log Onboarding', desc: 'Agents, Kafka topic, parsers, indices', action: 'openLogOnboarding(); toggleAika();' },
+            { icon: 'download', label: 'ELK Log Onboarding', desc: 'Agents, Kafka topic, parsers, indices', action: 'openLogOnboarding(); toggleAika();' },
+            { icon: 'layers', label: 'Install Agent', desc: 'ELK Agent, DX UIM Robot, OTel — only the missing ones', action: 'openInstallAgent(); toggleAika();' },
             { icon: 'chart', label: 'Observability Score', desc: 'Scorecard with remediation', action: 'openHealthCheck(); toggleAika();' },
             { icon: 'launch', label: 'Synthetic Alerting', desc: 'Fire-drill an alert end to end', action: 'openSynthetic(); toggleAika();' },
-            { icon: 'wrench', label: 'Service Maintenance', desc: 'Suppress alerts for a change window', action: 'openMaintenance(); toggleAika();' },
-            { icon: 'shield', label: 'Request Access', desc: 'Kibana, Grafana, index permissions', action: "comingSoon('Access Granting');" },
-            { icon: 'package', label: 'Register Asset', desc: 'Add your asset to the catalog', action: "comingSoon('Asset Registry');" },
+            { icon: 'wrench', label: 'Alert Suppression', desc: 'Suppress alerts for a change window', action: 'openMaintenance(); toggleAika();' },
+            { icon: 'clipboard', label: 'Reports', desc: 'Reconciliation — log & monitoring drift', action: 'openReports(); toggleAika();' },
+            { icon: 'shield', label: 'Request Log Access', desc: 'Read-only ELK index access — includes an access check', action: 'openRequestAccess(); toggleAika();' },
+            { icon: 'book', label: 'Dashboard Inventory', desc: 'Every dashboard, described & linked — Grafana or ELK', action: 'openDashInventory(); toggleAika();' },
+            { icon: 'file', label: 'Data Dictionary', desc: 'Every ELK index — logs, metrics, traces, OTel, statistical', action: 'openDataDict(); toggleAika();' },
+            { icon: 'package', label: 'Register Asset', desc: 'Dashboards & new servers — ad-hoc, platform-owner triaged', action: 'openRegisterAsset(); toggleAika();' },
         ];
 
         function aikaServiceMenuHtml() {
@@ -6543,6 +7928,16 @@
                 aikaBotSay("Pick a service template — I'll take you straight there:" + aikaServiceMenuHtml());
                 return;
             }
+            if (/(reports?|reconcil|drifted)/.test(q)) {
+                aikaBotSay(
+                    "The <b>Reconciliation Reports</b> compare expected state with reality: <b>Log Reconciliation</b> (CMDB × ELK — 3 assets not shipping logs right now, including <span class='mono'>ms-middleware-esb-router</span> which <b>stopped 2 days ago</b>) and <b>Monitoring Reconciliation</b> (CMDB × DX UIM × SolarWinds — 1 unmonitored asset, 2 drifted). Every row links its fix.",
+                    'View Reports',
+                    'openReports(); toggleAika();',
+                    'clipboard',
+                    ['CMDB × elk-stack indices', 'CMDB × dxuim-monitoring × solarwinds-npm']
+                );
+                return;
+            }
             if (/(gap|coverage|missing|unmonitored|placeholder|no (process|log|cmd) monitoring)/.test(q)) {
                 aikaBotSay(
                     "Cross-referencing the CMDB against the config repos: <b>2 PROD assets have no watchers at all</b> — <span class='mono'>sgapp0231</span> and <span class='mono'>ms-payments-fast-transfer</span> (the latter also has an elevated error rate). In UAT, <span class='mono'>ulaeiapos0a</span> has <b>placeholder configs</b>: cdm.json and logmon.json exist but are empty. Every gap has a one-click fix via Add Monitoring.",
@@ -6554,7 +7949,15 @@
                 return;
             }
 
-            if (/(alert|keyword|watcher)/.test(q)) {
+            if (/(install|deploy|missing).*(agent|robot|collector)|agent.*(install|missing|status)|filebeat|elastic agent/.test(q)) {
+                aikaBotSay(
+                    "<b>Install Agent</b> puts the right agents on your hosts — <b>ELK Agent</b>, <b>DX UIM Robot</b>, <b>OTel Collector</b>, or <b>AppDynamics</b>. The portal reads the CMDB, shows what each host already has, and installs <b>only what's missing</b> (idempotent — re-requesting is always safe). PROD hosts need a change record. For example, <span class='mono'>sgapp0410</span> has the DX UIM Robot but no ELK Agent today.",
+                    "Install agents",
+                    "openInstallAgent(); toggleAika();",
+                    "layers",
+                    ["CMDB (host registry — agent state)", "docs/architecture/architecture.md"]
+                );
+            } else if (/(alert|keyword|watcher)/.test(q)) {
                 aikaBotSay(
                     "Use <b>Add Monitoring</b> to turn on monitoring — for error keywords, pick <b>Log Monitoring</b>. You'll need your <span class='mono'>namespace</span>, <span class='mono'>container name</span>, and HPSM code — then add keywords like <span class='mono'>400</span>, <span class='mono'>500</span>, or <span class='mono'>timeout</span> with a severity each.",
                     "Add Monitoring",
@@ -6564,7 +7967,7 @@
                 );
             } else if (/(onboard|logstash|kafka|otel|ship|log)/.test(q)) {
                 aikaBotSay(
-                    "<b>Log Onboarding</b> is one guided request: agents installed where missing, then Kafka topic, Logstash parsers, and indices generated from your parse spec — one engineer review, live progress the whole way. No Confluence page needed.",
+                    "<b>ELK Log Onboarding</b> is one guided request: agents installed where missing, then Kafka topic, Logstash parsers, and indices generated from your parse spec — one engineer review, live progress the whole way. No Confluence page needed.",
                     "Onboard logs",
                     "openLogOnboarding(); toggleAika();",
                     "download",
@@ -6586,21 +7989,37 @@
                     "launch",
                     ["docs/spec/raise-an-alert-domain-model.md", "dxuim-config/UAT/ulaeiapos0a/processes.json"]
                 );
+            } else if (/(data dictionary|dictionary|what (data|indices|indexes)|which ind(ex|ices)|traces?|retention|statistical)/.test(q)) {
+                aikaBotSay(
+                    "The <b>Data Dictionary</b> lists every ELK index with its <b>signal type</b>, function, source, and retention: <b>logs</b> (per-app + syslog + audit), <b>metrics</b> (<span class='mono'>metrics-otel-hosts-*</span>, <span class='mono'>metrics-appd-*</span>), <b>traces</b> (<span class='mono'>traces-otel-apm-*</span>), and <b>statistical</b> rollups (alert volume, ingest usage, ML anomalies). OTel-shipped streams are tagged. 12 index patterns today — generated from the index templates in git.",
+                    "Browse the dictionary",
+                    "openDataDict(); toggleAika();",
+                    "file",
+                    ["index templates & data streams (git)", "docs/data/data-model.md"]
+                );
+            } else if (/(dashboards?|inventory)( |$|\?)|which dashboard|find.*dashboard|dashboard.*(for|list|where)/.test(q)) {
+                aikaBotSay(
+                    "The <b>Dashboard Inventory</b> lists every dashboard with what it shows and a deep link — <b>Grafana</b> for metrics (e.g. <span class='mono'>fast-transfer-slo</span>, <span class='mono'>infra-host-health</span>), <b>ELK/Kibana</b> for logs (e.g. <span class='mono'>payments-log-explorer</span>, <span class='mono'>esb-integration-flows</span>). It's generated from the asset registry, so it's always current — 8 dashboards today.",
+                    "Browse the inventory",
+                    "openDashInventory(); toggleAika();",
+                    "book",
+                    ["asset registry (dashboard registrations)", "grafana/alerting-overview-dashboard.json"]
+                );
             } else if (/(access|kibana|grafana|permission|grant|role)/.test(q)) {
                 aikaBotSay(
-                    "Access requests cover <b>Kibana spaces</b>, <b>Grafana folders</b>, and index-level permissions. Requests route to your team lead for approval — typical turnaround is under a day. Tip: request the <span class='mono'>read-only</span> role first; it auto-approves.",
-                    "Request access",
-                    "comingSoon('Access Granting');",
+                    "<b>Request Log Access</b> is self-service for <b>ELK log indices</b>, and all access is <b>read-only</b>. The picker shows every index and what it holds — and the <b>Your access</b> column is the quick check for what you already have (you currently hold <span class='mono'>logs-channels-sg-*</span>, expiring 12 Sep 2026). Pick an index and a duration; your <b>reporting manager approves</b>, and only then is the grant <b>pushed to main</b> in the <span class='mono'>elk-access</span> repo and applied by Ansible. Personal, recorded in git, auto-expiring.",
+                    "Request log access",
+                    "openRequestAccess(); toggleAika();",
                     "shield",
-                    ["docs/architecture/architecture.md"]
+                    ["elk-access repo (your grants)", "docs/architecture/architecture.md"]
                 );
             } else if (/(asset|register|registry|dashboard|catalog)/.test(q)) {
                 aikaBotSay(
-                    "The <b>asset registry</b> tracks services, dashboards, and indices so nothing becomes an orphan in the data swamp. Registering takes ~2 minutes: name, owner team, system, and lifecycle. Everything registered shows up in the Catalog.",
+                    "<b>Register Asset</b> is the <b>exceptions path</b> — for anything the pipeline doesn't discover on its own: a <b>dashboard link</b> (lands in the Dashboard Inventory once approved) or a <b>new server</b> not yet in the CMDB (registration unlocks Install Agent and Add Monitoring for it). Every registration is <b>triaged by the platform owners</b> before it enters the registry — nothing becomes an orphan in the data swamp.",
                     "Register an asset",
-                    "comingSoon('Asset Registry');",
+                    "openRegisterAsset(); toggleAika();",
                     "package",
-                    ["docs/planning/backlog.md", "docs/architecture/architecture.md"]
+                    ["asset registry (triage queue)", "docs/architecture/architecture.md"]
                 );
             } else if (/(hi|hello|hey|thanks|thank)/.test(q)) {
                 aikaBotSay("Happy to help! Ask me what an asset <b>has configured</b>, <b>who approved</b> a change, where the <b>coverage gaps</b> are — or about <b>alerts</b>, <b>log onboarding</b>, <b>drills</b>, and <b>access</b>.");
