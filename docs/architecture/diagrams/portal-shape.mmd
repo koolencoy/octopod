@@ -1,0 +1,40 @@
+flowchart TB
+    ENG["Engineer, any team"] -->|self-service| PORTAL
+
+    subgraph PORTAL["octopod — the Observability Portal (Backstage)"]
+        direction LR
+        CAT["Catalog<br/>the yellow pages"]
+        WIZ["Wizards<br/>guided requests"]
+        TD["TechDocs<br/>guides and runbooks"]
+        NO["Notifications<br/>outcomes"]
+    end
+
+    PORTAL -->|"every request becomes a PR<br/>merge = approval · git = audit trail"| GATE[("Bitbucket<br/>one config repo per service")]
+
+    GATE --> S1
+    GATE --> S2
+    GATE -.-> S3
+    GATE -.-> S4
+
+    subgraph S1["Raise an Alert · DX UIM — built"]
+        direction TB
+        A1["dxuim_config_sync<br/>role + translator"] --> T1["DX UIM API"]
+    end
+
+    subgraph S2["Raise an Alert · ELK — pattern proven, home pending"]
+        direction TB
+        A2["watcher sync<br/>role + translator"] --> T2["ELK Watcher API"]
+    end
+
+    subgraph S3["Raise an Alert · SolarWinds — planned"]
+        direction TB
+        A3["solarwinds sync<br/>role + translator"] --> T3["Orion API"]
+    end
+
+    subgraph S4["Future service slots<br/>dashboards · maintenance windows · onboarding"]
+        direction TB
+        A4["new role"] --> T4["e.g. Grafana API"]
+    end
+
+    A1 -.->|"outcome, via the shared<br/>notify_requester role"| NO
+    CAT -.->|"links each asset to<br/>its dashboards"| GRAF["Grafana"]

@@ -1,0 +1,22 @@
+sequenceDiagram
+    participant U as Requester
+    participant W as Backstage wizard
+    participant BB as Bitbucket
+    participant A as Ansible
+    participant M as Monitoring tool
+    participant N as Notifications
+
+    U->>W: Describe the alert (form)
+    W->>W: Decide routing (which tool?)
+    W->>BB: Write config file to branch staging/<name>, open PR
+    Note over BB: Reviewer approves by merging the PR
+    BB->>A: Push webhook fires (or Ansible polls on a schedule)
+    A->>BB: Read the changed config files
+    A->>M: Push the config (idempotent PUT)
+    alt activation succeeded
+        A->>N: "Your alert is live"
+    else activation failed
+        A->>N: "Activation FAILED — needs attention"
+        Note over A: The job itself also fails,<br/>so operators see it too
+    end
+    N->>U: Notification in Backstage

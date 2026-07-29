@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Observability Portal — Executive Overview</title>
+<style>
+    :root {
+        --navy: #0b1324;
+        --navy-2: #101c3a;
+        --canvas: #f4f6fa;
+        --card: #ffffff;
+        --border: #e1e6ef;
+        --border-strong: #c9d2e0;
+        --ink: #10182b;
+        --ink-2: #55637d;
+        --ink-dim: #8794ab;
+        --blue: #0278d5;
+        --blue-soft: rgba(2, 120, 213, 0.08);
+        --violet: #6938f2;
+        --violet-soft: rgba(105, 56, 242, 0.08);
+        --ok: #1d9f5f;
+        --warn: #f59300;
+        --grad: linear-gradient(92deg, #0278d5 0%, #6938f2 100%);
+        --font: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
+        --mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font); background: var(--canvas); color: var(--ink); padding: 36px 24px 48px; }
+    .page { max-width: 1180px; margin: 0 auto; }
+
+    /* ---- header ---- */
+    .hero {
+        background: linear-gradient(100deg, #070d1c 0%, #101c3a 55%, #1a2a55 100%);
+        border-radius: 16px;
+        color: #fff;
+        padding: 30px 38px 26px;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 26px;
+    }
+    .hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(ellipse 560px 220px at 86% -30%, rgba(105,56,242,0.35), transparent 65%),
+            radial-gradient(ellipse 480px 200px at 100% 120%, rgba(2,120,213,0.4), transparent 68%);
+        pointer-events: none;
+    }
+    .hero > * { position: relative; z-index: 1; }
+    .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #7fa8e8; margin-bottom: 8px; }
+    .hero h1 { font-size: 27px; font-weight: 800; letter-spacing: -0.02em; }
+    .hero p { margin-top: 8px; font-size: 14px; color: rgba(255,255,255,0.72); max-width: 760px; line-height: 1.55; }
+
+    /* ---- bands ---- */
+    .band-label {
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--ink-dim);
+        margin: 0 0 8px 4px;
+    }
+    .arrow {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        margin: 10px 0;
+        color: var(--ink-dim);
+    }
+    .arrow .stem { width: 2px; height: 14px; background: var(--border-strong); }
+    .arrow .head { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--border-strong); }
+    .arrow .note { font-size: 11.5px; color: var(--ink-2); font-weight: 600; margin-top: 2px; }
+
+    /* people */
+    .people { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .person {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 9px 18px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink-2);
+        box-shadow: 0 1px 2px rgba(16,24,40,0.05);
+    }
+    .person b { color: var(--ink); }
+
+    /* portal */
+    .portal {
+        background: var(--card);
+        border: 2px solid var(--blue);
+        border-radius: 16px;
+        box-shadow: 0 12px 40px rgba(7,13,28,0.10);
+        overflow: hidden;
+    }
+    .portal-head {
+        background: var(--grad);
+        color: #fff;
+        padding: 14px 24px;
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .portal-head h2 { font-size: 17px; font-weight: 800; letter-spacing: -0.01em; }
+    .portal-head span { font-size: 12px; color: rgba(255,255,255,0.85); }
+    .portal-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; }
+    .pcol { padding: 18px 22px; border-right: 1px solid var(--border); }
+    .pcol:last-child { border-right: none; }
+    .pcol h3 { font-size: 13px; font-weight: 800; margin-bottom: 3px; }
+    .pcol .tag { font-size: 11px; color: var(--ink-dim); margin-bottom: 12px; }
+    .pcol ul { list-style: none; }
+    .pcol li { font-size: 12.5px; color: var(--ink-2); padding: 5px 0 5px 18px; position: relative; line-height: 1.45; }
+    .pcol li::before { content: ''; position: absolute; left: 2px; top: 11px; width: 7px; height: 7px; border-radius: 2px; }
+    .pcol.enable li::before { background: var(--blue); }
+    .pcol.assure li::before { background: var(--warn); }
+    .pcol.brain li::before { background: var(--violet); }
+    .pcol li b { color: var(--ink); }
+
+    .governance {
+        border-top: 1px solid var(--border);
+        background: #f8fafd;
+        padding: 14px 24px 16px;
+    }
+    .governance .g-title { font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--violet); margin-bottom: 10px; }
+    .g-flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .g-step {
+        background: var(--card);
+        border: 1px solid var(--border-strong);
+        border-radius: 8px;
+        padding: 7px 13px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--ink);
+        white-space: nowrap;
+    }
+    .g-step small { display: block; font-size: 10.5px; font-weight: 600; color: var(--ink-dim); margin-top: 1px; }
+    .g-arr { color: var(--border-strong); font-weight: 800; }
+    .g-note { margin-top: 10px; font-size: 12px; color: var(--ink-2); }
+    .g-note b { color: var(--violet); }
+
+    /* systems of record */
+    .sor { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .sor-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--blue);
+        border-radius: 12px;
+        padding: 16px 20px;
+        box-shadow: 0 1px 3px rgba(16,24,40,0.06);
+    }
+    .sor-card.brainy { border-left-color: var(--violet); }
+    .sor-card h3 { font-size: 13.5px; font-weight: 800; }
+    .sor-card .sub { font-family: var(--mono); font-size: 10.5px; color: var(--blue); margin: 2px 0 8px; }
+    .sor-card.brainy .sub { color: var(--violet); }
+    .sor-card p { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+
+    /* platforms */
+    .plats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    .plat {
+        background: var(--navy);
+        color: #fff;
+        border-radius: 12px;
+        padding: 14px 16px;
+        min-height: 84px;
+    }
+    .plat h4 { font-size: 13px; font-weight: 800; }
+    .plat .role { font-size: 11px; color: #8fa3bf; margin-top: 4px; line-height: 1.45; }
+
+    /* outcomes */
+    .outcomes {
+        margin-top: 26px;
+        background: linear-gradient(100deg, #070d1c 0%, #101c3a 60%, #1a2a55 100%);
+        border-radius: 16px;
+        padding: 22px 28px;
+        color: #fff;
+    }
+    .outcomes h3 { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #7fa8e8; margin-bottom: 14px; }
+    .out-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    .out { font-size: 12.5px; color: rgba(255,255,255,0.82); line-height: 1.5; }
+    .out b { display: block; color: #fff; font-size: 13px; margin-bottom: 4px; }
+
+    .foot { margin-top: 18px; font-size: 11px; color: var(--ink-dim); text-align: center; }
+    .foot code { font-family: var(--mono); }
+
+    @media (max-width: 900px) {
+        .portal-cols { grid-template-columns: 1fr; }
+        .pcol { border-right: none; border-bottom: 1px solid var(--border); }
+        .sor, .plats, .out-grid { grid-template-columns: 1fr; }
+    }
+</style>
+</head>
+<body>
+<div class="page">
+
+    <div class="hero">
+        <div class="eyebrow">OCBC · Group Technology · Executive Overview</div>
+        <h1>The Observability Portal</h1>
+        <p>One governed front door for monitoring across every entity: any team can enable, verify, and operate observability for its applications and hosts in minutes — through guided self-service instead of tickets and hand-offs, with every change approved and recorded by construction.</p>
+    </div>
+
+    <div class="band-label">Who uses it</div>
+    <div class="people">
+        <div class="person"><b>Application teams</b> · request &amp; track</div>
+        <div class="person"><b>Approvers</b> · maker–checker sign-off</div>
+        <div class="person"><b>SRE &amp; platform engineers</b> · one review, no toil</div>
+        <div class="person"><b>Auditors</b> · read the record</div>
+    </div>
+
+    <div class="arrow"><div class="stem"></div><div class="head"></div><div class="note">guided requests · grounded answers</div></div>
+
+    <div class="portal">
+        <div class="portal-head">
+            <h2>Observability Portal</h2>
+            <span>built on Backstage — a single experience over every observability platform</span>
+        </div>
+        <div class="portal-cols">
+            <div class="pcol enable">
+                <h3>Enable</h3>
+                <div class="tag">turn observability on — guided, pre-filled from the CMDB</div>
+                <ul>
+                    <li><b>Add Monitoring</b> — CMD, log &amp; process alerts, routed to the right platform automatically</li>
+                    <li><b>ELK Log Onboarding</b> — agents, Kafka topic, parsers, indices from one request</li>
+                    <li><b>Access &amp; Asset Registry</b> — permissions and catalog registration</li>
+                </ul>
+            </div>
+            <div class="pcol assure">
+                <h3>Assure</h3>
+                <div class="tag">prove it works — before an incident does</div>
+                <ul>
+                    <li><b>Observability Score</b> — a scorecard and certification level per asset</li>
+                    <li><b>Synthetic Alerting</b> — fire-drill an alert end to end, ticket included</li>
+                    <li><b>Reconciliation Reports</b> — expected vs reality across ELK, DX&nbsp;UIM, SolarWinds</li>
+                </ul>
+            </div>
+            <div class="pcol brain">
+                <h3>Observability Brain</h3>
+                <div class="tag">the estate, in plain language</div>
+                <ul>
+                    <li><b>Search</b> the knowledge base — configs, runbooks, specs</li>
+                    <li><b>Ask</b> — "what does this host have? who approved it? where are the gaps?" — every answer cites its sources</li>
+                    <li><b>Act</b> — answers link into the governed services, never around them</li>
+                </ul>
+            </div>
+        </div>
+        <div class="governance">
+            <div class="g-title">The governance spine — every change, human or AI, takes this path</div>
+            <div class="g-flow">
+                <div class="g-step">Request<small>maker, via template</small></div>
+                <span class="g-arr">→</span>
+                <div class="g-step">Pull request<small>config as code</small></div>
+                <span class="g-arr">→</span>
+                <div class="g-step">Approval<small>checker, never the maker</small></div>
+                <span class="g-arr">→</span>
+                <div class="g-step">Git — the record<small>main is the truth</small></div>
+                <span class="g-arr">→</span>
+                <div class="g-step">Automation applies<small>Ansible, read-only from git</small></div>
+            </div>
+            <div class="g-note"><b>AI proposes, humans approve, git records.</b> No one — and nothing — writes to a platform directly.</div>
+        </div>
+    </div>
+
+    <div class="arrow"><div class="stem"></div><div class="head"></div><div class="note">reads facts · commits approved changes</div></div>
+
+    <div class="band-label">Two systems of record</div>
+    <div class="sor">
+        <div class="sor-card">
+            <h3>CMDB / Asset Registry</h3>
+            <div class="sub">what exists</div>
+            <p>Every host and service, its entity, environment, and owner. The portal resolves assets from here — users type a name, never re-enter facts.</p>
+        </div>
+        <div class="sor-card brainy">
+            <h3>Git — the Second Brain</h3>
+            <div class="sub">what is configured, and why</div>
+            <p>All monitoring config, docs, and decisions as versioned plain text. It powers the Brain's answers, the scorecards, and the audit trail — and makes the estate AI-ready.</p>
+        </div>
+    </div>
+
+    <div class="arrow"><div class="stem"></div><div class="head"></div><div class="note">activation · daily reconciliation</div></div>
+
+    <div class="band-label">The platforms underneath — invisible to requesters</div>
+    <div class="plats">
+        <div class="plat"><h4>ELK + Kafka</h4><div class="role">Logs &amp; watchers for microservices and OTel hosts</div></div>
+        <div class="plat"><h4>DX UIM</h4><div class="role">CMD, log &amp; process monitoring for legacy hosts</div></div>
+        <div class="plat"><h4>SolarWinds</h4><div class="role">Network &amp; infrastructure nodes</div></div>
+        <div class="plat"><h4>Grafana · Kibana</h4><div class="role">Dashboards &amp; exploration per asset</div></div>
+        <div class="plat"><h4>Moogsoft → HPSM</h4><div class="role">Event correlation into governed incident tickets</div></div>
+    </div>
+
+    <div class="outcomes">
+        <h3>Why it matters</h3>
+        <div class="out-grid">
+            <div class="out"><b>Minutes, not weeks</b>Six manual hand-offs per request collapse into one guided flow with one human approval.</div>
+            <div class="out"><b>Audit by construction</b>Every change is a reviewed pull request — requester, approver, diff, and date are the record, not an afterthought.</div>
+            <div class="out"><b>Drift can't hide</b>Daily reconciliation compares what should be monitored with what is — every gap ships with its one-click fix.</div>
+            <div class="out"><b>AI-ready by design</b>Because the estate is plain text in git, AI assistance arrives grounded and governed — same path, same approvals.</div>
+        </div>
+    </div>
+
+    <div class="foot">Observability Portal · executive overview · source: <code>docs/ui-ux-design/diagrams/observability-portal-overview.html</code></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+sequenceDiagram
+    autonumber
+    actor Requester
+    participant BS as Backstage Scaffolder
+    participant Repo as Bitbucket repo
+    participant Mgr as Reporting Manager
+    participant Ans as Ansible
+    participant BE as ELK / DX UIM
+
+    Requester->>BS: Fill "Raise an Alert" wizard
+    BS->>BS: sre:approval:request, sre:infinity:validate-change
+
+    rect rgba(59, 130, 246, 0.15)
+    note over BS,Repo: git operations
+    BS->>Repo: git checkout -b staging/<name> (from main)
+    BS->>Repo: git add + commit (config + generated docs)
+    BS->>Repo: git push origin staging/<name>
+    BS->>Repo: open Pull Request staging/<name> -> main
+    Repo-->>Mgr: review request
+    Mgr->>Repo: approve PR
+    Mgr->>Repo: merge pull request (main gets staging/<name>)
+    Repo->>Repo: delete branch staging/<name>
+    end
+
+    rect rgba(245, 158, 11, 0.15)
+    note over Repo,Ans: webhook trigger
+    Repo->>Ans: webhook repo:refs_changed (fromHash, toHash on main)
+    end
+
+    rect rgba(139, 92, 246, 0.15)
+    note over Ans,Repo: REST API reads - no local clone
+    Ans->>Repo: GET /compare/changes?from&to
+    Ans->>Repo: GET /raw/{path}?at=refs/heads/main
+    end
+
+    Ans->>BE: PUT config (Watcher API / uimapi probe config)
+    BE-->>Ans: 200 / 201

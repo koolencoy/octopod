@@ -1,0 +1,8 @@
+flowchart LR
+    U[User] -->|1. fills wizard| BS[Backstage]
+    BS -->|2. opens PR| BB[Bitbucket]
+    R[Reviewer] -->|3. merges PR| BB
+    BB -->|4. webhook / poll| AN[Ansible]
+    AN -->|5. pushes config| T["Platform services<br/>DX UIM · ELK · SolarWinds"]
+    AN -->|6. success or failure| BS
+    BS -->|notification| U
