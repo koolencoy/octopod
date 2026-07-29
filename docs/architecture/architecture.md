@@ -51,73 +51,29 @@ config repo in Bitbucket, an Ansible role with a translator, and the
 platform service's API. New services are added by filling a new slot,
 never by changing the portal's shape:
 
-```mermaid
-flowchart TB
-    ENG["Engineer, any team"] -->|self-service| PORTAL
+![The portal shape: engineer → portal → Bitbucket approval gate → pluggable service slices](diagrams/portal-shape.svg)
 
-    subgraph PORTAL["octopod — the Observability Portal (Backstage)"]
-        direction LR
-        CAT["Catalog<br/>the yellow pages"]
-        WIZ["Wizards<br/>guided requests"]
-        TD["TechDocs<br/>guides and runbooks"]
-        NO["Notifications<br/>outcomes"]
-    end
-
-    PORTAL -->|"every request becomes a PR<br/>merge = approval · git = audit trail"| GATE[("Bitbucket<br/>one config repo per service")]
-
-    GATE --> S1
-    GATE --> S2
-    GATE -.-> S3
-    GATE -.-> S4
-
-    subgraph S1["Raise an Alert · DX UIM — built"]
-        direction TB
-        A1["dxuim_config_sync<br/>role + translator"] --> T1["DX UIM API"]
-    end
-
-    subgraph S2["Raise an Alert · ELK — pattern proven, home pending"]
-        direction TB
-        A2["watcher sync<br/>role + translator"] --> T2["ELK Watcher API"]
-    end
-
-    subgraph S3["Raise an Alert · SolarWinds — planned"]
-        direction TB
-        A3["solarwinds sync<br/>role + translator"] --> T3["Orion API"]
-    end
-
-    subgraph S4["Future service slots<br/>dashboards · maintenance windows · onboarding"]
-        direction TB
-        A4["new role"] --> T4["e.g. Grafana API"]
-    end
-
-    A1 -.->|"outcome, via the shared<br/>notify_requester role"| NO
-    CAT -.->|"links each asset to<br/>its dashboards"| GRAF["Grafana"]
-```
+*(Diagrams in this document are pre-rendered SVG images so they display
+in any browser, with no plugin or JavaScript dependency. The editable
+sources live in `diagrams/` — see `diagrams/README.md` to regenerate
+after editing.)*
 
 Solid arrows are built and verified; dashed arrows are pending or
-planned. Two things every slice shares: the approval gate (all config
-travels through a Bitbucket PR) and the outcome channel (every slice
-reports success or failure through the same `notify_requester` role —
-drawn once, from the DX UIM slice, to keep the picture readable).
-Grafana appears twice deliberately: as a *future slot* if dashboard
-provisioning becomes self-service, and as the dashboards the Catalog
-already links to today (§6.4).
+planned. Two things every slice shares, not drawn to keep the picture
+readable: the outcome channel (every slice reports success or failure
+back to Portal Notifications through the same shared
+`notify_requester` role — the return arrow is visible in the §2.2
+loop) and the translator pattern (§5). Grafana appears twice
+deliberately: as a *future slot* if dashboard provisioning becomes
+self-service, and as the dashboards the Catalog already links to
+today (§6.4).
 
 ### 2.2 One service, zoomed in
 
 The request loop inside a single slice — DX UIM shown, but the loop is
 identical for every slice:
 
-```mermaid
-flowchart LR
-    U[User] -->|1. fills wizard| BS[Backstage]
-    BS -->|2. opens PR| BB[Bitbucket]
-    R[Reviewer] -->|3. merges PR| BB
-    BB -->|4. webhook / poll| AN[Ansible]
-    AN -->|5. pushes config| T["Platform services<br/>DX UIM · ELK · SolarWinds"]
-    AN -->|6. success or failure| BS
-    BS -->|notification| U
-```
+![The request loop: wizard → PR → merge → webhook → Ansible → platform service → notification](diagrams/request-loop.svg)
 
 Each of the three stack components has exactly one job:
 
@@ -155,30 +111,7 @@ these tools daily:
 
 ## 4. How a request flows, step by step
 
-```mermaid
-sequenceDiagram
-    participant U as Requester
-    participant W as Backstage wizard
-    participant BB as Bitbucket
-    participant A as Ansible
-    participant M as Monitoring tool
-    participant N as Notifications
-
-    U->>W: Describe the alert (form)
-    W->>W: Decide routing (which tool?)
-    W->>BB: Write config file to branch staging/<name>, open PR
-    Note over BB: Reviewer approves by merging the PR
-    BB->>A: Push webhook fires (or Ansible polls on a schedule)
-    A->>BB: Read the changed config files
-    A->>M: Push the config (idempotent PUT)
-    alt activation succeeded
-        A->>N: "Your alert is live"
-    else activation failed
-        A->>N: "Activation FAILED — needs attention"
-        Note over A: The job itself also fails,<br/>so operators see it too
-    end
-    N->>U: Notification in Backstage
-```
+![Request sequence: from wizard submission through approval, activation, and notification of success or failure](diagrams/request-sequence.svg)
 
 Points worth understanding:
 
@@ -212,17 +145,7 @@ Three rules:
 One request (a keyword alert for `ms-cbs-account-movement-adapter`)
 shown end-to-end as branch topology:
 
-```mermaid
-gitGraph
-   commit id: "prod truth (n)"
-   branch staging/deposit-adapter-sg-ms-cbs-account-movement-adapter
-   checkout staging/deposit-adapter-sg-ms-cbs-account-movement-adapter
-   commit id: "generated watcher config"
-   commit id: "generated user guide"
-   checkout main
-   merge staging/deposit-adapter-sg-ms-cbs-account-movement-adapter id: "PR reviewed + approved, merged"
-   commit id: "prod truth (n+1)"
-```
+![Branch topology: staging branch created from main, two generated commits, merged back via approved PR](diagrams/branch-topology.svg)
 
 And the same request as every git operation and API call, in order. The
 **git operations** block (blue) is the only place actual git plumbing
@@ -235,45 +158,7 @@ block (violet) is Ansible's entire involvement with the repo: no
 `git clone`, no working copy, no `.git` directory — it asks Bitbucket's
 HTTP API for a diff and file contents on demand.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Requester
-    participant BS as Backstage Scaffolder
-    participant Repo as Bitbucket repo
-    participant Mgr as Reporting Manager
-    participant Ans as Ansible
-    participant BE as ELK / DX UIM
-
-    Requester->>BS: Fill "Raise an Alert" wizard
-    BS->>BS: sre:approval:request, sre:infinity:validate-change
-
-    rect rgba(59, 130, 246, 0.15)
-    note over BS,Repo: git operations
-    BS->>Repo: git checkout -b staging/<name> (from main)
-    BS->>Repo: git add + commit (config + generated docs)
-    BS->>Repo: git push origin staging/<name>
-    BS->>Repo: open Pull Request staging/<name> -> main
-    Repo-->>Mgr: review request
-    Mgr->>Repo: approve PR
-    Mgr->>Repo: merge pull request (main gets staging/<name>)
-    Repo->>Repo: delete branch staging/<name>
-    end
-
-    rect rgba(245, 158, 11, 0.15)
-    note over Repo,Ans: webhook trigger
-    Repo->>Ans: webhook repo:refs_changed (fromHash, toHash on main)
-    end
-
-    rect rgba(139, 92, 246, 0.15)
-    note over Ans,Repo: REST API reads - no local clone
-    Ans->>Repo: GET /compare/changes?from&to
-    Ans->>Repo: GET /raw/{path}?at=refs/heads/main
-    end
-
-    Ans->>BE: PUT config (Watcher API / uimapi probe config)
-    BE-->>Ans: 200 / 201
-```
+![Every git operation and API call in order: git operations (blue), webhook trigger (amber), REST API reads (violet), then the PUT to the platform service](diagrams/git-operations.svg)
 
 ## 5. What's stored in git
 

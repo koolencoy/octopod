@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why an Observability Platform — Executive Overview</title>
+<style>
+    /* OCBC light treatment — matches observability-portal-overview.html.
+       Content source: docs/planning/overview.md + vision.md */
+    :root {
+        --red: #DA291C;
+        --red-deep: #A61E15;
+        --red-soft: rgba(218, 41, 28, 0.07);
+        --canvas: #f7f7f8;
+        --card: #ffffff;
+        --border: #e7e7ea;
+        --border-strong: #cfcfd6;
+        --ink: #26272b;
+        --ink-2: #56575e;
+        --ink-dim: #8b8c94;
+        --ok: #1d7f4f;
+        --font: 'Geomanist', 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
+        --mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font); background: var(--canvas); color: var(--ink); padding: 36px 24px 48px; }
+    .page { max-width: 1180px; margin: 0 auto; }
+
+    .hero {
+        background: linear-gradient(100deg, #fdf1f0 0%, #fff 60%, #fdf4f3 100%);
+        border: 1px solid #f3d9d6;
+        border-top: 4px solid var(--red);
+        border-radius: 14px;
+        padding: 30px 38px 26px;
+        margin-bottom: 26px;
+    }
+    .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--red); margin-bottom: 8px; }
+    .hero h1 { font-size: 27px; font-weight: 800; letter-spacing: -0.02em; }
+    .hero p { margin-top: 8px; font-size: 14px; color: var(--ink-2); max-width: 800px; line-height: 1.55; }
+    .hero p b { color: var(--ink); }
+
+    .band-label {
+        font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+        color: var(--ink-dim); margin: 22px 0 8px 4px;
+    }
+    .band-label.first { margin-top: 0; }
+
+    .arrow { display: flex; flex-direction: column; align-items: center; gap: 2px; margin: 14px 0 4px; }
+    .arrow .stem { width: 2px; height: 14px; background: var(--border-strong); }
+    .arrow .head { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--border-strong); }
+    .arrow .note { font-size: 11.5px; color: var(--red-deep); font-weight: 700; margin-top: 2px; letter-spacing: 0.02em; }
+
+    /* problem cards */
+    .probs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    .prob {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-top: 3px solid var(--red);
+        border-radius: 12px;
+        padding: 16px 20px;
+        box-shadow: 0 1px 3px rgba(38,39,43,0.06);
+    }
+    .prob h3 { font-size: 13.5px; font-weight: 800; margin-bottom: 6px; }
+    .prob p { font-size: 12.5px; color: var(--ink-2); line-height: 1.55; }
+    .prob p b { color: var(--ink); }
+
+    /* cost strip */
+    .costs {
+        margin-top: 14px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px 20px;
+        box-shadow: 0 1px 3px rgba(38,39,43,0.06);
+    }
+    .cost-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .cost { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; padding-left: 14px; border-left: 3px solid var(--red); }
+    .cost b { display: block; color: var(--ink); font-size: 13px; margin-bottom: 2px; }
+    .scaling {
+        margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border-strong);
+        font-size: 12.5px; color: var(--ink-2); line-height: 1.55;
+    }
+    .scaling b { color: var(--red-deep); }
+
+    /* before / after */
+    .turn {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(38,39,43,0.08);
+    }
+    .turn table { width: 100%; border-collapse: collapse; }
+    .turn th {
+        text-align: left; font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+        padding: 12px 20px; border-bottom: 2px solid var(--border-strong);
+    }
+    .turn th.past { color: var(--ink-dim); width: 46%; }
+    .turn th.now { color: var(--red); }
+    .turn td { font-size: 12.5px; padding: 10px 20px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+    .turn tr:last-child td { border-bottom: none; }
+    .turn td.past { color: var(--ink-dim); }
+    .turn td.now { color: var(--ink); font-weight: 600; background: #fdf7f6; }
+
+    /* returns */
+    .returns { display: grid; grid-template-columns: 1.15fr 1fr; gap: 14px; }
+    .ret-card {
+        background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+        padding: 16px 20px; box-shadow: 0 1px 3px rgba(38,39,43,0.06);
+    }
+    .ret-card h3 { font-size: 13px; font-weight: 800; margin-bottom: 8px; }
+    .formula {
+        font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); background: #f8f8f9;
+        border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; line-height: 1.7; margin-bottom: 10px;
+    }
+    .ret-card p { font-size: 12.5px; color: var(--ink-2); line-height: 1.55; }
+    .ret-card p b { color: var(--red-deep); }
+    .ret-list { list-style: none; }
+    .ret-list li { font-size: 12.5px; color: var(--ink-2); padding: 6px 0 6px 20px; position: relative; line-height: 1.5; }
+    .ret-list li::before { content: '✓'; position: absolute; left: 0; color: var(--ok); font-weight: 800; }
+    .ret-list li b { color: var(--ink); }
+
+    /* why now */
+    .now3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    .now-card {
+        background: linear-gradient(100deg, #fdf1f0 0%, #fff 70%) ;
+        border: 1px solid #f3d9d6;
+        border-radius: 12px;
+        padding: 16px 20px;
+    }
+    .now-card .n { font-size: 10.5px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--red); margin-bottom: 6px; }
+    .now-card h3 { font-size: 13.5px; font-weight: 800; margin-bottom: 6px; }
+    .now-card p { font-size: 12.5px; color: var(--ink-2); line-height: 1.55; }
+    .now-card p b { color: var(--ink); }
+
+    .closer {
+        margin-top: 24px;
+        background: var(--card);
+        border: 1px solid #f3d9d6;
+        border-top: 4px solid var(--red);
+        border-radius: 14px;
+        padding: 18px 26px;
+        display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap;
+    }
+    .closer p { font-size: 13.5px; color: var(--ink); line-height: 1.55; max-width: 860px; }
+    .closer p b { color: var(--red-deep); }
+    .closer .tag { font-size: 12px; font-weight: 800; color: var(--red); white-space: nowrap; }
+
+    .foot { margin-top: 18px; font-size: 11px; color: var(--ink-dim); text-align: center; }
+    .foot code { font-family: var(--mono); }
+
+    @media (max-width: 900px) {
+        .probs, .cost-row, .returns, .now3 { grid-template-columns: 1fr; }
+    }
+</style>
+</head>
+<body>
+<div class="page">
+
+    <div class="hero">
+        <div class="eyebrow">OCBC · Group Technology · Executive Overview</div>
+        <h1>Why an Observability Platform?</h1>
+        <p>For more than a decade, observability has run on <b>interrupt-driven operations</b>: find an engineer, ask, wait. That worked when the estate was small. It does not scale to thousands of hosts, hundreds of applications, and four monitoring tools — and it quietly costs us every day.</p>
+    </div>
+
+    <div class="band-label first">Today — how it has run for a decade</div>
+    <div class="probs">
+        <div class="prob">
+            <h3>Every request is a conversation</h3>
+            <p>Anyone needing an alert or an answer pings a platform engineer, who stops, does the work by hand, and moves to the next interruption. <b>The queue is really a person</b> — requesters wait days for minutes of actual change.</p>
+        </div>
+        <div class="prob">
+            <h3>Documentation drifts</h3>
+            <p>Inventories and runbooks are written apart from the systems they describe — stale the week they are written. <b>Nobody trusts them</b>, so people go back to pinging the engineer, which is how the cycle sustains itself.</p>
+        </div>
+        <div class="prob">
+            <h3>Approvals and audit are informal</h3>
+            <p>Hand-made changes on a monitoring tool leave <b>no reviewable record</b> of who asked, who approved, and what exactly changed. The audit story depends on memory rather than records.</p>
+        </div>
+    </div>
+
+    <div class="costs">
+        <div class="cost-row">
+            <div class="cost"><b>Platform engineers</b>Capacity spent on repetitive toil instead of platform engineering.</div>
+            <div class="cost"><b>Requesting teams</b>Days on a queue for what is minutes of work.</div>
+            <div class="cost"><b>The bank</b>Audit risk, and an inventory that lives in a few people's heads.</div>
+        </div>
+        <div class="scaling"><b>And manual work has a scaling law:</b> a human applying config by hand will, over enough repetitions, make errors — accumulated across years they become operational drift: what is actually configured no longer matches what anyone believes is configured. More volume means more hands-on changes means more drift, while the team absorbing it stays fixed and small.</div>
+    </div>
+
+    <div class="arrow"><div class="stem"></div><div class="head"></div><div class="note">the page turns</div></div>
+
+    <div class="band-label">What changes</div>
+    <div class="turn">
+        <table>
+            <tr><th class="past">For the past decade</th><th class="now">From now on</th></tr>
+            <tr><td class="past">Ping or call an engineer and wait</td><td class="now">Self-service wizard — done in minutes after approval</td></tr>
+            <tr><td class="past">Inventories and runbooks that drift</td><td class="now">A living catalog generated from the same config that drives the tools</td></tr>
+            <tr><td class="past">Hand-made changes, informal approvals</td><td class="now">Every change is a reviewed, recorded, automatically-activated request</td></tr>
+            <tr><td class="past">Four tools, four tribal processes</td><td class="now">One portal, one request pattern — whatever the tool behind it</td></tr>
+            <tr><td class="past">Knowledge in a few heads</td><td class="now">Process and inventory in the platform, owned by everyone</td></tr>
+        </table>
+    </div>
+
+    <div class="band-label">What it returns</div>
+    <div class="returns">
+        <div class="ret-card">
+            <h3>Savings — simple to state, easy to baseline</h3>
+            <div class="formula">monthly savings = requests/month × engineer-minutes per request × loaded rate<br>&nbsp;&nbsp;+ requester wait-time cost avoided&nbsp;&nbsp;+ audit-preparation effort avoided</div>
+            <p>Illustrative: at 100 alert requests a month averaging 45 engineer-minutes each, self-service returns <b>~75 engineer-hours a month — roughly half an FTE</b> — before counting requesters' waiting time or audit preparation. A measured baseline (one quarter of ticket data) turns this from estimate into fact.</p>
+        </div>
+        <div class="ret-card">
+            <h3>And the benefits money doesn't fully capture</h3>
+            <ul class="ret-list">
+                <li><b>Drift eliminated</b> — the approved config is applied exactly, identically, every time</li>
+                <li><b>Audit by construction</b> — requester, approver, and diff permanently on record</li>
+                <li><b>"Believed monitored" = "actually monitored"</b> — a trustworthy catalog closes the gap that causes avoidable incidents</li>
+                <li><b>Reduced key-person risk</b> — the process lives in git and the Portal, not in heads</li>
+                <li><b>No new license spend</b> — open-source Backstage plus tools we already run</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="band-label">Why this succeeds now</div>
+    <div class="now3">
+        <div class="now-card">
+            <div class="n">Proof</div>
+            <h3>It is already working</h3>
+            <p>The first slice — infrastructure monitoring on DX UIM — runs end to end today: request, approval, automatic activation, confirmation back. <b>Not a concept</b>; a working pipeline being hardened for production this quarter.</p>
+        </div>
+        <div class="now-card">
+            <div class="n">Cost</div>
+            <h3>Nothing new to buy</h3>
+            <p>Built from what we already run — our monitoring tools, our git server, our automation — plus open-source Backstage. <b>The investment is engineering focus, not licenses.</b></p>
+        </div>
+        <div class="now-card">
+            <div class="n">Timing</div>
+            <h3>AI makes this the moment</h3>
+            <p>Everything is markdown and config-as-code — the medium AI tools work in natively. Bitbucket becomes the <b>second brain of Observability</b>, and AI adoption is safe by construction: <b>AI proposes, humans approve, git records.</b></p>
+        </div>
+    </div>
+
+    <div class="closer">
+        <p>A decade of operating one way is exactly why this matters: <b>the cost is so familiar it has become invisible.</b> The Portal makes it visible — and then removes it. That is the fresh page.</p>
+        <span class="tag">For now, and beyond</span>
+    </div>
+
+    <div class="foot">Why an Observability Platform · sources: <code>docs/planning/overview.md</code> · <code>docs/planning/vision.md</code></div>
+</div>
+</body>
+</html>

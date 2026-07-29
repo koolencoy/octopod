@@ -5,24 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Observability Portal — Executive Overview</title>
 <style>
+    /* OCBC brand treatment (our-brand.page): OCBC Red as the single accent,
+       Geomanist typography (falls back gracefully where not installed),
+       white surfaces, warm neutral grays — modern, progressive, timeless.
+       Red values approximate the brand red; swap for the official token. */
     :root {
-        --navy: #0b1324;
-        --navy-2: #101c3a;
-        --canvas: #f4f6fa;
+        --red: #DA291C;
+        --red-deep: #A61E15;
+        --red-dark: #7d150f;
+        --red-soft: rgba(218, 41, 28, 0.07);
+        --canvas: #f7f7f8;
         --card: #ffffff;
-        --border: #e1e6ef;
-        --border-strong: #c9d2e0;
-        --ink: #10182b;
-        --ink-2: #55637d;
-        --ink-dim: #8794ab;
-        --blue: #0278d5;
-        --blue-soft: rgba(2, 120, 213, 0.08);
-        --violet: #6938f2;
-        --violet-soft: rgba(105, 56, 242, 0.08);
-        --ok: #1d9f5f;
-        --warn: #f59300;
-        --grad: linear-gradient(92deg, #0278d5 0%, #6938f2 100%);
-        --font: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
+        --border: #e7e7ea;
+        --border-strong: #cfcfd6;
+        --ink: #26272b;
+        --ink-2: #56575e;
+        --ink-dim: #8b8c94;
+        --charcoal: #26272b;
+        --grad: linear-gradient(92deg, #DA291C 0%, #A61E15 100%);
+        --font: 'Geomanist', 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
         --mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -31,9 +32,11 @@
 
     /* ---- header ---- */
     .hero {
-        background: linear-gradient(100deg, #070d1c 0%, #101c3a 55%, #1a2a55 100%);
-        border-radius: 16px;
-        color: #fff;
+        background: linear-gradient(100deg, #fdf1f0 0%, #fff 60%, #fdf4f3 100%);
+        border: 1px solid #f3d9d6;
+        border-top: 4px solid var(--red);
+        border-radius: 14px;
+        color: var(--ink);
         padding: 30px 38px 26px;
         position: relative;
         overflow: hidden;
@@ -44,14 +47,13 @@
         position: absolute;
         inset: 0;
         background:
-            radial-gradient(ellipse 560px 220px at 86% -30%, rgba(105,56,242,0.35), transparent 65%),
-            radial-gradient(ellipse 480px 200px at 100% 120%, rgba(2,120,213,0.4), transparent 68%);
+            radial-gradient(ellipse 560px 220px at 88% -30%, rgba(218,41,28,0.06), transparent 65%);
         pointer-events: none;
     }
     .hero > * { position: relative; z-index: 1; }
-    .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #7fa8e8; margin-bottom: 8px; }
+    .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--red); margin-bottom: 8px; }
     .hero h1 { font-size: 27px; font-weight: 800; letter-spacing: -0.02em; }
-    .hero p { margin-top: 8px; font-size: 14px; color: rgba(255,255,255,0.72); max-width: 760px; line-height: 1.55; }
+    .hero p { margin-top: 8px; font-size: 14px; color: var(--ink-2); max-width: 760px; line-height: 1.55; }
 
     /* ---- bands ---- */
     .band-label {
@@ -84,21 +86,22 @@
         font-size: 13px;
         font-weight: 600;
         color: var(--ink-2);
-        box-shadow: 0 1px 2px rgba(16,24,40,0.05);
+        box-shadow: 0 1px 2px rgba(38,39,43,0.05);
     }
     .person b { color: var(--ink); }
 
     /* portal */
     .portal {
         background: var(--card);
-        border: 2px solid var(--blue);
-        border-radius: 16px;
-        box-shadow: 0 12px 40px rgba(7,13,28,0.10);
+        border: 1px solid #eec7c3;
+        border-radius: 14px;
+        box-shadow: 0 12px 40px rgba(38,39,43,0.10);
         overflow: hidden;
     }
     .portal-head {
-        background: var(--grad);
-        color: #fff;
+        background: #fbeae8;
+        border-bottom: 1px solid #f3d9d6;
+        color: var(--red-deep);
         padding: 14px 24px;
         display: flex;
         align-items: baseline;
@@ -106,26 +109,25 @@
         flex-wrap: wrap;
     }
     .portal-head h2 { font-size: 17px; font-weight: 800; letter-spacing: -0.01em; }
-    .portal-head span { font-size: 12px; color: rgba(255,255,255,0.85); }
+    .portal-head span { font-size: 12px; color: var(--ink-2); }
     .portal-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; }
     .pcol { padding: 18px 22px; border-right: 1px solid var(--border); }
     .pcol:last-child { border-right: none; }
-    .pcol h3 { font-size: 13px; font-weight: 800; margin-bottom: 3px; }
+    .pcol h3 { font-size: 13px; font-weight: 800; margin-bottom: 3px; color: var(--red-deep); }
     .pcol .tag { font-size: 11px; color: var(--ink-dim); margin-bottom: 12px; }
     .pcol ul { list-style: none; }
     .pcol li { font-size: 12.5px; color: var(--ink-2); padding: 5px 0 5px 18px; position: relative; line-height: 1.45; }
-    .pcol li::before { content: ''; position: absolute; left: 2px; top: 11px; width: 7px; height: 7px; border-radius: 2px; }
-    .pcol.enable li::before { background: var(--blue); }
-    .pcol.assure li::before { background: var(--warn); }
-    .pcol.brain li::before { background: var(--violet); }
+    .pcol li::before { content: ''; position: absolute; left: 2px; top: 11px; width: 7px; height: 7px; border-radius: 50%; background: var(--red); }
+    .pcol.assure li::before { background: var(--charcoal); }
+    .pcol.brain li::before { background: var(--red-dark); }
     .pcol li b { color: var(--ink); }
 
     .governance {
         border-top: 1px solid var(--border);
-        background: #f8fafd;
+        background: #fbf7f6;
         padding: 14px 24px 16px;
     }
-    .governance .g-title { font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--violet); margin-bottom: 10px; }
+    .governance .g-title { font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--red); margin-bottom: 10px; }
     .g-flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .g-step {
         background: var(--card);
@@ -140,48 +142,55 @@
     .g-step small { display: block; font-size: 10.5px; font-weight: 600; color: var(--ink-dim); margin-top: 1px; }
     .g-arr { color: var(--border-strong); font-weight: 800; }
     .g-note { margin-top: 10px; font-size: 12px; color: var(--ink-2); }
-    .g-note b { color: var(--violet); }
+    .g-note b { color: var(--red); }
 
     /* systems of record */
     .sor { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .sor-card {
         background: var(--card);
         border: 1px solid var(--border);
-        border-left: 4px solid var(--blue);
+        border-left: 4px solid var(--red);
         border-radius: 12px;
         padding: 16px 20px;
-        box-shadow: 0 1px 3px rgba(16,24,40,0.06);
+        box-shadow: 0 1px 3px rgba(38,39,43,0.06);
     }
-    .sor-card.brainy { border-left-color: var(--violet); }
+    .sor-card.brainy { border-left-color: var(--charcoal); }
     .sor-card h3 { font-size: 13.5px; font-weight: 800; }
-    .sor-card .sub { font-family: var(--mono); font-size: 10.5px; color: var(--blue); margin: 2px 0 8px; }
-    .sor-card.brainy .sub { color: var(--violet); }
+    .sor-card .sub { font-family: var(--mono); font-size: 10.5px; color: var(--red); margin: 2px 0 8px; }
+    .sor-card.brainy .sub { color: var(--ink-2); }
     .sor-card p { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
 
     /* platforms */
     .plats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
     .plat {
-        background: var(--navy);
-        color: #fff;
+        background: var(--card);
+        color: var(--ink);
+        border: 1px solid var(--border);
+        border-bottom: 3px solid var(--red);
         border-radius: 12px;
         padding: 14px 16px;
         min-height: 84px;
+        box-shadow: 0 1px 3px rgba(38,39,43,0.05);
     }
     .plat h4 { font-size: 13px; font-weight: 800; }
-    .plat .role { font-size: 11px; color: #8fa3bf; margin-top: 4px; line-height: 1.45; }
+    .plat .role { font-size: 11px; color: var(--ink-dim); margin-top: 4px; line-height: 1.45; }
 
     /* outcomes */
     .outcomes {
         margin-top: 26px;
-        background: linear-gradient(100deg, #070d1c 0%, #101c3a 60%, #1a2a55 100%);
-        border-radius: 16px;
+        background: linear-gradient(100deg, #fdf1f0 0%, #fff 55%, #fdf4f3 100%);
+        border: 1px solid #f3d9d6;
+        border-top: 4px solid var(--red);
+        border-radius: 14px;
         padding: 22px 28px;
-        color: #fff;
+        color: var(--ink);
     }
-    .outcomes h3 { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #7fa8e8; margin-bottom: 14px; }
+    .outcomes h3 { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red); margin-bottom: 14px; }
     .out-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
-    .out { font-size: 12.5px; color: rgba(255,255,255,0.82); line-height: 1.5; }
-    .out b { display: block; color: #fff; font-size: 13px; margin-bottom: 4px; }
+    .out { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+    .out b { display: block; color: var(--ink); font-size: 13px; margin-bottom: 4px; }
+    .promise { margin-top: 16px; padding-top: 12px; border-top: 1px solid #f3d9d6; font-size: 12px; color: var(--ink-2); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .promise b { color: var(--red); }
 
     .foot { margin-top: 18px; font-size: 11px; color: var(--ink-dim); text-align: center; }
     .foot code { font-family: var(--mono); }
@@ -297,6 +306,10 @@
             <div class="out"><b>Audit by construction</b>Every change is a reviewed pull request — requester, approver, diff, and date are the record, not an afterthought.</div>
             <div class="out"><b>Drift can't hide</b>Daily reconciliation compares what should be monitored with what is — every gap ships with its one-click fix.</div>
             <div class="out"><b>AI-ready by design</b>Because the estate is plain text in git, AI assistance arrives grounded and governed — same path, same approvals.</div>
+        </div>
+        <div class="promise">
+            <span>Reliable · smart and knowledgeable · taking the long-term view — observability, run the way we run the bank.</span>
+            <b>For now, and beyond</b>
         </div>
     </div>
 

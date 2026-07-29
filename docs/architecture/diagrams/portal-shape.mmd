@@ -31,10 +31,9 @@ flowchart TB
         A3["solarwinds sync<br/>role + translator"] --> T3["Orion API"]
     end
 
-    subgraph S4["Future service slots<br/>dashboards · maintenance windows · onboarding"]
+    subgraph S4["Future service slots"]
         direction TB
-        A4["new role"] --> T4["e.g. Grafana API"]
+        A4["new wizard + role<br/>dashboards · maintenance<br/>windows · onboarding"] --> T4["e.g. Grafana API"]
     end
 
-    A1 -.->|"outcome, via the shared<br/>notify_requester role"| NO
     CAT -.->|"links each asset to<br/>its dashboards"| GRAF["Grafana"]
