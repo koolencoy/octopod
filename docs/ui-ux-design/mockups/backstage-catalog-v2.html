@@ -2733,6 +2733,81 @@
             .login-card { grid-template-columns: 1fr; max-width: 440px; }
             .login-brand { display: none; }
         }
+
+        /* ============ TechDocs (documentation hub + pages) ============ */
+        .doc-features { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+        .doc-feature {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: var(--radius);
+            padding: 13px 16px;
+            font-size: 11.5px;
+            color: var(--ink-secondary);
+            line-height: 1.5;
+            box-shadow: var(--shadow-card);
+        }
+
+        .doc-feature b { display: block; font-size: 12.5px; color: var(--ink); margin-bottom: 3px; }
+
+        .doc-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+        }
+
+        .doc-row:last-child { border-bottom: none; }
+        .doc-row:hover .appr-title { color: var(--primary); }
+
+        .doc-updated { font-size: 10.5px; color: var(--ink-dim); font-family: var(--mono); white-space: nowrap; }
+
+        .doc-type {
+            border-radius: 999px;
+            padding: 3px 11px;
+            font-size: 10.5px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .doc-type.ref { background: var(--primary-soft); color: var(--primary); }
+
+        .doc-page { max-width: 860px; margin: 0 auto; width: 100%; }
+
+        .doc-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .doc-source { font-family: var(--mono); font-size: 11px; color: var(--ink-dim); }
+
+        .doc-btn { padding: 6px 12px; font-size: 12px; }
+
+        .doc-body { font-size: 13.5px; color: var(--ink-secondary); line-height: 1.7; }
+        .doc-body h2 { font-size: 20px; font-weight: 800; color: var(--ink); letter-spacing: -0.015em; margin: 0 0 10px; }
+        .doc-body h3 { font-size: 14.5px; font-weight: 700; color: var(--ink); margin: 20px 0 8px; }
+        .doc-body p { margin: 0 0 12px; }
+        .doc-body ol { margin: 0 0 12px 22px; }
+        .doc-body li { margin-bottom: 7px; }
+        .doc-body b { color: var(--ink); }
+        .doc-body code {
+            font-family: var(--mono);
+            font-size: 12px;
+            background: #f2f4f8;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 1px 6px;
+            color: var(--ink);
+        }
+
+        @media (max-width: 900px) { .doc-features { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
@@ -2891,7 +2966,7 @@
                 <div class="side-item" onclick="openAlertWizard()">
                     <svg class="ic"><use href="#i-plus"/></svg> Create
                 </div>
-                <div class="side-item" onclick="comingSoon('Docs')">
+                <div class="side-item" onclick="openDocs()">
                     <svg class="ic"><use href="#i-book"/></svg> Docs
                 </div>
             </div>
@@ -4458,6 +4533,51 @@
                 </div>
             </section>
 
+            <!-- ================= Alert Inventory (living reference) =================
+                 The third living reference: every configured watcher across
+                 the estate, generated from the same EXISTING_CONFIG data the
+                 wizards read — one source, so the inventory cannot drift.
+                 Changes go through Add Monitoring, never through this page. -->
+            <section class="view" id="view-alertinv">
+                <header class="page-header">
+                    <div class="ph-top">
+                        <div>
+                            <div class="ph-eyebrow">TechDocs &middot; Reference</div>
+                            <h1 class="ph-title">Alert Inventory</h1>
+                            <p class="ph-sub">Every alert configured across the estate — what fires, on what, at which severity, and which file defines it. Generated from the config repos, so it is always exactly what is running.</p>
+                            <div class="ph-meta">
+                                <span class="ph-chip mono-chip">techdocs:default/alert-inventory</span>
+                                <span class="ph-chip"><svg class="ic"><use href="#i-users"/></svg> ocbc/observability</span>
+                            </div>
+                        </div>
+                        <div class="ph-actions">
+                            <button class="btn btn-ghost" onclick="switchView('docs')"><svg class="ic ic-sm"><use href="#i-arrow-r"/></svg> All docs</button>
+                        </div>
+                    </div>
+                </header>
+                <div class="page-body">
+                    <div class="board">
+                        <div>
+                            <div class="section-head">
+                                <div class="section-title" id="aiCount">Alerts</div>
+                                <div class="chip-select" id="aiFilter">
+                                    <div class="chip-option selected" data-value="all" onclick="aiSetFilter('all', this)">All</div>
+                                    <div class="chip-option" data-value="log" onclick="aiSetFilter('log', this)">Log</div>
+                                    <div class="chip-option" data-value="cmd" onclick="aiSetFilter('cmd', this)">CMD</div>
+                                    <div class="chip-option" data-value="process" onclick="aiSetFilter('process', this)">Process</div>
+                                    <div class="chip-option" data-value="ELK" onclick="aiSetFilter('ELK', this)">ELK</div>
+                                    <div class="chip-option" data-value="DX UIM" onclick="aiSetFilter('DX UIM', this)">DX UIM</div>
+                                </div>
+                            </div>
+                            <div class="card" style="overflow-x:auto;">
+                                <table class="rp-table" id="aiTable"></table>
+                            </div>
+                            <div class="fleet-note info" style="margin-top:14px;"><svg class="ic"><use href="#i-bulb"/></svg> Generated from the <b>config repos</b> — the same files automation applies, grouped exactly as the wizard groups them. To change anything here, raise it via <a class="wiz-route-cta" onclick="openAlertWizard()">Add Monitoring</a>; to prove a row works end to end, <a class="wiz-route-cta" onclick="openSynthetic()">run a drill</a>.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- ================= Data Dictionary (ELK data reference) =================
                  The other half of the reference pair (with Dashboard
                  Inventory): what lives in ELK. Every index pattern, its
@@ -4683,6 +4803,106 @@
                                 <button class="btn btn-primary" id="rgNextBtn" onclick="rgNext()">Next</button>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= TechDocs (documentation hub) =================
+                 Docs-as-code, surfaced: markdown lives beside the config in
+                 git, TechDocs renders it here, editing is a pull request
+                 through the same maker-checker gate, and the reference
+                 pages are generated — so nothing can drift. Every page is
+                 part of the second brain the Observability Brain reads. -->
+            <section class="view" id="view-docs">
+                <header class="page-header">
+                    <div class="ph-top">
+                        <div>
+                            <div class="ph-eyebrow">TechDocs &middot; Documentation</div>
+                            <h1 class="ph-title">Documentation</h1>
+                            <p class="ph-sub">The written half of the platform — guides, runbooks, standards, and living references. All of it markdown in git, rendered here, and readable by the Observability Brain.</p>
+                            <div class="ph-meta">
+                                <span class="ph-chip mono-chip">techdocs:default/observability</span>
+                                <span class="ph-chip"><svg class="ic"><use href="#i-users"/></svg> ocbc/observability</span>
+                            </div>
+                        </div>
+                        <div class="ph-actions">
+                            <button class="btn btn-ghost" onclick="switchView('home')"><svg class="ic ic-sm"><use href="#i-x"/></svg> Close</button>
+                        </div>
+                    </div>
+                </header>
+                <div class="page-body">
+                    <div class="board">
+                        <div class="doc-features">
+                            <div class="doc-feature"><b>Docs-as-code</b>Markdown lives beside the configuration it describes — same repos, same branches.</div>
+                            <div class="doc-feature"><b>Editing is a pull request</b>The same maker–checker gate governs documentation: every change has an author, approver, and diff.</div>
+                            <div class="doc-feature"><b>Cannot drift</b>Reference pages are generated from the same files automation applies — never maintained by hand.</div>
+                            <div class="doc-feature"><b>Read by the Brain</b>Every page here is part of the second brain — the Brain answers cite these documents.</div>
+                        </div>
+
+                        <div>
+                            <div class="section-head"><div class="section-title">Guides &amp; standards</div></div>
+                            <div class="card" style="padding: 4px 18px;" id="docListGuides"></div>
+                        </div>
+                        <div>
+                            <div class="section-head"><div class="section-title">Runbooks</div><span style="font-size:12px; color:var(--ink-dim);">Verified steps, owned and reviewed — never a stale wiki page</span></div>
+                            <div class="card" style="padding: 4px 18px;" id="docListRunbooks"></div>
+                        </div>
+                        <div>
+                            <div class="section-head"><div class="section-title">Architecture &amp; specs</div></div>
+                            <div class="card" style="padding: 4px 18px;" id="docListSpecs"></div>
+                        </div>
+                        <div>
+                            <div class="section-head"><div class="section-title">Decisions (ADRs)</div><span style="font-size:12px; color:var(--ink-dim);">Why the platform is shaped this way — recorded, numbered, permanent</span></div>
+                            <div class="card" style="padding: 4px 18px;" id="docListADRs"></div>
+                        </div>
+                        <div>
+                            <div class="section-head"><div class="section-title">Living references</div><span style="font-size:12px; color:var(--ink-dim);">Generated pages — always current</span></div>
+                            <div class="card" style="padding: 4px 18px;">
+                                <div class="doc-row" onclick="openAlertInv()">
+                                    <span class="appr-icon sm"><svg class="ic"><use href="#i-bell"/></svg></span>
+                                    <div class="req-main"><div class="appr-title">Alert Inventory</div><div class="appr-sub">Every configured alert — what fires, on what, at which severity, from which file</div></div>
+                                    <span class="doc-type ref">reference</span>
+                                </div>
+                                <div class="doc-row" onclick="openDashInventory()">
+                                    <span class="appr-icon sm"><svg class="ic"><use href="#i-book"/></svg></span>
+                                    <div class="req-main"><div class="appr-title">Dashboard Inventory</div><div class="appr-sub">Every dashboard, described and linked — generated from the asset registry</div></div>
+                                    <span class="doc-type ref">reference</span>
+                                </div>
+                                <div class="doc-row" onclick="openDataDict()">
+                                    <span class="appr-icon sm"><svg class="ic"><use href="#i-file"/></svg></span>
+                                    <div class="req-main"><div class="appr-title">Data Dictionary — ELK</div><div class="appr-sub">Every index, its signal type, function, source, and retention</div></div>
+                                    <span class="doc-type ref">reference</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= TechDocs — rendered document page ================= -->
+            <section class="view" id="view-docpage">
+                <header class="page-header">
+                    <div class="ph-top">
+                        <div>
+                            <div class="ph-eyebrow" id="dpCrumb">TechDocs</div>
+                            <h1 class="ph-title" id="dpTitle"></h1>
+                            <div class="ph-meta" id="dpMeta"></div>
+                        </div>
+                        <div class="ph-actions">
+                            <button class="btn btn-ghost" onclick="switchView('docs')"><svg class="ic ic-sm"><use href="#i-arrow-r"/></svg> All docs</button>
+                        </div>
+                    </div>
+                </header>
+                <div class="page-body">
+                    <div class="doc-page">
+                        <div class="doc-toolbar">
+                            <span id="dpSource" class="doc-source"></span>
+                            <span style="flex:1"></span>
+                            <button class="btn btn-secondary doc-btn" onclick="comingSoon('Bitbucket')"><svg class="ic ic-sm"><use href="#i-pencil"/></svg> Edit this page — opens a PR</button>
+                            <button class="btn btn-secondary doc-btn" onclick="dpAskBrain()"><svg class="ic ic-sm"><use href="#i-brain"/></svg> Ask the Brain</button>
+                        </div>
+                        <div class="doc-body" id="dpBody"></div>
+                        <div class="fleet-note info" style="margin-top:18px;"><svg class="ic"><use href="#i-bulb"/></svg> This page is <b>markdown in git</b> — \u201cEdit this page\u201d opens a pull request, and the change ships through the same maker\u2013checker gate as any configuration. No one edits documentation in place.</div>
                     </div>
                 </div>
             </section>
@@ -7058,6 +7278,240 @@
             switchView('myactions');
         }
 
+        // ---------- TechDocs (documentation hub + rendered pages) ----------
+        // Docs-as-code surfaced in the portal. Page bodies are the demo
+        // stand-in for rendered markdown; source paths point at the real
+        // (or intended) files in git.
+        const DOCS_LIBRARY = {
+            guides: [
+                { id: 'handbook', title: 'Observability Handbook — start here', sub: 'What the portal is, how to enable your first asset, where everything lives', owner: 'ocbc/observability', updated: '2 days ago · PR #218', source: 'docs/handbook/index.md' },
+                { id: 'severity', title: 'Standard — Alert severity & routing', sub: 'What Critical / Major / Minor / Warning mean, and where each one goes', owner: 'ocbc/observability', updated: '1 week ago · PR #205', source: 'docs/standards/alert-severity.md' },
+                { id: 'suppression', title: 'Standard — Alert suppression policy', sub: 'Change windows: approval required, change record attached, always auto-expiring', owner: 'ocbc/observability', updated: '4 days ago · PR #216', source: 'docs/standards/alert-suppression.md' },
+                { id: 'parse-cookbook', title: 'Cookbook — Log parse specs', sub: 'How to write field extractions for ELK Log Onboarding, with worked examples', owner: 'ocbc/sre', updated: '6 days ago · PR #214', source: 'docs/guides/parse-spec-cookbook.md' },
+                { id: 'dxuim-guide', title: 'Guide — DX UIM probe configuration', sub: 'The probe config conventions: metadata block, empty files, catalog-info', owner: 'ocbc/observability', updated: '3 weeks ago · PR #187', source: 'dxuim-config/guide.md' },
+            ],
+            runbooks: [
+                { id: 'rb-elk-lag', title: 'Runbook — ELK ingestion lag', sub: 'Symptoms, diagnosis, drain procedure, escalation', owner: 'ocbc/sre', updated: '3 days ago · PR #212', source: 'docs/runbooks/elk-ingestion-lag.md' },
+                { id: 'rb-robot', title: 'Runbook — DX UIM robot unreachable', sub: 'Heartbeat loss triage: network, robot service, hub re-registration', owner: 'ocbc/sre', updated: '2 weeks ago · PR #198', source: 'docs/runbooks/dxuim-robot-unreachable.md' },
+            ],
+            specs: [
+                { id: 'sp-arch', title: 'Architecture — the Portal pattern', sub: 'Backstage · Bitbucket · Ansible — one governed pipeline, every service a slice', owner: 'ocbc/observability', updated: '5 days ago · PR #215', source: 'docs/architecture/architecture.md' },
+                { id: 'sp-domain', title: 'Spec — Raise-an-Alert domain model', sub: 'The tool-neutral request document: one format, per-tool translators', owner: 'ocbc/observability', updated: '1 week ago · PR #209', source: 'docs/spec/raise-an-alert-domain-model.md' },
+            ],
+            adrs: [
+                { id: 'adr-001', title: 'ADR-001 — One config repo per tool', sub: 'Accepted · why each platform gets its own repository under one convention', owner: 'ocbc/observability', updated: '2 months ago · PR #141', source: 'docs/adr/001-one-repo-per-tool.md' },
+                { id: 'adr-002', title: 'ADR-002 — Automation never writes to git', sub: 'Accepted · the one-way data flow that makes drift impossible', owner: 'ocbc/observability', updated: '2 months ago · PR #143', source: 'docs/adr/002-automation-never-writes-git.md' },
+            ],
+        };
+
+        const DOCS_PAGES = {
+            'handbook': { crumb: 'TechDocs · Guides', body: `
+                <h2>Welcome to Observability</h2>
+                <p>This portal is the single channel for everything observability: enabling monitoring, onboarding logs, checking your score, and finding every dashboard and index that exists. You never need to know which tool serves you.</p>
+                <h3>Your first asset, in three steps</h3>
+                <ol>
+                    <li><b>Install Agent</b> — get the right agents onto your hosts. The portal knows what is missing.</li>
+                    <li><b>Add Monitoring</b> — CMD, log, and process alerts through the guided wizard.</li>
+                    <li><b>Observability Score</b> — verify your asset is fully observable, and fix any gap with one click.</li>
+                </ol>
+                <h3>Where everything lives</h3>
+                <p>Configuration and documentation live together in git. The Catalog is generated from the same files — so what you read here is what is actually running. If you are unsure of anything, ask the <b>Observability Brain</b>: its answers cite these pages.</p>` },
+            'severity': { crumb: 'TechDocs · Standards', body: `
+                <h2>Alert severity — the standard</h2>
+                <p>Severity is a routing decision, not a mood. Pick by consequence:</p>
+                <ol>
+                    <li><b>Critical</b> — customer impact now, or data loss. Pages on-call; HPSM incident opens immediately.</li>
+                    <li><b>Major</b> — degraded service or imminent breach. HPSM incident, business-hours response.</li>
+                    <li><b>Minor</b> — needs attention this week; ticket only, no page.</li>
+                    <li><b>Warning</b> — informational trend; appears on dashboards, no ticket.</li>
+                </ol>
+                <h3>Routing</h3>
+                <p>Every alert carries an HPSM code (Service ID / Search Code) chosen per alert — infra and app alerts on the same host route to different queues. The wizard asks for it once; the pipeline does the rest.</p>
+                <h3>Duplicates</h3>
+                <p>An exact keyword + severity duplicate on the same asset is flagged in the wizard before submission — the reviewer decides whether it is intentional.</p>` },
+            'dxuim-guide': { crumb: 'TechDocs · Guides', body: `
+                <h2>DX UIM probe configuration</h2>
+                <p>One folder per robot: <code>dxuim-config/&lt;environment&gt;/&lt;robot&gt;/</code> with <code>processes.json</code>, <code>cdm.json</code>, <code>logmon.json</code>, and <code>catalog-info.yaml</code>.</p>
+                <h3>Conventions</h3>
+                <ol>
+                    <li>A <code>metadata</code> block (requestedBy / approvedBy) rides with every config — stripped before the push, used for notifications.</li>
+                    <li>An <b>empty file means \u201cnot configured yet\u201d</b> — never \u201cdelete\u201d. Ansible skips empty files.</li>
+                    <li><code>catalog-info.yaml</code> registers the robot in the Catalog — owner, dashboards, docs attached.</li>
+                </ol>
+                <p>The full reference lives in git alongside the configs — this page is rendered from it.</p>` },
+            'rb-elk-lag': { crumb: 'TechDocs · Runbooks', body: `
+                <h2>ELK ingestion lag</h2>
+                <p><b>Symptoms:</b> Kibana shows events minutes behind; the Log Reconciliation report marks assets <i>Stale</i>; consumers lag on the logs topics.</p>
+                <h3>Diagnose</h3>
+                <ol>
+                    <li>Cluster health first: <code>GET _cluster/health</code> — yellow/red means shards, not ingestion; stop here and follow the cluster runbook.</li>
+                    <li>Check consumer lag: <code>kafka-consumer-groups --describe --group logstash-ingest</code> — lag on one topic = one noisy producer; lag on all = pipeline capacity.</li>
+                    <li>Check Logstash: pipeline stats via <code>GET _node/stats/pipelines</code> — a blocked output backs up everything.</li>
+                </ol>
+                <h3>Drain</h3>
+                <ol>
+                    <li>Scale the Logstash deployment (+2 replicas) — safe, stateless.</li>
+                    <li>If one producer floods: rate-limit at the topic, notify the owning team via the Catalog owner link.</li>
+                    <li>Never delete the topic backlog — it drains; deletion loses data.</li>
+                </ol>
+                <p><b>Escalate</b> when lag grows for 30+ minutes after scaling: page ocbc/sre, reference this runbook.</p>` },
+            'rb-robot': { crumb: 'TechDocs · Runbooks', body: `
+                <h2>DX UIM robot unreachable</h2>
+                <p><b>Symptoms:</b> heartbeat loss alarm; the Monitoring Reconciliation report marks the host <i>Drifted</i>.</p>
+                <h3>Triage, in order</h3>
+                <ol>
+                    <li><b>Host up?</b> If the host itself is down, this is an incident, not a robot problem.</li>
+                    <li><b>Network path:</b> robot port reachable from the hub? Firewall changes are the usual suspect — check recent change records first.</li>
+                    <li><b>Robot service:</b> restart via the controller; verify it re-registers with the hub.</li>
+                    <li><b>Still dark:</b> re-deploy the robot via <b>Install Agent</b> — idempotent, safe on a half-installed host.</li>
+                </ol>
+                <p>After recovery, run a <b>Synthetic Alerting</b> drill on the host to prove the full chain end to end.</p>` },
+            'sp-arch': { crumb: 'TechDocs · Architecture', body: `
+                <h2>The Portal pattern</h2>
+                <p>Backstage is the user layer, Bitbucket the record, Ansible the activation engine. Every service is the same slice: a wizard, a config repo, a translator, a tool API — and one governance spine: request \u2192 maker\u2013checker \u2192 git \u2192 automation \u2192 drift detection.</p>
+                <p><b>This is an abstract.</b> The full architecture document — component status, security model, open risks — lives in git: <code>docs/architecture/architecture.md</code>.</p>` },
+            'suppression': { crumb: 'TechDocs · Standards', body: `
+                <h2>Alert suppression — the policy</h2>
+                <p>Suppression exists so planned work does not page anyone — and for no other reason. Three rules, no exceptions:</p>
+                <ol>
+                    <li><b>Approved before silent.</b> A window is a maker\u2013checker request like any other; nothing is suppressed until a checker approves.</li>
+                    <li><b>Tied to a change.</b> Every window carries an HPSM change record. No change record, no window.</li>
+                    <li><b>Always auto-expiring.</b> Maximum 8 hours; extending is a new request. A window can never be forgotten open.</li>
+                </ol>
+                <p>Events during a window are <b>recorded but not ticketed</b> — nothing is lost, only silenced. Active and upcoming windows are always visible in the Alert Suppression service.</p>` },
+            'parse-cookbook': { crumb: 'TechDocs · Guides', body: `
+                <h2>Writing a parse spec</h2>
+                <p>ELK Log Onboarding generates your Logstash parser from the fields you declare. The recipe:</p>
+                <ol>
+                    <li><b>Paste real lines.</b> Three to five actual log lines — the parser is generated and tested against them.</li>
+                    <li><b>Name the fields you will query.</b> <code>txn_id</code>, <code>amount</code>, <code>status</code> — if you will never filter on it, do not extract it.</li>
+                    <li><b>One pattern per field.</b> Plain text: a regex group, e.g. <code>txn=(\\d+)</code>. JSON: a key path, e.g. <code>$.txnId</code>.</li>
+                    <li><b>Pick honest types.</b> <code>number</code> enables ranges and maths; <code>keyword</code> enables exact filtering; <code>text</code> is for free search only.</li>
+                </ol>
+                <h3>Worked example</h3>
+                <p>Line: <code>2026-07-24 09:14:02 INFO [settlement] txn=8812 amount=1520.00 status=OK</code><br>
+                Fields: <code>txn_id \u2190 txn=(\\d+)</code> keyword &middot; <code>amount \u2190 amount=([\\d.]+)</code> number &middot; <code>status \u2190 status=(\\w+)</code> keyword.</p>` },
+            'adr-001': { crumb: 'TechDocs · Decisions', body: `
+                <h2>ADR-001 — One config repo per tool</h2>
+                <p><b>Status: Accepted.</b></p>
+                <p><b>Context.</b> Config for multiple platforms could live in one repository or one per tool.</p>
+                <p><b>Decision.</b> One repository per tool — <code>dxuim-config</code>, <code>elk-watchers</code>, <code>solarwinds-config</code> — under one shared folder and metadata convention.</p>
+                <p><b>Consequences.</b> Access, webhooks, and blast radius stay per-tool; conventions are enforced by shared Ansible roles rather than by co-location. The risk — three pipelines drifting apart — is countered by extracting shared logic the moment a second consumer exists.</p>` },
+            'adr-002': { crumb: 'TechDocs · Decisions', body: `
+                <h2>ADR-002 — Automation never writes to git</h2>
+                <p><b>Status: Accepted.</b></p>
+                <p><b>Context.</b> Activation results, generated files, and status could be written back to the repos by automation.</p>
+                <p><b>Decision.</b> Data flows one way: the portal writes git; automation reads git and writes to the tools. The automation credentials are read-only by construction — the roles contain zero git-write calls.</p>
+                <p><b>Consequences.</b> Whatever is committed must carry everything automation needs — no side channels. The record can never be contaminated by a machine; every commit has a human (or an approved AI proposal) behind it. This is the invariant that makes \u201cdrift is impossible by construction\u201d true.</p>` },
+            'sp-domain': { crumb: 'TechDocs · Specs', body: `
+                <h2>The tool-neutral domain model</h2>
+                <p>Requests are committed as one standard document (\u201calert on process <code>*java*</code>, severity Critical, every 5 minutes\u201d) rather than any tool\u2019s native format — reviewable by humans, translated per tool at activation. One format, three translators: DX UIM, ELK, SolarWinds.</p>
+                <p><b>This is an abstract.</b> The full specification lives in git: <code>docs/spec/raise-an-alert-domain-model.md</code>.</p>` },
+        };
+
+        function openDocs() {
+            const row = d => `
+                <div class="doc-row" onclick="docOpen('${d.id}')">
+                    <span class="appr-icon sm"><svg class="ic"><use href="#i-file"/></svg></span>
+                    <div class="req-main"><div class="appr-title">${d.title}</div><div class="appr-sub">${d.sub}</div></div>
+                    <span class="doc-updated">${d.updated}</span>
+                </div>`;
+            document.getElementById('docListGuides').innerHTML = DOCS_LIBRARY.guides.map(row).join('');
+            document.getElementById('docListRunbooks').innerHTML = DOCS_LIBRARY.runbooks.map(row).join('');
+            document.getElementById('docListSpecs').innerHTML = DOCS_LIBRARY.specs.map(row).join('');
+            document.getElementById('docListADRs').innerHTML = DOCS_LIBRARY.adrs.map(row).join('');
+            switchView('docs');
+        }
+
+        let dpCurrent = null;
+
+        function docOpen(id) {
+            const all = [...DOCS_LIBRARY.guides, ...DOCS_LIBRARY.runbooks, ...DOCS_LIBRARY.specs, ...DOCS_LIBRARY.adrs];
+            const meta = all.find(d => d.id === id);
+            const page = DOCS_PAGES[id];
+            if (!meta || !page) return;
+            dpCurrent = meta;
+            document.getElementById('dpCrumb').textContent = page.crumb;
+            document.getElementById('dpTitle').textContent = meta.title;
+            document.getElementById('dpMeta').innerHTML =
+                `<span class="ph-chip"><svg class="ic"><use href="#i-users"/></svg> ${meta.owner}</span>` +
+                `<span class="ph-chip"><svg class="ic"><use href="#i-refresh"/></svg> updated ${meta.updated}</span>`;
+            document.getElementById('dpSource').textContent = meta.source;
+            document.getElementById('dpBody').innerHTML = page.body;
+            switchView('docpage');
+            document.querySelector('#view-docpage .page-body').scrollTop = 0;
+        }
+
+        // "Ask the Brain" from a doc page — opens the Brain with the page as context
+        function dpAskBrain() {
+            const panel = document.getElementById('aikaPanel');
+            if (!panel.classList.contains('open')) toggleAika();
+            if (dpCurrent) aikaAsk('Tell me about: ' + dpCurrent.title);
+        }
+
+        // ---------- Alert Inventory (living reference) ----------
+        // Generated from EXISTING_CONFIG — the same store the wizards read —
+        // so the inventory is, by construction, what is actually configured.
+        const AI_ASSETS = [
+            { key: 'deposit-adapter-sg_ms-cbs-account-movement-adapter', label: 'ms-cbs-account-movement-adapter', platform: 'ELK', env: 'PROD', src: 'elk-watchers/PROD/deposit-adapter-sg/' },
+            { key: 'sgapp0410', label: 'sgapp0410', platform: 'DX UIM', env: 'PROD', src: 'dxuim-config/PROD/sgapp0410/' },
+            { key: 'ulaeiapos0a', label: 'ulaeiapos0a', platform: 'DX UIM', env: 'UAT', src: 'dxuim-config/UAT/ulaeiapos0a/' },
+        ];
+
+        let aiFilterVal = 'all';
+
+        function aiRows() {
+            const rows = [];
+            for (const a of AI_ASSETS) {
+                const cfg = EXISTING_CONFIG[a.key.toLowerCase()] || EXISTING_CONFIG[a.key] || {};
+                for (const g of groupLogEntriesByFilepath(cfg.log || [])) {
+                    const kws = g.entries.map(e => e.keyword);
+                    const preview = kws.slice(0, 3).join(', ') + (kws.length > 3 ? ` +${kws.length - 3} more` : '');
+                    const sevs = [...new Set(g.entries.map(e => e.severity))];
+                    rows.push({ asset: a, cat: 'log', def: `${kws.length} keyword${kws.length > 1 ? 's' : ''} in ${g.filepath || 'container stdout'} — ${preview}`, sev: sevs.join(' · '), file: 'logmon.json' });
+                }
+                for (const e of (cfg.cmd || [])) {
+                    rows.push({ asset: a, cat: 'cmd', def: `${e.metric} > ${e.threshold}% for ${e.duration}m`, sev: e.severity, file: 'cdm.json' });
+                }
+                for (const e of (cfg.process || [])) {
+                    rows.push({ asset: a, cat: 'process', def: `${e.name} — expected ${e.state}, every ${e.interval}m`, sev: e.severity, file: 'processes.json' });
+                }
+            }
+            return rows;
+        }
+
+        function openAlertInv() {
+            aiRender();
+            switchView('alertinv');
+        }
+
+        function aiSetFilter(v, el) {
+            aiFilterVal = v;
+            document.querySelectorAll('#aiFilter .chip-option').forEach(ch => ch.classList.toggle('selected', ch.dataset.value === v));
+            aiRender();
+        }
+
+        function aiRender() {
+            let rows = aiRows();
+            const total = rows.length;
+            if (aiFilterVal !== 'all') {
+                rows = rows.filter(r => r.cat === aiFilterVal || r.asset.platform === aiFilterVal);
+            }
+            document.getElementById('aiCount').textContent = `Alert Inventory — ${rows.length}${aiFilterVal === 'all' ? '' : ' of ' + total} alert groups`;
+            const CAT = { log: 'Log', cmd: 'CMD', process: 'Process' };
+            document.getElementById('aiTable').innerHTML =
+                '<thead><tr><th>Asset</th><th>Platform</th><th>Category</th><th>Definition</th><th>Severity</th><th>Defined in</th></tr></thead><tbody>' +
+                rows.map(r => `
+                    <tr>
+                        <td class="mono-name">${r.asset.label}<div style="font-family:var(--font); font-weight:400; font-size:10.5px; color:var(--ink-dim);">${r.asset.env}</div></td>
+                        <td>${r.asset.platform}</td>
+                        <td>${CAT[r.cat]}</td>
+                        <td>${r.def}</td>
+                        <td style="white-space:nowrap;">${r.sev}</td>
+                        <td><span style="font-family:var(--mono); font-size:11px; color:var(--primary);">${r.asset.src}${r.file}</span></td>
+                    </tr>`).join('') + '</tbody>';
+        }
+
         // ---------- My Actions (maker-checker workflow) ----------
         // Two distinct workflows: the checker queue (other makers' requests,
         // with approve/reject — rejection requires a reason) and the maker
@@ -7772,6 +8226,11 @@
         // overlap plays the role of cosine similarity. Lives in the sidebar
         // search bar — lookup is navigation, not conversation.
         const SEARCH_INDEX = [
+            { path: 'techdocs:alert-inventory', title: 'Alert Inventory (living reference)', keywords: ['alert', 'inventory', 'watcher', 'configured', 'severity', 'reference'], snippet: 'Every configured alert across the estate — generated from the config repos, so it is always exactly what is running.' },
+            { path: 'docs/standards/alert-suppression.md', title: 'Standard — Alert suppression policy', keywords: ['suppression', 'window', 'maintenance', 'policy', 'expire', 'change'], snippet: '<b>Approved before silent · tied to a change · always auto-expiring.</b> Events during a window are recorded but not ticketed.' },
+            { path: 'docs/adr/002-automation-never-writes-git.md', title: 'ADR-002 — Automation never writes to git', keywords: ['adr', 'decision', 'one-way', 'automation', 'git', 'drift'], snippet: 'Data flows one way — the invariant that makes <b>drift impossible by construction</b> true.' },
+            { path: 'docs/runbooks/elk-ingestion-lag.md', title: 'Runbook — ELK ingestion lag', keywords: ['runbook', 'elk', 'ingestion', 'lag', 'kafka', 'logstash', 'stale', 'drain'], snippet: 'Symptoms, diagnosis, and drain procedure for ingestion lag — <b>never delete the topic backlog</b>; it drains, deletion loses data.' },
+            { path: 'docs/standards/alert-severity.md', title: 'Standard — Alert severity & routing', keywords: ['severity', 'critical', 'major', 'minor', 'warning', 'routing', 'standard', 'hpsm'], snippet: '<b>Severity is a routing decision, not a mood.</b> Critical pages on-call; Major opens an incident; Minor tickets; Warning informs.' },
             { path: 'dxuim-config/guide.md', title: 'DX UIM probe config & API', keywords: ['dxuim', 'api', 'endpoint', 'uimapi', 'probe', 'config', 'curl', 'metadata', 'robot', 'hub'], snippet: 'PUT <b>/uimapi/probes/{domain}/{hub}/{robot}/{probe}/config</b> — metadata (requestedBy / approvedBy) is stripped before the config is sent to the probe.' },
             { path: 'docs/ui-ux-design/branching-strategy.md', title: 'Branching & approval model', keywords: ['branch', 'branching', 'strategy', 'staging', 'pr', 'approval', 'main', 'git', 'merge'], snippet: '<b>main</b> is truth, <b>staging/&lt;name&gt;</b> per request, the PR is the approval gate — Ansible only ever reads, it never commits.' },
             { path: 'docs/spec/raise-an-alert-domain-model.md', title: 'Alert domain data model', keywords: ['domain', 'model', 'schema', 'severity', 'keyword', 'matchtype', 'hpsm', 'envelope', 'spec'], snippet: 'One document shape for Log / CMD / Process across both asset types — <b>schemaVersion</b>, provenance metadata, category-specific payload.' },
